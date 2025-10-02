@@ -1,22 +1,22 @@
 // layout
-window_w = 700;
-window_h = 500;
-window_x = 80;
-window_y = 80;
+window_w = 1700;
+window_h = 900;
+window_x = 90;   //x position (left edge) of window
+window_y = 90;   //y position (top edge) of window
 
-header_h = 48;
-row_h    = 36;
-list_top = window_y + header_h + 8;
-list_left= window_x + 16;
-list_w   = window_w - 32;
-list_h   = window_h - header_h - 24;
+header_h = 55;   //header height
+row_h    = 36;   //inbox row height
+list_top = window_y + header_h + 8;  //y start of inbox list; below header
+list_left= window_x + 16;            //x start of inbox list
+list_w   = window_w - 32;            //inbox list width
+list_h   = window_h - header_h - 24; //inbox list height
 
 // state
-selected_index = -1;
+selected_index = -1;      //-1 = inbox view; 0... = full email view
 
 // button 
-close_btn = [window_x + window_w - 36, window_y + 12, 24, 24]; //instance var
-back_btn  = [window_x + 12,            window_y + 12, 64, 24]; 
+close_btn = [window_x + window_w - 36, window_y + 12, 24, 24]; 
+back_btn  = [window_x + 12,            window_y + 40, 64, 24]; 
 
 
 // fonts (figure out font assets

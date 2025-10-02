@@ -41,7 +41,7 @@ if (selected_index == -1) {
         }
     }
 }
-// Message view → back
+// Message view -> back
 else {
     if (mouse_check_button_pressed(mb_left)) {
         if (point_in_rect(mx, my, back_btn[0], back_btn[1], back_btn[2], back_btn[3])) {

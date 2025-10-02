@@ -8,7 +8,7 @@ draw_rectangle(window_x, window_y, window_x + window_w, window_y + window_h, tru
 draw_set_font(font_title);
 draw_set_halign(fa_left);
 draw_set_valign(fa_top);
-draw_text(window_x + 16, window_y + 12, "Mail App");
+draw_text(window_x + 16, window_y + 12, "Mail");
 
 //close button
 draw_set_color(c_black);
