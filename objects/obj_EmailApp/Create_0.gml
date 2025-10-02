@@ -1,6 +1,6 @@
 // layout
-window_w = 640;
-window_h = 420;
+window_w = 700;
+window_h = 500;
 window_x = 80;
 window_y = 80;
 
