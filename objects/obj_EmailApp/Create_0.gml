@@ -1,4 +1,7 @@
 // layout
+event_inherited();   // gets base geometry and state
+title = "Mail";     // window title
+script_execute(_recalc); // update rects after changing size
 window_w = 1700;
 window_h = 900;
 window_x = 90;   //x position (left edge) of window

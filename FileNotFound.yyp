@@ -45,6 +45,7 @@
   "name":"FileNotFound",
   "resources":[
     {"id":{"name":"Font1","path":"fonts/Font1/Font1.yy",},},
+    {"id":{"name":"obj_AppBase","path":"objects/obj_AppBase/obj_AppBase.yy",},},
     {"id":{"name":"obj_EmailApp","path":"objects/obj_EmailApp/obj_EmailApp.yy",},},
     {"id":{"name":"obj_EmailIcon","path":"objects/obj_EmailIcon/obj_EmailIcon.yy",},},
     {"id":{"name":"obj_FilesApp","path":"objects/obj_FilesApp/obj_FilesApp.yy",},},

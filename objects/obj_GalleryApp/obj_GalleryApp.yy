@@ -9,7 +9,10 @@
     "name":"Gallery",
     "path":"folders/Objects/Apps/Gallery.yy",
   },
-  "parentObjectId":null,
+  "parentObjectId":{
+    "name":"obj_AppBase",
+    "path":"objects/obj_AppBase/obj_AppBase.yy",
+  },
   "persistent":false,
   "physicsAngularDamping":0.1,
   "physicsDensity":0.5,

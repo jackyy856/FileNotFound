@@ -1,5 +1,10 @@
-global.apps_unlocked = {
-    Mail: true,
-    HackerMessenger: false,
-    Files: false
+
+global.apps_unlocked = 
+{
+    Email: true,
+    HackerMsgr: true,
+    Files: true,
+	Gallery: true,
+	RecycleBin: true,
+	Notes: true
 };
