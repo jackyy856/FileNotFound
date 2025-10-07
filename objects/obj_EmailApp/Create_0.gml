@@ -35,9 +35,13 @@ inbox = [
 
     { id:1, from:"Unknown", subject:"[URGENT] Outstanding invoice (open immediately)",
       body:"This message contains your invoice.",
+      read:false, is_suspicious:false },
+	  
+	{ id:2, from:"announcementz@rosenwood.hr", subject:"You have been selected for a bonus opportunity!",
+      body:"Congratulations! Thanks to your outstanding performance, we have an amazing notice to share. Please click here to redeem your certificate of recognition. Thank you for your hard work!",
       read:false, is_suspicious:true },
-
-    { id:2, from:"Coworker", subject:"Photos from last Friday",
+	  
+    { id:3, from:"Patrica Conway", subject:"Friday Office Party",
       body:"Hey! Sharing the office party photos. Don't let the boss see ;)",
       read:false, is_suspicious:false }
 ];
