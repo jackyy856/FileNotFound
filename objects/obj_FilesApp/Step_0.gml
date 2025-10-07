@@ -5,22 +5,6 @@ function point_in_rect(px, py, x, y, w, h) {
     return (px >= x) && (py >= y) && (px < x + w) && (py < y + h);
 }
 
-// Live transitions: locked <-> unlocked
-var locked_now = is_locked();
-if (locked_now && !was_locked) {
-    cwd = fs_locked;
-    breadcrumbs = [cwd];
-    mode = "list";
-    selected_index = -1;
-}
-if (!locked_now && was_locked) {
-    cwd = fs_root;
-    breadcrumbs = [cwd];
-    mode = "list";
-    selected_index = -1;
-}
-was_locked = locked_now;
-
 // Close
 if (mouse_check_button_pressed(mb_left)) {
     if (point_in_rect(mx, my, close_btn[0], close_btn[1], close_btn[2], close_btn[3])) {

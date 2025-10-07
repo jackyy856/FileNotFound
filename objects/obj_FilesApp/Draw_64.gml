@@ -11,7 +11,7 @@ draw_set_valign(fa_top);
 draw_set_color(c_black);
 draw_text(window_x + 16, window_y + 12, "Files");
 
-// Close button (light gray pill, black border/text)
+// Close button (light gray fill + black border/text)
 var bcol = make_colour_rgb(230,230,230);
 draw_set_color(bcol);
 draw_rectangle(close_btn[0], close_btn[1], close_btn[0] + close_btn[2], close_btn[1] + close_btn[3], false);
