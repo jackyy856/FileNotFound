@@ -3,7 +3,7 @@ draw_set_color(c_white);
 draw_rectangle(window_x, window_y, window_x + window_w, window_y + window_h, false);
 draw_set_color(c_black);
 draw_rectangle(window_x, window_y, window_x + window_w, window_y + window_h, true);
-
+//Testing Commit Comment
 // Title bar
 draw_set_font(font_title);
 draw_set_halign(fa_left);
