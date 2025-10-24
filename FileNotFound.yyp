@@ -13,6 +13,7 @@
     {"$GMFolder":"","%Name":"Animation Curves","folderPath":"folders/Animation Curves.yy","name":"Animation Curves","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Extensions","folderPath":"folders/Extensions.yy","name":"Extensions","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Fonts","folderPath":"folders/Fonts.yy","name":"Fonts","resourceType":"GMFolder","resourceVersion":"2.0",},
+    {"$GMFolder":"","%Name":"Login","folderPath":"folders/Fonts/Login.yy","name":"Login","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Notes","folderPath":"folders/Notes.yy","name":"Notes","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Objects","folderPath":"folders/Objects.yy","name":"Objects","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Apps","folderPath":"folders/Objects/Apps.yy","name":"Apps","resourceType":"GMFolder","resourceVersion":"2.0",},
@@ -23,6 +24,7 @@
     {"$GMFolder":"","%Name":"Recycle Bin","folderPath":"folders/Objects/Apps/Recycle Bin.yy","name":"Recycle Bin","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"StickyNote","folderPath":"folders/Objects/Apps/StickyNote.yy","name":"StickyNote","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Desktop","folderPath":"folders/Objects/Desktop.yy","name":"Desktop","resourceType":"GMFolder","resourceVersion":"2.0",},
+    {"$GMFolder":"","%Name":"Login","folderPath":"folders/Objects/Desktop/Login.yy","name":"Login","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Particle Systems","folderPath":"folders/Particle Systems.yy","name":"Particle Systems","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Paths","folderPath":"folders/Paths.yy","name":"Paths","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Rooms","folderPath":"folders/Rooms.yy","name":"Rooms","resourceType":"GMFolder","resourceVersion":"2.0",},
@@ -47,6 +49,8 @@
   "name":"FileNotFound",
   "resources":[
     {"id":{"name":"Font1","path":"fonts/Font1/Font1.yy",},},
+    {"id":{"name":"Login_hint","path":"fonts/Login_hint/Login_hint.yy",},},
+    {"id":{"name":"Login_username","path":"fonts/Login_username/Login_username.yy",},},
     {"id":{"name":"obj_AppBase","path":"objects/obj_AppBase/obj_AppBase.yy",},},
     {"id":{"name":"obj_EmailApp","path":"objects/obj_EmailApp/obj_EmailApp.yy",},},
     {"id":{"name":"obj_EmailIcon","path":"objects/obj_EmailIcon/obj_EmailIcon.yy",},},
@@ -57,11 +61,21 @@
     {"id":{"name":"obj_GameController","path":"objects/obj_GameController/obj_GameController.yy",},},
     {"id":{"name":"obj_HackerMsgrApp","path":"objects/obj_HackerMsgrApp/obj_HackerMsgrApp.yy",},},
     {"id":{"name":"obj_HackerMsgrIcon","path":"objects/obj_HackerMsgrIcon/obj_HackerMsgrIcon.yy",},},
+    {"id":{"name":"Obj_logincontrol","path":"objects/Obj_logincontrol/Obj_logincontrol.yy",},},
+    {"id":{"name":"Obj_loginpic","path":"objects/Obj_loginpic/Obj_loginpic.yy",},},
     {"id":{"name":"obj_RecycleBinApp","path":"objects/obj_RecycleBinApp/obj_RecycleBinApp.yy",},},
     {"id":{"name":"obj_RecycleBinIcon","path":"objects/obj_RecycleBinIcon/obj_RecycleBinIcon.yy",},},
     {"id":{"name":"obj_StickyNoteApp","path":"objects/obj_StickyNoteApp/obj_StickyNoteApp.yy",},},
     {"id":{"name":"obj_StickyNoteIcon","path":"objects/obj_StickyNoteIcon/obj_StickyNoteIcon.yy",},},
+<<<<<<< Updated upstream
     {"id":{"name":"Room1","path":"rooms/Room1/Room1.yy",},},
+=======
+    {"id":{"name":"Obj_text","path":"objects/Obj_text/Obj_text.yy",},},
+    {"id":{"name":"Login","path":"rooms/Login/Login.yy",},},
+    {"id":{"name":"room_Desktop","path":"rooms/room_Desktop/room_Desktop.yy",},},
+    {"id":{"name":"loginbg","path":"sprites/loginbg/loginbg.yy",},},
+    {"id":{"name":"loginpic","path":"sprites/loginpic/loginpic.yy",},},
+>>>>>>> Stashed changes
     {"id":{"name":"spr_coworkerPFP1","path":"sprites/spr_coworkerPFP1/spr_coworkerPFP1.yy",},},
     {"id":{"name":"spr_coworkerPFP2","path":"sprites/spr_coworkerPFP2/spr_coworkerPFP2.yy",},},
     {"id":{"name":"spr_coworkerPFP3","path":"sprites/spr_coworkerPFP3/spr_coworkerPFP3.yy",},},
@@ -76,7 +90,12 @@
   "resourceType":"GMProject",
   "resourceVersion":"2.0",
   "RoomOrderNodes":[
+<<<<<<< Updated upstream
     {"roomId":{"name":"Room1","path":"rooms/Room1/Room1.yy",},},
+=======
+    {"roomId":{"name":"Login","path":"rooms/Login/Login.yy",},},
+    {"roomId":{"name":"room_Desktop","path":"rooms/room_Desktop/room_Desktop.yy",},},
+>>>>>>> Stashed changes
   ],
   "templateType":"game",
   "TextureGroups":[
