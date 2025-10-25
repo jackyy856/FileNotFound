@@ -10,10 +10,12 @@ draw_set_halign(fa_left);
 draw_set_valign(fa_top);
 draw_text(window_x + 16, window_y + 12, "MailApp");
 
-//close button
+//close button (light gray fill + black border/text)
+var bcol = make_colour_rgb(230,230,230);
+draw_set_color(bcol);
+draw_rectangle(close_btn[0], close_btn[1], close_btn[0] + close_btn[2], close_btn[1] + close_btn[3], false);
 draw_set_color(c_black);
 draw_rectangle(close_btn[0], close_btn[1], close_btn[0] + close_btn[2], close_btn[1] + close_btn[3], true);
-draw_set_color(c_white);
 draw_text(close_btn[0] + 7, close_btn[1] + 2, "X");
 
 //content
@@ -46,10 +48,13 @@ if (selected_index == -1)
 } 
 else 
 {
-    draw_set_color(c_black);
-    draw_rectangle(back_btn[0], back_btn[1], back_btn[0] + back_btn[2], back_btn[1] + back_btn[3], true);
-    draw_set_color(c_white);
-    draw_text(back_btn[0] + 10, back_btn[1] + 3, "< Back");
+    // back button (light gray fill + black border/text)
+	var bcol_back = make_colour_rgb(230,230,230);
+	draw_set_color(bcol_back);
+	draw_rectangle(back_btn[0], back_btn[1], back_btn[0] + back_btn[2], back_btn[1] + back_btn[3], false);
+	draw_set_color(c_black);
+	draw_rectangle(back_btn[0], back_btn[1], back_btn[0] + back_btn[2], back_btn[1] + back_btn[3], true);
+	draw_text(back_btn[0] + 10, back_btn[1] + 3, "< Back");
 
     var em = inbox[selected_index];
     var tx = window_x + 20;
