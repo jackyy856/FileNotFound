@@ -23,6 +23,11 @@
     {"$GMFolder":"","%Name":"Recycle Bin","folderPath":"folders/Objects/Apps/Recycle Bin.yy","name":"Recycle Bin","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"StickyNote","folderPath":"folders/Objects/Apps/StickyNote.yy","name":"StickyNote","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Desktop","folderPath":"folders/Objects/Desktop.yy","name":"Desktop","resourceType":"GMFolder","resourceVersion":"2.0",},
+<<<<<<< Updated upstream
+=======
+    {"$GMFolder":"","%Name":"DeskView","folderPath":"folders/Objects/Desktop/DeskView.yy","name":"DeskView","resourceType":"GMFolder","resourceVersion":"2.0",},
+    {"$GMFolder":"","%Name":"Login","folderPath":"folders/Objects/Desktop/Login.yy","name":"Login","resourceType":"GMFolder","resourceVersion":"2.0",},
+>>>>>>> Stashed changes
     {"$GMFolder":"","%Name":"Particle Systems","folderPath":"folders/Particle Systems.yy","name":"Particle Systems","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Paths","folderPath":"folders/Paths.yy","name":"Paths","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Rooms","folderPath":"folders/Rooms.yy","name":"Rooms","resourceType":"GMFolder","resourceVersion":"2.0",},
@@ -48,6 +53,7 @@
   "resources":[
     {"id":{"name":"Font1","path":"fonts/Font1/Font1.yy",},},
     {"id":{"name":"obj_AppBase","path":"objects/obj_AppBase/obj_AppBase.yy",},},
+    {"id":{"name":"obj_DeskViewController","path":"objects/obj_DeskViewController/obj_DeskViewController.yy",},},
     {"id":{"name":"obj_EmailApp","path":"objects/obj_EmailApp/obj_EmailApp.yy",},},
     {"id":{"name":"obj_EmailIcon","path":"objects/obj_EmailIcon/obj_EmailIcon.yy",},},
     {"id":{"name":"obj_FilesApp","path":"objects/obj_FilesApp/obj_FilesApp.yy",},},
@@ -61,11 +67,23 @@
     {"id":{"name":"obj_RecycleBinIcon","path":"objects/obj_RecycleBinIcon/obj_RecycleBinIcon.yy",},},
     {"id":{"name":"obj_StickyNoteApp","path":"objects/obj_StickyNoteApp/obj_StickyNoteApp.yy",},},
     {"id":{"name":"obj_StickyNoteIcon","path":"objects/obj_StickyNoteIcon/obj_StickyNoteIcon.yy",},},
+<<<<<<< Updated upstream
     {"id":{"name":"Room1","path":"rooms/Room1/Room1.yy",},},
+=======
+    {"id":{"name":"Obj_text","path":"objects/Obj_text/Obj_text.yy",},},
+    {"id":{"name":"Login","path":"rooms/Login/Login.yy",},},
+    {"id":{"name":"room_Desk_View","path":"rooms/room_Desk_View/room_Desk_View.yy",},},
+    {"id":{"name":"room_Desktop","path":"rooms/room_Desktop/room_Desktop.yy",},},
+    {"id":{"name":"loginbg","path":"sprites/loginbg/loginbg.yy",},},
+    {"id":{"name":"loginpic","path":"sprites/loginpic/loginpic.yy",},},
+>>>>>>> Stashed changes
     {"id":{"name":"spr_coworkerPFP1","path":"sprites/spr_coworkerPFP1/spr_coworkerPFP1.yy",},},
     {"id":{"name":"spr_coworkerPFP2","path":"sprites/spr_coworkerPFP2/spr_coworkerPFP2.yy",},},
     {"id":{"name":"spr_coworkerPFP3","path":"sprites/spr_coworkerPFP3/spr_coworkerPFP3.yy",},},
     {"id":{"name":"spr_coworkerPFP4","path":"sprites/spr_coworkerPFP4/spr_coworkerPFP4.yy",},},
+    {"id":{"name":"spr_desk_bg","path":"sprites/spr_desk_bg/spr_desk_bg.yy",},},
+    {"id":{"name":"spr_email_list","path":"sprites/spr_email_list/spr_email_list.yy",},},
+    {"id":{"name":"spr_email_open","path":"sprites/spr_email_open/spr_email_open.yy",},},
     {"id":{"name":"spr_EmailIcon","path":"sprites/spr_EmailIcon/spr_EmailIcon.yy",},},
     {"id":{"name":"spr_FilesIcon","path":"sprites/spr_FilesIcon/spr_FilesIcon.yy",},},
     {"id":{"name":"spr_GalleryIcon","path":"sprites/spr_GalleryIcon/spr_GalleryIcon.yy",},},
@@ -76,7 +94,13 @@
   "resourceType":"GMProject",
   "resourceVersion":"2.0",
   "RoomOrderNodes":[
+<<<<<<< Updated upstream
     {"roomId":{"name":"Room1","path":"rooms/Room1/Room1.yy",},},
+=======
+    {"roomId":{"name":"room_Desk_View","path":"rooms/room_Desk_View/room_Desk_View.yy",},},
+    {"roomId":{"name":"Login","path":"rooms/Login/Login.yy",},},
+    {"roomId":{"name":"room_Desktop","path":"rooms/room_Desktop/room_Desktop.yy",},},
+>>>>>>> Stashed changes
   ],
   "templateType":"game",
   "TextureGroups":[
