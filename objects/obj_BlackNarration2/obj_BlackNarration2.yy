@@ -1,22 +1,19 @@
 {
   "$GMObject":"",
-  "%Name":"obj_StickyNoteApp",
+  "%Name":"obj_BlackNarration2",
   "eventList":[
     {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":0,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
-    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":3,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
-    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":64,"eventType":8,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
-    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":2,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
   ],
   "managed":true,
-  "name":"obj_StickyNoteApp",
+  "name":"obj_BlackNarration2",
   "overriddenProperties":[],
   "parent":{
-    "name":"StickyNote",
-    "path":"folders/Objects/Apps/StickyNote.yy",
+    "name":"Objects",
+    "path":"folders/Objects.yy",
   },
   "parentObjectId":{
-    "name":"obj_AppBase",
-    "path":"objects/obj_AppBase/obj_AppBase.yy",
+    "name":"obj_BlackNarrationBase",
+    "path":"objects/obj_BlackNarrationBase/obj_BlackNarrationBase.yy",
   },
   "persistent":false,
   "physicsAngularDamping":0.1,
