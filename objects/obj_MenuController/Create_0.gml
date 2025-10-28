@@ -2,7 +2,7 @@
 display_set_gui_size(1920, 1080);
 
 // ----- state machine -----
-state = "main";   // "main" | "load" | "settings" | "narr1"
+state = "main";   // "main" | "load" | "settings" | "narr1" | "narr2"
 
 // ---- full-window panel ----
 var gui_w = display_get_gui_width();
@@ -18,8 +18,8 @@ btn_w  = 520;
 btn_h  = 64;
 btn_gap = 28;
 
-var col_x = (gui_w - btn_w) * 0.5;          // centered column
-var col_y = (gui_h * 0.5) - (btn_h*1.5 + btn_gap); // stack centered vertically
+var col_x = (gui_w - btn_w) * 0.5;
+var col_y = (gui_h * 0.5) - (btn_h*1.5 + btn_gap);
 
 buttons = [
     {x:col_x, y:col_y + 0*(btn_h+btn_gap), w:btn_w, h:btn_h, label:"Load Game", kind:"load"},
@@ -55,6 +55,8 @@ cy_text = gui_h * 0.5;
 
 // ---- helpers ----
 function _hit(r, mx, my){ return (mx>=r.x)&&(my>=r.y)&&(mx<r.x+r.w)&&(my<r.y+r.h); }
+
+// Advance the active narration; destination depends on which narration state we’re in.
 function _advance(){
     if (!done_line){
         visible_chars = string_length(lines[line_index]);
@@ -62,9 +64,26 @@ function _advance(){
     } else {
         line_index++;
         if (line_index >= array_length(lines)) {
-            room_goto(Login);  // keep your proper Login room
+            if (state == "narr1") {
+                // After Narration 1, go to your friend's page
+                room_goto(room_Desk_View);
+            } else if (state == "narr2") {
+                // After Narration 2, go to Login
+                room_goto(Login);
+            }
         } else {
-            visible_chars = 0; done_line = false;
+            visible_chars = 0; 
+            done_line = false;
         }
     }
+}
+
+// ---- queued narration trigger from other rooms ----
+// If someone set a queued narration, consume it now.
+if (variable_global_exists("_queued_narr_lines") && variable_global_exists("_queued_narr_state")) {
+    lines = global._queued_narr_lines;
+    line_index = 0; visible_chars = 0; done_line = false;
+    state = global._queued_narr_state;    // "narr1" or "narr2"
+    variable_global_remove("_queued_narr_lines");
+    variable_global_remove("_queued_narr_state");
 }

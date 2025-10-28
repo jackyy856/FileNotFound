@@ -33,6 +33,7 @@ case "load":
             var sl = slots[s];
             if (_hit(sl, mx, my)) {
                 global.save_slot = sl.idx;
+                // reuse narr1 flow, then to room_Desk_View
                 lines = [
                     "You've just come home from a long day as head of financial management at Rosenwood Corporation.",
                     "...but the achiever in you is itching to check your inbox for the 76th time today."
@@ -70,11 +71,14 @@ case "settings":
     }
 break;
 
+// narr1 and narr2 behave the same in Step; only their exit differs (handled in _advance)
 case "narr1":
+case "narr2":
     if (!done_line) {
         visible_chars += type_speed;
         if (visible_chars >= string_length(lines[line_index])) {
-            visible_chars = string_length(lines[line_index]); done_line = true;
+            visible_chars = string_length(lines[line_index]); 
+            done_line = true;
         }
     }
     if (mouse_check_button_pressed(mb_left) || keyboard_check_pressed(vk_enter) || keyboard_check_pressed(vk_space)) {

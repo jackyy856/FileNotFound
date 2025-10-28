@@ -1,8 +1,8 @@
 draw_set_halign(fa_left); 
 draw_set_valign(fa_top);
 
-// narration fills full window
-if (state == "narr1") {
+// narration fills full window (works for narr1 and narr2)
+if (state == "narr1" || state == "narr2") {
     var gw = display_get_gui_width(), gh = display_get_gui_height();
     draw_set_color(c_black); draw_rectangle(0,0,gw,gh,false);
 
@@ -94,6 +94,6 @@ case "settings":
     draw_set_color(make_color_rgb(230,230,230));
     draw_roundrect(bb.x, bb.y, bb.x+bb.w, bb.y+bb.h, false);
     draw_set_color(c_black);
-    draw_text(bb.x + 18, bb.y + 12, bb.label);
+    draw_text(bb.x + 18, bb.y + 12, b.label);
 break;
 }
