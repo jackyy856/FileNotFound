@@ -1,22 +1,19 @@
 {
   "$GMObject":"",
-  "%Name":"obj_GalleryApp",
+  "%Name":"Obj_text",
   "eventList":[
     {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":0,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
     {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":3,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
-    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":64,"eventType":8,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
+    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":8,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
   ],
   "managed":true,
-  "name":"obj_GalleryApp",
+  "name":"Obj_text",
   "overriddenProperties":[],
   "parent":{
-    "name":"Gallery",
-    "path":"folders/Objects/Apps/Gallery.yy",
+    "name":"Login",
+    "path":"folders/Objects/Desktop/Login.yy",
   },
-  "parentObjectId":{
-    "name":"obj_AppBase",
-    "path":"objects/obj_AppBase/obj_AppBase.yy",
-  },
+  "parentObjectId":null,
   "persistent":false,
   "physicsAngularDamping":0.1,
   "physicsDensity":0.5,

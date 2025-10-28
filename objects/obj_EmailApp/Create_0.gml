@@ -1,4 +1,5 @@
 // layout
+//testing commit 
 event_inherited();   // gets base geometry and state
 title = "Mail";     // window title
 script_execute(_recalc); // update rects after changing size
