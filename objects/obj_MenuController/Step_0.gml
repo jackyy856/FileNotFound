@@ -33,7 +33,7 @@ case "load":
             var sl = slots[s];
             if (_hit(sl, mx, my)) {
                 global.save_slot = sl.idx;
-                // reuse narr1 flow, then to room_Desk_View
+                // Reuse Narration 1 flow, then to room_Desk_View
                 lines = [
                     "You've just come home from a long day as head of financial management at Rosenwood Corporation.",
                     "...but the achiever in you is itching to check your inbox for the 76th time today."

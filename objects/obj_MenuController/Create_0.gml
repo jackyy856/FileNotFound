@@ -65,11 +65,9 @@ function _advance(){
         line_index++;
         if (line_index >= array_length(lines)) {
             if (state == "narr1") {
-                // After Narration 1, go to your friend's page
-                room_goto(room_Desk_View);
+                room_goto(room_Desk_View);  // After Narration 1
             } else if (state == "narr2") {
-                // After Narration 2, go to Login
-                room_goto(Login);
+                room_goto(Login);           // After Narration 2
             }
         } else {
             visible_chars = 0; 
@@ -84,6 +82,8 @@ if (variable_global_exists("_queued_narr_lines") && variable_global_exists("_que
     lines = global._queued_narr_lines;
     line_index = 0; visible_chars = 0; done_line = false;
     state = global._queued_narr_state;    // "narr1" or "narr2"
-    variable_global_remove("_queued_narr_lines");
-    variable_global_remove("_queued_narr_state");
+
+    // "Remove" by nulling; check with is_undefined later if needed.
+    global._queued_narr_lines = undefined;
+    global._queued_narr_state = undefined;
 }

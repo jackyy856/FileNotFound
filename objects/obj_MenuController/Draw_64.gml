@@ -94,6 +94,6 @@ case "settings":
     draw_set_color(make_color_rgb(230,230,230));
     draw_roundrect(bb.x, bb.y, bb.x+bb.w, bb.y+bb.h, false);
     draw_set_color(c_black);
-    draw_text(bb.x + 18, bb.y + 12, b.label);
+    draw_text(bb.x + 18, bb.y + 12, bb.label); // fixed: bb.label, not b.label
 break;
 }
