@@ -12,10 +12,7 @@
     {"name":"Recycle Bin","order":9,"path":"folders/Objects/Apps/Recycle Bin.yy",},
     {"name":"StickyNote","order":10,"path":"folders/Objects/Apps/StickyNote.yy",},
     {"name":"Desktop","order":5,"path":"folders/Objects/Desktop.yy",},
-<<<<<<< Updated upstream
-=======
     {"name":"DeskView","order":1,"path":"folders/Objects/Desktop/DeskView.yy",},
->>>>>>> Stashed changes
     {"name":"Particle Systems","order":15,"path":"folders/Particle Systems.yy",},
     {"name":"Paths","order":4,"path":"folders/Paths.yy",},
     {"name":"Rooms","order":10,"path":"folders/Rooms.yy",},
@@ -28,7 +25,7 @@
     {"name":"Desktop","order":4,"path":"folders/Sprites/Desktop.yy",},
     {"name":"PFPs","order":3,"path":"folders/Sprites/PFPs.yy",},
     {"name":"Tile Sets","order":2,"path":"folders/Tile Sets.yy",},
-    {"name":"Timelines","order":8,"path":"folders/Timelines.yy",},
+    {"name":"Timelines","order":8,"path":"folders/Timelines.yy",}
   ],
   "ResourceOrderSettings":[
     {"name":"obj_AppBase","order":4,"path":"objects/obj_AppBase/obj_AppBase.yy",},
@@ -39,13 +36,17 @@
     {"name":"obj_HackerMsgrApp","order":1,"path":"objects/obj_HackerMsgrApp/obj_HackerMsgrApp.yy",},
     {"name":"obj_RecycleBinApp","order":1,"path":"objects/obj_RecycleBinApp/obj_RecycleBinApp.yy",},
     {"name":"obj_StickyNoteApp","order":1,"path":"objects/obj_StickyNoteApp/obj_StickyNoteApp.yy",},
-<<<<<<< Updated upstream
-=======
+
     {"name":"Obj_text","order":2,"path":"objects/Obj_text/Obj_text.yy",},
     {"name":"Login","order":1,"path":"rooms/Login/Login.yy",},
-    {"name":"room_Desk_View","order":2,"path":"rooms/room_Desk_View/room_Desk_View.yy",},
+
+    {"name":"room_Black1","order":2,"path":"rooms/room_Black1/room_Black1.yy",},
+    {"name":"room_Black2","order":3,"path":"rooms/room_Black2/room_Black2.yy",},
+    {"name":"room_Desk_View","order":4,"path":"rooms/room_Desk_View/room_Desk_View.yy",},
+    {"name":"room_Menu","order":1,"path":"rooms/room_Menu/room_Menu.yy",},
+
     {"name":"loginbg","order":1,"path":"sprites/loginbg/loginbg.yy",},
->>>>>>> Stashed changes
+
     {"name":"spr_coworkerPFP2","order":1,"path":"sprites/spr_coworkerPFP2/spr_coworkerPFP2.yy",},
     {"name":"spr_coworkerPFP3","order":2,"path":"sprites/spr_coworkerPFP3/spr_coworkerPFP3.yy",},
     {"name":"spr_coworkerPFP4","order":3,"path":"sprites/spr_coworkerPFP4/spr_coworkerPFP4.yy",},
@@ -56,6 +57,6 @@
     {"name":"spr_FilesIcon","order":2,"path":"sprites/spr_FilesIcon/spr_FilesIcon.yy",},
     {"name":"spr_GalleryIcon","order":5,"path":"sprites/spr_GalleryIcon/spr_GalleryIcon.yy",},
     {"name":"spr_RecycleBinIcon","order":4,"path":"sprites/spr_RecycleBinIcon/spr_RecycleBinIcon.yy",},
-    {"name":"spr_StickyNoteIcon","order":6,"path":"sprites/spr_StickyNoteIcon/spr_StickyNoteIcon.yy",},
-  ],
+    {"name":"spr_StickyNoteIcon","order":6,"path":"sprites/spr_StickyNoteIcon/spr_StickyNoteIcon.yy",}
+  ]
 }
