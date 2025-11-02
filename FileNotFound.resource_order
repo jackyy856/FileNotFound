@@ -46,8 +46,6 @@
     {"name":"room_Menu","order":1,"path":"rooms/room_Menu/room_Menu.yy",},
     {"name":"Obj_text","order":2,"path":"objects/Obj_text/Obj_text.yy",},
     {"name":"Login","order":1,"path":"rooms/Login/Login.yy",},
-<<<<<<< Updated upstream
-=======
     {"name":"room_Black1","order":2,"path":"rooms/room_Black1/room_Black1.yy",},
     {"name":"room_Black2","order":3,"path":"rooms/room_Black2/room_Black2.yy",},
     {"name":"room_DeskView","order":4,"path":"rooms/room_DeskView/room_DeskView.yy",},
@@ -61,7 +59,6 @@
     {"name":"Image7","order":6,"path":"sprites/Image7/Image7.yy",},
     {"name":"Image8","order":7,"path":"sprites/Image8/Image8.yy",},
     {"name":"Image9","order":8,"path":"sprites/Image9/Image9.yy",},
->>>>>>> Stashed changes
     {"name":"loginbg","order":1,"path":"sprites/loginbg/loginbg.yy",},
     {"name":"spr_coworkerPFP2","order":1,"path":"sprites/spr_coworkerPFP2/spr_coworkerPFP2.yy",},
     {"name":"spr_coworkerPFP3","order":2,"path":"sprites/spr_coworkerPFP3/spr_coworkerPFP3.yy",},
@@ -71,5 +68,11 @@
     {"name":"spr_GalleryIcon","order":5,"path":"sprites/spr_GalleryIcon/spr_GalleryIcon.yy",},
     {"name":"spr_RecycleBinIcon","order":4,"path":"sprites/spr_RecycleBinIcon/spr_RecycleBinIcon.yy",},
     {"name":"spr_StickyNoteIcon","order":6,"path":"sprites/spr_StickyNoteIcon/spr_StickyNoteIcon.yy",},
+    {"name":"Desk_View","order":1,"path":"folders/Objects/Desktop/Desk_View.yy",},
+  ],
+  "ResourceOrderSettings":[
+    {"name":"spr_desk_bg","order":1,"path":"sprites/spr_desk_bg/spr_desk_bg.yy",},
+    {"name":"spr_email_list","order":2,"path":"sprites/spr_email_list/spr_email_list.yy",},
+    {"name":"spr_email_open","order":3,"path":"sprites/spr_email_open/spr_email_open.yy",},
   ],
 }
