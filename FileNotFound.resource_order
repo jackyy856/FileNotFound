@@ -13,7 +13,7 @@
     {"name":"Recycle Bin","order":9,"path":"folders/Objects/Apps/Recycle Bin.yy"},
     {"name":"StickyNote","order":10,"path":"folders/Objects/Apps/StickyNote.yy"},
     {"name":"Desktop","order":5,"path":"folders/Objects/Desktop.yy"},
-    {"name":"DeskView","order":1,"path":"folders/Objects/Desktop/DeskView.yy"},
+    {"name":"Desk_View","order":1,"path":"folders/Objects/Desktop/Desk_View.yy"},
     {"name":"Login","order":2,"path":"folders/Objects/Desktop/Login.yy"},
     {"name":"Particle Systems","order":15,"path":"folders/Particle Systems.yy"},
     {"name":"Paths","order":4,"path":"folders/Paths.yy"},
@@ -43,7 +43,7 @@
 
     {"name":"room_Black1","order":2,"path":"rooms/room_Black1/room_Black1.yy"},
     {"name":"room_Black2","order":3,"path":"rooms/room_Black2/room_Black2.yy"},
-    {"name":"room_DeskView","order":4,"path":"rooms/room_DeskView/room_DeskView.yy"},
+    {"name":"room_Desk_View","order":4,"path":"rooms/room_Desk_View/room_Desk_View.yy"},
     {"name":"room_Menu","order":1,"path":"rooms/room_Menu/room_Menu.yy"},
     {"name":"Obj_text","order":2,"path":"objects/Obj_text/Obj_text.yy"},
     {"name":"Login","order":1,"path":"rooms/Login/Login.yy"},
