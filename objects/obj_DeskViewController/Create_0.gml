@@ -2,21 +2,19 @@
 /// Purpose:
 ///   Drives the “Desk View → Email List → Email Open” flow using 1920×1080 PNGs,
 ///   with transparent hotspot rectangles overlaid on the art.
-/// Hotkeys:
-///   D   = toggle debug overlay (blue monitor + green hotspots)
-///   F1  = edit monitor viewport (blue) with Arrows (move) + Shift+W/A/S/D (resize)
-///   F2  = edit currently selected hotspot (green) with Arrows + Shift+W/A/S/D
-///   1..5= manual capture of a single hotspot by clicking TL then BR
-///   F3  = guided capture (runs Email Icon → Subject → Link → Back → X)
-///   F5  = save hotspots/monitor to INI
-///   F6  = load hotspots/monitor from INI
-///   F7  = reset to defaults (does not save automatically)
+/// Key hotkeys:
+///   D  = toggle debug overlay (blue monitor + green hotspots)
+///   F1 = edit monitor viewport (blue) with Arrows (move) + Shift+W/A/S/D (resize)
+///   F2 = edit currently selected hotspot (green) with Arrows + Shift+W/A/S/D
+///   1..5 = capture a single hotspot by clicking TL then BR
+///   F3 = guided capture (runs Email Icon → Subject → Link → Back → X)
+///   F5/F6/F7 = save / load / reset hotspots to INI
 
 // ---------------------------- State machine ----------------------------
 enum DeskState { DESK, EMAIL_LIST, EMAIL_OPEN }
 state = DeskState.DESK;
 
-// Match GUI to room pixels (and the 1920×1080 images)
+// GUI matches room pixels (and the 1920×1080 images)
 display_set_gui_size(room_width, room_height);
 
 // ---------------------------- Art references ----------------------------
@@ -46,13 +44,12 @@ ICON_GAP     = 36;
 ICON_EMAIL_INDEX = 2; // which icon row contains the Email app
 
 // Email List row and Email Open link geometry (relative to email window)
-ROW_TOP_OFF     = 28;
-ROW_H           = 42;
+ROW_TOP_OFF    = 28;
+ROW_H          = 42;
 PHISH_ROW_INDEX = 2;  // row index of “Congratulations!” subject line
 
 // Titlebar button offsets relative to email window (hotspots are on the art)
-// (Back only used on EMAIL_OPEN image. Email List has no Back in the art.)
-BACK_OFF   = [  8,  6,  96, 30 ];
+BACK_OFF   = [  8,  6,  96, 30 ];  // only used on EMAIL_OPEN
 CLOSEX_OFF = [ -26, 6,  20, 20 ];  // -26 => (winRight - 26)
 
 // ---------------------------- Derived rects from monitor ----------------------------
@@ -85,7 +82,7 @@ _recalc_layout();
 edit_monitor = false; // F1
 show_dev     = false; // D
 
-// Minimal prompt (bottom bar)
+// Minimal prompt (bottom bar). Keep it unobtrusive.
 dialog_text  = "";
 dialog_timer = 0;
 DIALOG_TIME  = room_speed * 2;
@@ -225,9 +222,9 @@ _load_layout();
 
 // ---------------------------- Guided capture (F3) ----------------------------
 // Capture order: Email icon (Desk) → Subject (List) → Link (Open) → Back (Open) → X (Open)
-guided_mode       = false;
-guided_ids        = [1, 4, 5, 2, 3];
-guided_idx        = 0;
+guided_mode      = false;
+guided_ids       = [1, 4, 5, 2, 3];
+guided_idx       = 0;
 capture_completed = false;
 
 function _name_for(id) {

@@ -1,14 +1,14 @@
 /// obj_DeskViewController – Draw GUI
 /// Renders current background art and (optionally) debug overlays + prompt bar.
 
-// ---- Current background (1920×1080 art) ----
+// Current background
 var spr_id = -1;
 if (state == DeskState.DESK)       spr_id = sprDesk;
 if (state == DeskState.EMAIL_LIST) spr_id = sprEmailList;
 if (state == DeskState.EMAIL_OPEN) spr_id = sprEmailOpen;
 if (spr_id != -1) draw_sprite_stretched(spr_id, 0, 0, 0, 1920, 1080);
 
-// ---- Prompt bar (bottom) ----
+// Prompt bar (bottom)
 if (dialog_timer > 0 && dialog_text != "") {
     var m = 24, bar_h = 92;
     var y1 = 1080 - bar_h - m, y2 = 1080 - m;
@@ -39,16 +39,13 @@ if (show_dev) {
     var rects;
     switch (state) {
         case DeskState.DESK:
-            rects = [ BTN_EMAIL_ICON ];
+            rects = [BTN_EMAIL_ICON];
         break;
-
         case DeskState.EMAIL_LIST:
-            // No Back button on Email List art.
-            rects = [ BTN_PHISH_SUBJ, BTN_CLOSEX ];
+            rects = [BTN_PHISH_SUBJ, BTN_CLOSEX]; // Back not on this PNG
         break;
-
         case DeskState.EMAIL_OPEN:
-            rects = [ BTN_PHISH_LINK, BTN_BACK, BTN_CLOSEX ];
+            rects = [BTN_PHISH_LINK, BTN_BACK, BTN_CLOSEX];
         break;
     }
 
@@ -60,7 +57,7 @@ if (show_dev) {
     draw_set_alpha(1);
 }
 
-// ---- Hotspot edit overlay (F2) ----
+// Hotspot edit overlay (F2)
 if (edit_hotspot) {
     var label = "HOTSPOT EDIT: F2 exit | 1..5 select | Arrows move | Shift+W/A/S/D resize | Editing: " + string(selected_hotspot);
     draw_set_color(c_black); draw_text(12, 92, label);

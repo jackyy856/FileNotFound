@@ -17,5 +17,8 @@ if (!instance_exists(app_obj))
 } 
 else 
 {
-    with (app_obj) window_focus = true; // focus behavior
+    with (app_obj) {
+		window_focus = true; // focus behavior
+		open_gallery();
+	}
 }
