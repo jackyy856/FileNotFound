@@ -22,17 +22,18 @@ if (dialog_timer > 0 && dialog_text != "") {
     draw_rectangle(m, y1, 1920-m, y1+3, false);
 
     draw_set_color(c_white);
-    draw_set_halign(fa_left); draw_set_valign(fa_top);
+    draw_set_halign(fa_left);
+    draw_set_valign(fa_top);
     draw_text_ext(m+24, y1+22, dialog_text, 16, 1840);
 }
 
-// Debug overlay (D): monitor (blue) + hotspots (green)
+// ---- Debug overlay (D): monitor (blue) + hotspots (green) ----
 if (show_dev) {
     draw_set_alpha(0.28);
 
     // Monitor viewport
     draw_set_color(c_aqua);
-    draw_rectangle(MON_X, MON_Y, MON_X+MON_W, MON_Y+MON_H, false);
+    draw_rectangle(MON_X, MON_Y, MON_X + MON_W, MON_Y + MON_H, false);
 
     // State-specific hotspots
     var rects;
@@ -51,7 +52,7 @@ if (show_dev) {
     draw_set_color(c_lime);
     for (var i = 0; i < array_length(rects); i++) {
         var r = rects[i];
-        draw_rectangle(r[0], r[1], r[0]+r[2], r[1]+r[3], false);
+        draw_rectangle(r[0], r[1], r[0] + r[2], r[1] + r[3], false);
     }
     draw_set_alpha(1);
 }
@@ -66,13 +67,13 @@ if (edit_hotspot) {
     var rr = _get_rect(selected_hotspot);
     draw_set_alpha(0.6);
     draw_set_color(c_yellow);
-    draw_rectangle(rr[0], rr[1], rr[0]+rr[2], rr[1]+rr[3], false);
+    draw_rectangle(rr[0], rr[1], rr[0] + rr[2], rr[1] + rr[3], false);
     draw_set_alpha(1);
 }
 
-// Guided overlay (F3)
+// ---- Guided overlay (F3) ----
 if (guided_mode) {
-    var lbl = "GUIDED RUN: Click TL then BR for " + _name_for(guided_ids[guided_idx]) + "  •  F5 to save when done";
+    var lbl = "GUIDED RUN: Click TL then BR for " + _name_for(guided_ids[guided_idx]) + "  •  Press F5 to save when done";
     draw_set_color(c_black); draw_text(12, 112, lbl);
     draw_set_color(c_aqua);  draw_text(10, 110, lbl);
 }
