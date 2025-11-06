@@ -3,6 +3,7 @@
     {"name":"Desk_View","order":1,"path":"folders/Objects/Desktop/Desk_View.yy",},
   ],
   "ResourceOrderSettings":[
+    {"name":"obj_EscapeMenu","order":1,"path":"objects/obj_EscapeMenu/obj_EscapeMenu.yy",},
     {"name":"spr_desk_bg","order":1,"path":"sprites/spr_desk_bg/spr_desk_bg.yy",},
     {"name":"spr_email_list","order":2,"path":"sprites/spr_email_list/spr_email_list.yy",},
     {"name":"spr_email_open","order":3,"path":"sprites/spr_email_open/spr_email_open.yy",},

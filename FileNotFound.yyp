@@ -2,7 +2,7 @@
   "$GMProject":"v1",
   "%Name":"FileNotFound",
   "AudioGroups":[
-    {"$GMAudioGroup":"","%Name":"audiogroup_default","name":"audiogroup_default","resourceType":"GMAudioGroup","resourceVersion":"2.0","targets":-1,},
+    {"$GMAudioGroup":"v1","%Name":"audiogroup_default","exportDir":"","name":"audiogroup_default","resourceType":"GMAudioGroup","resourceVersion":"2.0","targets":-1,},
   ],
   "configs":{
     "children":[],
@@ -59,6 +59,7 @@
     {"id":{"name":"obj_DeskViewController","path":"objects/obj_DeskViewController/obj_DeskViewController.yy",},},
     {"id":{"name":"obj_EmailApp","path":"objects/obj_EmailApp/obj_EmailApp.yy",},},
     {"id":{"name":"obj_EmailIcon","path":"objects/obj_EmailIcon/obj_EmailIcon.yy",},},
+    {"id":{"name":"obj_EscapeMenu","path":"objects/obj_EscapeMenu/obj_EscapeMenu.yy",},},
     {"id":{"name":"obj_FilesApp","path":"objects/obj_FilesApp/obj_FilesApp.yy",},},
     {"id":{"name":"obj_FilesIcon","path":"objects/obj_FilesIcon/obj_FilesIcon.yy",},},
     {"id":{"name":"obj_GalleryApp","path":"objects/obj_GalleryApp/obj_GalleryApp.yy",},},
