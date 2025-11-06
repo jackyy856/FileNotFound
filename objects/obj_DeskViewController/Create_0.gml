@@ -239,9 +239,13 @@ function _name_for(id) {
 }
 
 function _set_screen_for(id) {
-    if (id == 1) state = DeskState.DESK;
-    else if (id == 4) state = DeskState.EMAIL_LIST;
-    else state = DeskState.EMAIL_OPEN;
+    if (id == 1) {
+        state = DeskState.DESK;
+    } else if (id == 4) {
+        state = DeskState.EMAIL_LIST;
+    } else {
+        state = DeskState.EMAIL_OPEN;
+    }
 }
 
 function _guided_begin() {
