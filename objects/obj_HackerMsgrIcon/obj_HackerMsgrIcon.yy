@@ -32,8 +32,8 @@
   "resourceVersion":"2.0",
   "solid":false,
   "spriteId":{
-    "name":"spr_HackerMsgrIcon1",
-    "path":"sprites/spr_HackerMsgrIcon1/spr_HackerMsgrIcon1.yy",
+    "name":"spr_HackerMsgrIcon",
+    "path":"sprites/spr_HackerMsgrIcon/spr_HackerMsgrIcon.yy",
   },
   "spriteMaskId":null,
   "visible":true,
