@@ -1,44 +1,37 @@
 // layout
-//testing commit 
 event_inherited();   // gets base geometry and state
-title = "Mail";     // window title
-script_execute(_recalc); // update rects after changing size
+title = "Mail";      // window title
+
+// Base window geom (absolute GUI)
 window_w = 1700;
 window_h = 900;
-window_x = 90;   //x position (left edge) of window
-window_y = 90;   //y position (top edge) of window
+window_x = 90;
+window_y = 90;
 
 header_h = 55;   //header height
 row_h    = 36;   //inbox row height
-list_top = window_y + header_h + 8;  //y start of inbox list; below header
-list_left= window_x + 16;            //x start of inbox list
-list_w   = window_w - 32;            //inbox list width
-list_h   = window_h - header_h - 24; //inbox list height
+
+// derived rects (recomputed on move)
+function _recalc_email_layout() {
+    list_top  = window_y + header_h + 8;
+    list_left = window_x + 16;
+    list_w    = window_w - 32;
+    list_h    = window_h - header_h - 24;
+
+    close_btn = [window_x + window_w - 36, window_y + 12, 24, 24];
+    back_btn  = [window_x + 12,            window_y + 40, 64, 24];
+}
+_recalc_email_layout();
+
+// ---- window dragging state (titlebar drag like Sticky) ----
+window_dragging = false;
+window_drag_dx = 0;
+window_drag_dy = 0;
 
 // state
 selected_index = -1;      //-1 = inbox view; 0... = full email view
 
-// button 
-close_btn = [window_x + window_w - 36, window_y + 12, 24, 24]; 
-back_btn  = [window_x + 12,            window_y + 40, 64, 24]; 
-
-// --- NEW: minimize button next to X ---
-min_btn   = [window_x + window_w - 66, window_y + 12, 24, 24];
-is_minimized = false;
-
-// --- NEW: window move/drag + cursor + click shield ---
-dragging = false; drag_dx = 0; drag_dy = 0;
-drag_border = 12; // draggable frame width (all sides)
-function _in_win(px,py){ return (px>=window_x)&&(py>=window_y)&&(px<window_x+window_w)&&(py<window_y+window_h); }
-function _on_drag_border(px,py){
-    var l = (abs(px - window_x) <= drag_border);
-    var r = (abs(px - (window_x + window_w)) <= drag_border);
-    var t = (abs(py - window_y) <= drag_border);
-    var b = (abs(py - (window_y + window_h)) <= drag_border);
-    return l || r || t || b;
-}
-
-// fonts (figure out font assets
+// fonts (figure out font assets)
 var fTitle = asset_get_index("f_mail_title");
 var fBody  = asset_get_index("f_mail_body");
 font_title = (fTitle != -1) ? fTitle : -1; // -1 = default font
@@ -63,11 +56,10 @@ inbox = [
 ];
 
 /// --- Email Puzzle ---
-/// Gate: flip this when the story reaches post-prologue
-puzzle_gate = true; // TODO: wire to your real story flag, e.g., global.after_prologue
+puzzle_gate = true; // TODO: wire to your real story flag
 
-// Add a corrupted email entry (kept unread; has custom flag)
-var _len = array_length(inbox); // _len is to avoid confusion with len in Draw GUI
+// Add a corrupted email entry
+var _len = array_length(inbox);
 inbox[_len] = {
     id           : 4,
     from         : "System",
@@ -80,94 +72,75 @@ inbox[_len] = {
 corrupted_index = _len;
 
 // ------- Flexible puzzle definition --------
-// Change only this to alter solution text:
 puzzle_target = ["Recover", "your", "password"];
+puzzle_words  = ["your","where","find","Steal","Recover","I","for","password","Ground","down"];
 
-// Pool of 10 buttons (case sensitive, per spec)
-puzzle_words = [
-    "your","where","find","Steal","Recover","I","for","password","Ground","down"
-];
-
-// Layout: puzzle area and word button grid
-puzzle_active  = false;   // becomes true when the corrupted email is opened
-puzzle_solved  = false;
-puzzle_scattered = false;
-puzzle_message = "";      // for modal text after solve
-ok_btn = [0,0,120,36];    // set later when we draw modal
-
-// Puzzle area rectangle (centerish)
-puzzle_area = {
-    x : window_x + 140,
-    y : window_y + 320,
-    w : window_w - 280,
-    h : 160
-};
-
-// Build word buttons (two rows, bottom section)
-word_btn_w = 150;
-word_btn_h = 34;
-var cols   = 5;
-word_gap   = 10;
-
-// --- Binary rain (Matrix-style) visual state ---
-bin_cell   = 14;
-bin_speed  = 1.2;
-bin_scroll = 0;
-bin_area = {
-    x : window_x + 12,
-    y : window_y + header_h + 8,
+// ---- LOCAL GEOMETRY (relative to window_x, window_y) ----
+bin_area_local = {
+    x : 12,
+    y : header_h + 8,
     w : window_w - 24,
     h : window_h - header_h - 80
 };
 
-// Bottom margin region for buttons
-var btn_left = window_x + 40;
-var btn_top  = window_y + window_h - (word_btn_h*2 + word_gap + 40);
+// Puzzle target area (LOCAL; center-bottom)
+puzzle_area_local = {
+    x : 140,
+    y : 320,
+    w : window_w - 280,
+    h : 160
+};
 
+// Word tile sizing + centered 2-row layout inside binary-rain bottom area
+word_btn_w = 150;
+word_btn_h = 34;
+var cols   = 5;
+var gap    = 10;
+
+// Compute two rows centered at the bottom of bin_area
+var total_w = cols * word_btn_w + (cols - 1) * gap;
+var start_x = bin_area_local.x + floor((bin_area_local.w - total_w) * 0.5);
+
+// place rows ~24px above bottom padding
+var row0_y = bin_area_local.y + bin_area_local.h - (2 * word_btn_h + gap + 24);
+var row1_y = row0_y + word_btn_h + gap;
+
+// guard row y inside window
+row0_y = max(row0_y, header_h + 80);
+row1_y = row0_y + word_btn_h + gap;
+
+// Build LOCAL word buttons in two rows (0..4 top row, 5..9 bottom row)
 word_btns = [];
 for (var i = 0; i < array_length(puzzle_words); i++) {
-    var r = i div cols;
-    var c = i mod cols;
-
-    var bx = btn_left + c * (word_btn_w + word_gap);
-	var by = btn_top  + r * (word_btn_h + word_gap);
+    var r = (i < cols) ? 0 : 1;
+    var c = (i < cols) ? i : (i - cols);
+    var bx = start_x + c * (word_btn_w + gap);
+    var by = (r == 0) ? row0_y : row1_y;
 
     word_btns[i] = {
         text     : puzzle_words[i],
-        x        : bx,  y : by,
-        ox       : bx,  oy: by,   // original
+        x        : bx,  y : by,     // LOCAL coords
+        ox       : bx,  oy: by,     // LOCAL spawn
         w        : word_btn_w, h: word_btn_h,
         dragging : false,
-        dx       : 0, dy: 0,
+        dx       : 0, dy: 0,        // LOCAL drag offset
         placed   : false
     };
 }
 
-// --- NEW: centralized recalc when window moves ---
-function _recalc_email_layout() {
-    list_top = window_y + header_h + 8;
-    list_left= window_x + 16;
-    list_w   = window_w - 32;
-    list_h   = window_h - header_h - 24;
+// Binary rain
+bin_cell   = 14;
+bin_speed  = 1.2;
+bin_scroll = 0;
 
-    close_btn[0] = window_x + window_w - 36; close_btn[1] = window_y + 12;
-    min_btn[0]   = window_x + window_w - 66; min_btn[1]   = window_y + 12;
-    back_btn[0]  = window_x + 12;            back_btn[1]  = window_y + 40;
+// Puzzle state
+puzzle_active    = false;
+puzzle_solved    = false;
+puzzle_scattered = true; // we ALREADY placed nicely; skip random scatter
+puzzle_message   = "";
+ok_btn_local     = [0,0,120,36];
 
-    bin_area.x = window_x + 12;
-    bin_area.y = window_y + header_h + 8;
-    bin_area.w = window_w - 24;
-    bin_area.h = window_h - header_h - 80;
-
-    puzzle_area.x = window_x + 140;
-    puzzle_area.y = window_y + 320;
-    puzzle_area.w = window_w - 280;
-
-    var btn_left2 = window_x + 40;
-    var btn_top2  = window_y + window_h - (word_btn_h*2 + word_gap + 40);
-    // keep scattered tiles where they are; just update their "snap-back" baseline proportionally
-    // (we don't change ox/oy here to preserve puzzle placements)
-}
-
-// initial cursor
-window_set_cursor(cr_default);
+// click-through claim helpers
+if (!variable_global_exists("_ui_click_consumed")) global._ui_click_consumed = false;
+__ui_click_inside = false;
+__ui_first_frame_block = 1; // avoid opener click falling through this frame
