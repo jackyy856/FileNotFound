@@ -33,6 +33,7 @@
     {"name":"PFPs","order":3,"path":"folders/Sprites/PFPs.yy",},
     {"name":"Tile Sets","order":2,"path":"folders/Tile Sets.yy",},
     {"name":"Timelines","order":8,"path":"folders/Timelines.yy",},
+    {"name":"Taskbar","order":2,"path":"folders/Objects/Taskbar.yy",},
   ],
   "ResourceOrderSettings":[
     {"name":"Login_username","order":1,"path":"fonts/Login_username/Login_username.yy",},
