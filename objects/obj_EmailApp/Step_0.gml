@@ -1,3 +1,20 @@
+/// --- CLICK-THROUGH GUARD (header, do not clear mouse here) ---
+if (!variable_global_exists("_ui_click_consumed")) global._ui_click_consumed = false;
+if (!variable_instance_exists(id, "__ui_click_inside")) __ui_click_inside = false;
+
+var _mx = device_mouse_x_to_gui(0);
+var _my = device_mouse_y_to_gui(0);
+var _wx = window_x, _wy = window_y, _ww = window_w, _wh = window_h;
+
+if (mouse_check_button_pressed(mb_left)) {
+    if (_mx >= _wx && _my >= _wy && _mx < _wx + _ww && _my < _wy + _wh) {
+        // Remember that this frame started with a click inside our window.
+        // We’ll actually mark it as “consumed” in End Step, AFTER our own UI has used it.
+        __ui_click_inside = true;
+    }
+}
+
+
 // --- mouse in GUI space ---
 var mx = device_mouse_x_to_gui(0);
 var my = device_mouse_y_to_gui(0);
