@@ -14,6 +14,7 @@
     {"name":"inst_7BAEF7C4","path":"rooms/room_Desktop/room_Desktop.yy",},
     {"name":"inst_74BDA6C8","path":"rooms/room_Desktop/room_Desktop.yy",},
     {"name":"inst_29112E79","path":"rooms/room_Desktop/room_Desktop.yy",},
+    {"name":"inst_4169BBB6","path":"rooms/room_Desktop/room_Desktop.yy",},
   ],
   "isDnd":false,
   "layers":[
