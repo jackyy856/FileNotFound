@@ -3,8 +3,8 @@
     {"name":"Animation Curves","order":12,"path":"folders/Animation Curves.yy",},
     {"name":"Extensions","order":14,"path":"folders/Extensions.yy",},
     {"name":"Fonts","order":7,"path":"folders/Fonts.yy",},
-    {"name":"Title Screen","order":4,"path":"folders/Fonts/Title Screen.yy",},
     {"name":"Login","order":3,"path":"folders/Fonts/Login.yy",},
+    {"name":"Title Screen","order":4,"path":"folders/Fonts/Title Screen.yy",},
     {"name":"Notes","order":13,"path":"folders/Notes.yy",},
     {"name":"Objects","order":9,"path":"folders/Objects.yy",},
     {"name":"Apps","order":2,"path":"folders/Objects/Apps.yy",},
@@ -76,7 +76,7 @@
     {"name":"spr_GalleryIcon","order":5,"path":"sprites/spr_GalleryIcon/spr_GalleryIcon.yy",},
     {"name":"spr_RecycleBinIcon","order":4,"path":"sprites/spr_RecycleBinIcon/spr_RecycleBinIcon.yy",},
     {"name":"spr_StickyNoteIcon","order":6,"path":"sprites/spr_StickyNoteIcon/spr_StickyNoteIcon.yy",},
+    {"name":"spr_taskbar","order":5,"path":"sprites/spr_taskbar/spr_taskbar.yy",},
     {"name":"spr_unhacked_desktop_bg","order":4,"path":"sprites/spr_unhacked_desktop_bg/spr_unhacked_desktop_bg.yy",},
-    {"name":"Sprite28","order":5,"path":"sprites/Sprite28/Sprite28.yy",},
   ],
 }
