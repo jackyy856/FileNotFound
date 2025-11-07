@@ -11,6 +11,12 @@ window_y = 90;
 header_h = 55;   //header height
 row_h    = 36;   //inbox row height
 
+// ---- window state ----
+window_dragging = false;
+window_drag_dx = 0;
+window_drag_dy = 0;
+is_minimized   = false;   // NEW: minimize like Sticky Note
+
 // derived rects (recomputed on move)
 function _recalc_email_layout() {
     list_top  = window_y + header_h + 8;
@@ -18,20 +24,17 @@ function _recalc_email_layout() {
     list_w    = window_w - 32;
     list_h    = window_h - header_h - 24;
 
-    close_btn = [window_x + window_w - 36, window_y + 12, 24, 24];
-    back_btn  = [window_x + 12,            window_y + 40, 64, 24];
+    // buttons
+    close_btn = [window_x + window_w - 36,  window_y + 12, 24, 24];
+    min_btn   = [window_x + window_w - 66,  window_y + 12, 24, 24]; // NEW: minimize
+    back_btn  = [window_x + 12,             window_y + 40, 64, 24];
 }
 _recalc_email_layout();
-
-// ---- window dragging state (titlebar drag like Sticky) ----
-window_dragging = false;
-window_drag_dx = 0;
-window_drag_dy = 0;
 
 // state
 selected_index = -1;      //-1 = inbox view; 0... = full email view
 
-// fonts (figure out font assets)
+// fonts
 var fTitle = asset_get_index("f_mail_title");
 var fBody  = asset_get_index("f_mail_body");
 font_title = (fTitle != -1) ? fTitle : -1; // -1 = default font
@@ -63,7 +66,7 @@ var _len = array_length(inbox);
 inbox[_len] = {
     id           : 4,
     from         : "System",
-    subject      : "[CORRUPTED] \u2588\u2592\u2591\u2592\u2588", // glitch blocks
+    subject      : "[CORRUPTED] \u2588\u2592\u2591\u2592\u2588",
     body         : "This email is corrupted. Recover it to reveal the Wi-Fi password.",
     read         : false,
     is_suspicious: false,
@@ -71,7 +74,7 @@ inbox[_len] = {
 };
 corrupted_index = _len;
 
-// ------- Flexible puzzle definition --------
+// Puzzle definition
 puzzle_target = ["Recover", "your", "password"];
 puzzle_words  = ["your","where","find","Steal","Recover","I","for","password","Ground","down"];
 
@@ -91,25 +94,20 @@ puzzle_area_local = {
     h : 160
 };
 
-// Word tile sizing + centered 2-row layout inside binary-rain bottom area
+// Word tile sizing + centered 2-row layout
 word_btn_w = 150;
 word_btn_h = 34;
 var cols   = 5;
 var gap    = 10;
 
-// Compute two rows centered at the bottom of bin_area
 var total_w = cols * word_btn_w + (cols - 1) * gap;
 var start_x = bin_area_local.x + floor((bin_area_local.w - total_w) * 0.5);
 
-// place rows ~24px above bottom padding
 var row0_y = bin_area_local.y + bin_area_local.h - (2 * word_btn_h + gap + 24);
 var row1_y = row0_y + word_btn_h + gap;
-
-// guard row y inside window
 row0_y = max(row0_y, header_h + 80);
 row1_y = row0_y + word_btn_h + gap;
 
-// Build LOCAL word buttons in two rows (0..4 top row, 5..9 bottom row)
 word_btns = [];
 for (var i = 0; i < array_length(puzzle_words); i++) {
     var r = (i < cols) ? 0 : 1;
@@ -123,7 +121,7 @@ for (var i = 0; i < array_length(puzzle_words); i++) {
         ox       : bx,  oy: by,     // LOCAL spawn
         w        : word_btn_w, h: word_btn_h,
         dragging : false,
-        dx       : 0, dy: 0,        // LOCAL drag offset
+        dx       : 0, dy: 0,
         placed   : false
     };
 }
@@ -136,11 +134,11 @@ bin_scroll = 0;
 // Puzzle state
 puzzle_active    = false;
 puzzle_solved    = false;
-puzzle_scattered = true; // we ALREADY placed nicely; skip random scatter
+puzzle_scattered = true; // keep neat rows
 puzzle_message   = "";
 ok_btn_local     = [0,0,120,36];
 
 // click-through claim helpers
 if (!variable_global_exists("_ui_click_consumed")) global._ui_click_consumed = false;
 __ui_click_inside = false;
-__ui_first_frame_block = 1; // avoid opener click falling through this frame
+__ui_first_frame_block = 1; // avoid opener click passing through
