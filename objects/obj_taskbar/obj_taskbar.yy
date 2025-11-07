@@ -28,8 +28,8 @@
   "resourceVersion":"2.0",
   "solid":false,
   "spriteId":{
-    "name":"Sprite28",
-    "path":"sprites/Sprite28/Sprite28.yy",
+    "name":"spr_taskbar",
+    "path":"sprites/spr_taskbar/spr_taskbar.yy",
   },
   "spriteMaskId":null,
   "visible":true,
