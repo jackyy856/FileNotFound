@@ -1,27 +1,31 @@
-/// obj_EscapeMenu — Draw GUI
+/// obj_EscapeMenu — Draw GUI End
 if (!active) exit;
 
 var GW = display_get_gui_width();
 var GH = display_get_gui_height();
 
+// Dim the world
 draw_set_alpha(0.62);
 draw_set_color(c_black);
 draw_rectangle(0,0,GW,GH,false);
 draw_set_alpha(1);
 
+// Foreground panel frame (full-screen card)
 draw_set_color(make_color_rgb(28,32,38));
 draw_roundrect(0, 0, GW, GH, false);
 
+// Headline
 draw_set_color(c_white);
 draw_set_halign(fa_left); draw_set_valign(fa_top);
 draw_text(32, 32, "Pause");
 
-// live hit test for hover
+// Helper using live mouse for hover states
 function _over(r) {
     var _mx = device_mouse_x_to_gui(0), _my = device_mouse_y_to_gui(0);
     return (_mx>=r.x)&&(_my>=r.y)&&(_mx<r.x+r.w)&&(_my<r.y+r.h);
 }
 
+// Root menu
 if (state == "root") {
     for (var i = 0; i < array_length(buttons_root); i++) {
         var b = buttons_root[i];
@@ -34,12 +38,14 @@ if (state == "root") {
     exit;
 }
 
+// Back button for all submenus
 var bb = btn_back;
 draw_set_color(make_color_rgb(230,230,230));
 draw_roundrect(bb.x, bb.y, bb.x+bb.w, bb.y+bb.h, false);
 draw_set_color(c_black);
 draw_text(bb.x + 18, bb.y + 12, bb.label);
 
+// Load/Save grids
 if (state == "submenu" && (submenu == "load" || submenu == "save")) {
     var title = (submenu == "load") ? "Load Game" : "Save Game";
     draw_set_color(c_white);
@@ -51,6 +57,7 @@ if (state == "submenu" && (submenu == "load" || submenu == "save")) {
         draw_set_color(over ? make_color_rgb(80,170,120) : make_color_rgb(230,230,230));
         draw_roundrect(sl.x, sl.y, sl.x+sl.w, sl.y+sl.h, false);
 
+        // slot content
         var meta = _slot_meta(sl.idx);
         draw_set_color(make_color_rgb(210,210,210));
         draw_roundrect(sl.x+22, sl.y+22, sl.x+sl.w-22, sl.y+138, false);
@@ -65,6 +72,7 @@ if (state == "submenu" && (submenu == "load" || submenu == "save")) {
     exit;
 }
 
+// Settings
 if (state == "submenu" && submenu == "settings") {
     draw_set_color(c_white);
     draw_text(32, 100, "Settings");
@@ -79,6 +87,7 @@ if (state == "submenu" && submenu == "settings") {
     exit;
 }
 
+// Confirm modal
 if (state == "confirm") {
     var W = 700, H = 220;
     var X = (GW - W)*0.5, Y = (GH - H)*0.5;
@@ -103,6 +112,7 @@ if (state == "confirm") {
     exit;
 }
 
+// Toast
 if (state == "toast") {
     var W2 = 520, H2 = 80;
     var X2 = (GW - W2)*0.5, Y2 = GH - H2 - 60;

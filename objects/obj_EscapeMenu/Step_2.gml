@@ -1,2 +1,3 @@
-// Hard swallow inputs so underlying UI doesn’t mis-click while overlay is open
-if (active) io_clear();
+/// obj_EscapeMenu — End Step (Step Event2)
+// Nothing to swallow here. We intentionally do not call io_clear or anything else.
+// Keeping this event defined but empty avoids the “Step Event2” crash you were seeing.
