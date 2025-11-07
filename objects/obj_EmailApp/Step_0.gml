@@ -7,10 +7,17 @@ function in_local(px, py, x, y, w, h) {
     return (px >= x) && (py >= y) && (px < x + w) && (py < y + h);
 }
 
-// mark if a press started inside our window (for click-through claim)
+// mark if a press started inside our active region
 if (mouse_check_button_pressed(mb_left)) {
-    if (mx >= window_x && my >= window_y && mx < window_x + window_w && my < window_y + window_h) {
-        __ui_click_inside = true;
+    // If minimized, only the title bar counts as "inside"
+    if (is_minimized) {
+        if (in_local(mx_local, my_local, 0, 0, window_w, header_h)) {
+            __ui_click_inside = true;
+        }
+    } else {
+        if (mx >= window_x && my >= window_y && mx < window_x + window_w && my < window_y + window_h) {
+            __ui_click_inside = true;
+        }
     }
 }
 
@@ -29,16 +36,30 @@ if (window_dragging) {
     window_x = mx - window_drag_dx;
     window_y = my - window_drag_dy;
     _recalc_email_layout();
-    // keep dragging flag until the button is released
     if (!mouse_check_button(mb_left)) window_dragging = false;
 }
 
-// ------------------ CLOSE BUTTON ------------------
+// ------------------ CLOSE / MINIMIZE ------------------
 if (mouse_check_button_pressed(mb_left)) {
+    // close (X)
     if (in_local(mx_local, my_local, close_btn[0]-window_x, close_btn[1]-window_y, close_btn[2], close_btn[3])) {
         instance_destroy();
         exit;
     }
+    // minimize (-)
+    if (in_local(mx_local, my_local, min_btn[0]-window_x, min_btn[1]-window_y, min_btn[2], min_btn[3])) {
+        is_minimized = !is_minimized;
+        // when minimized, we ignore content interactions but can still drag the title bar
+        exit;
+    }
+}
+
+// If minimized: do not process content UI below
+if (is_minimized) {
+    // advance binary rain lightly to keep animation coherent if you still draw it
+    bin_scroll += bin_speed;
+    if (bin_scroll >= bin_cell) bin_scroll -= bin_cell;
+    exit;
 }
 
 // ------------------ INBOX / MESSAGE NAV ------------------
@@ -61,7 +82,6 @@ if (selected_index == -1) {
 
             if (idx == corrupted_index) {
                 puzzle_active     = puzzle_gate && !puzzle_solved;
-                // we keep our nice 2-row layout; do not randomize
             }
         }
     }
@@ -70,7 +90,6 @@ if (selected_index == -1) {
         if (in_local(mx_local, my_local, back_btn[0]-window_x, back_btn[1]-window_y, back_btn[2], back_btn[3])) {
             selected_index    = -1;
             puzzle_active     = false;
-            // keep tiles where they were; no harm
         }
     }
 }
@@ -85,7 +104,7 @@ if (selected_index != -1) {
         if (mouse_check_button_pressed(mb_left)) {
             var bx = ok_btn_local[0], by = ok_btn_local[1], bw = ok_btn_local[2], bh = ok_btn_local[3];
             if (in_local(mx_local, my_local, bx, by, bw, bh)) {
-                // dismiss modal; stay on recovered email
+                // dismiss modal
             }
         }
         exit;
