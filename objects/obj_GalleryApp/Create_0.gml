@@ -14,7 +14,7 @@ files_width = window_w - 40;
 files_height = window_h - header_h - 40;
 
 // State
-gallery_open = false;
+gallery_open = true;      // start open so window shows
 fullscreen_mode = false;
 current_image_index = -1;
 
@@ -28,6 +28,19 @@ right_btn = [window_x + window_w - nav_btn_size - 30, window_y + window_h/2 - na
 zoom_in_btn = [window_x + window_w - 50, window_y + header_h + 100, 40, 30];
 zoom_out_btn = [window_x + window_w - 50, window_y + header_h + 140, 40, 30];
 zoom_reset_btn = [window_x + window_w - 50, window_y + header_h + 180, 40, 30];
+
+// --- NEW: minimize + dragging (frame edges) ---
+min_btn   = [window_x + window_w - 72, window_y + 10, 30, 30];
+is_minimized = false;
+dragging = false; drag_dx = 0; drag_dy = 0; drag_border = 12;
+function _in_win(px,py){ return (px>=window_x)&&(py>=window_y)&&(px<window_x+window_w)&&(py<window_y+window_h); }
+function _on_drag_border(px,py){
+    var l = (abs(px - window_x) <= drag_border);
+    var r = (abs(px - (window_x + window_w)) <= drag_border);
+    var t = (abs(py - window_y) <= drag_border);
+    var b = (abs(py - (window_y + window_h)) <= drag_border);
+    return l || r || t || b;
+}
 
 // Image data - using your exact names
 gallery_images = [
@@ -79,14 +92,12 @@ open_fullscreen = function(index) {
     var img_width = sprite_get_width(current_img);
     var img_height = sprite_get_height(current_img);
     
-    // Set fixed box size
     var box_width = 600;   
     var box_height = 400;  
     
-    // Calculate scale to fit within box (maintains aspect ratio)
     var scale_x = box_width / img_width;
     var scale_y = box_height / img_height;
-    zoom_scale = min(scale_x, scale_y);  // Fits entirely within box
+    zoom_scale = min(scale_x, scale_y);
     
     pan_x = 0;
     pan_y = 0;
@@ -104,27 +115,18 @@ exit_fullscreen = function() {
 // Function to navigate between images
 navigate_image = function(direction) {
     current_image_index += direction;
-    
-    if (current_image_index < 0) {
-        current_image_index = total_images - 1;
-    } else if (current_image_index >= total_images) {
-        current_image_index = 0;
-    }
-    
-    // Set the same pixel width for the new image
+    if (current_image_index < 0) current_image_index = total_images - 1;
+    else if (current_image_index >= total_images) current_image_index = 0;
     var current_img = gallery_images[current_image_index].sprite;
     var img_width = sprite_get_width(current_img);
-    zoom_scale = 600 / img_width;  // Same 600 pixel width
-    
-    pan_x = 0;
-    pan_y = 0;
+    zoom_scale = 600 / img_width;
+    pan_x = 0; pan_y = 0;
 }
 
 // Function to check which file was clicked
 get_clicked_file = function(mx, my) {
     if (mx < files_left || mx > files_left + files_width) return -1;
     if (my < files_top || my > files_top + files_height) return -1;
-    
     var file_y = files_top + 10;
     for (var i = 0; i < total_images; i++) {
         if (check_point_in_rect(mx, my, files_left, file_y, files_left + files_width, file_y + row_height)) {
@@ -144,3 +146,23 @@ check_point_in_rect = function(px, py, x1, y1, x2, y2) {
 check_button_click = function(mx, my, button) {
     return check_point_in_rect(mx, my, button[0], button[1], button[0] + button[2], button[1] + button[3]);
 }
+
+// --- NEW: centralized recalc when window moves ---
+function _recalc_gallery_layout(){
+    files_top = window_y + header_h + 20;
+    files_left = window_x + 20;
+    files_width = window_w - 40;
+    files_height = window_h - header_h - 40;
+
+    close_btn = [window_x + window_w - 40, window_y + 10, 30, 30]; 
+    min_btn   = [window_x + window_w - 72, window_y + 10, 30, 30];
+    back_btn  = [window_x + 15, window_y + 10, 70, 30];
+    left_btn  = [window_x + 30, window_y + window_h/2 - nav_btn_size/2, nav_btn_size, nav_btn_size];
+    right_btn = [window_x + window_w - nav_btn_size - 30, window_y + window_h/2 - nav_btn_size/2, nav_btn_size, nav_btn_size];
+
+    zoom_in_btn    = [window_x + window_w - 50, window_y + header_h + 100, 40, 30];
+    zoom_out_btn   = [window_x + window_w - 50, window_y + header_h + 140, 40, 30];
+    zoom_reset_btn = [window_x + window_w - 50, window_y + header_h + 180, 40, 30];
+}
+
+window_set_cursor(cr_default);

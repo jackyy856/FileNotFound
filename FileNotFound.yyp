@@ -86,6 +86,7 @@
     {"id":{"name":"obj_StickyNoteApp","path":"objects/obj_StickyNoteApp/obj_StickyNoteApp.yy",},},
     {"id":{"name":"obj_StickyNoteIcon","path":"objects/obj_StickyNoteIcon/obj_StickyNoteIcon.yy",},},
     {"id":{"name":"Obj_text","path":"objects/Obj_text/Obj_text.yy",},},
+    {"id":{"name":"obj_UIClickGate","path":"objects/obj_UIClickGate/obj_UIClickGate.yy",},},
     {"id":{"name":"Obj_wifi","path":"objects/Obj_wifi/Obj_wifi.yy",},},
     {"id":{"name":"Login","path":"rooms/Login/Login.yy",},},
     {"id":{"name":"room_Black1","path":"rooms/room_Black1/room_Black1.yy",},},
