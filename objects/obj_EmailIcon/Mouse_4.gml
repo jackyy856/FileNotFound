@@ -1,3 +1,7 @@
+// one-frame desktop click shield (safe init if the gate isn't placed)
+if (!variable_global_exists("_ui_click_consumed")) global._ui_click_consumed = false;
+if (global._ui_click_consumed) { global._ui_click_consumed = false; exit; }
+
 //open email app
 
 //>>gate check

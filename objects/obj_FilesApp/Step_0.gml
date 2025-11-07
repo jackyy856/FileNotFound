@@ -5,11 +5,47 @@ function point_in_rect(px, py, x, y, w, h) {
     return (px >= x) && (py >= y) && (px < x + w) && (py < y + h);
 }
 
+// --- NEW: click shield to avoid click-through ---
+if (!variable_global_exists("_ui_click_consumed")) global._ui_click_consumed = false;
+if (mouse_check_button_pressed(mb_left) && _in_win(mx,my)) {
+    global._ui_click_consumed = true;
+}
+
+// --- NEW: cursor logic (4-way on frame; default on buttons) ---
+var over_close = point_in_rect(mx,my, close_btn[0],close_btn[1],close_btn[2],close_btn[3]);
+var over_min   = point_in_rect(mx,my, min_btn[0],  min_btn[1],  min_btn[2],  min_btn[3]);
+var over_back  = point_in_rect(mx,my, back_btn[0], back_btn[1], back_btn[2], back_btn[3]);
+var over_up    = point_in_rect(mx,my, up_btn[0],   up_btn[1],   up_btn[2],   up_btn[3]);
+
+var over_drag  = _in_win(mx,my) && _on_drag_border(mx,my);
+if (over_close || over_min || (mode=="view" && over_back) || (cwd.parent!=noone && over_up)) window_set_cursor(cr_default);
+else if (over_drag) window_set_cursor(cr_size_all);
+else window_set_cursor(cr_default);
+
 // Close
-if (mouse_check_button_pressed(mb_left)) {
-    if (point_in_rect(mx, my, close_btn[0], close_btn[1], close_btn[2], close_btn[3])) {
-        instance_destroy();
-        exit;
+if (mouse_check_button_pressed(mb_left) && over_close) {
+    instance_destroy();
+    exit;
+}
+
+// Minimize
+if (mouse_check_button_pressed(mb_left) && over_min) {
+    is_minimized = !is_minimized;
+    exit;
+}
+
+// --- NEW: drag frame (disabled when minimized) ---
+if (!is_minimized) {
+    if (mouse_check_button_pressed(mb_left) && over_drag) {
+        dragging = true; 
+        drag_dx = mx - window_x; 
+        drag_dy = my - window_y;
+    }
+    if (dragging) {
+        window_x = mx - drag_dx;
+        window_y = my - drag_dy;
+        _recalc_files_layout();
+        if (!mouse_check_button(mb_left)) dragging = false;
     }
 }
 
@@ -25,14 +61,12 @@ if (keyboard_check_pressed(vk_escape)) {
 
 // Back / Up (on breadcrumbs line)
 if (mouse_check_button_pressed(mb_left)) {
-    // Back: only in view mode
-    if (mode == "view" && point_in_rect(mx, my, back_btn[0], back_btn[1], back_btn[2], back_btn[3])) {
+    if (mode == "view" && over_back) {
         mode = "list";
         selected_index = -1;
         exit;
     }
-    // Up: only if parent exists
-    if (cwd.parent != noone && point_in_rect(mx, my, up_btn[0], up_btn[1], up_btn[2], up_btn[3])) {
+    if (cwd.parent != noone && over_up) {
         cwd = cwd.parent;
         var n = array_length(breadcrumbs);
         if (n > 0) array_resize(breadcrumbs, n - 1);
@@ -42,8 +76,8 @@ if (mouse_check_button_pressed(mb_left)) {
     }
 }
 
-// Grid interactions (list mode)
-if (mode == "list") {
+// Grid interactions (list mode) — disabled when minimized
+if (!is_minimized && mode == "list") {
     var grid_x = list_left;
     var grid_y = content_top;
     var cols   = grid_cols;
@@ -65,7 +99,6 @@ if (mode == "list") {
 
             if (item.type == "folder") {
                 cwd = item;
-                // breadcrumbs push (version-safe)
                 breadcrumbs[array_length(breadcrumbs)] = cwd;
                 selected_index = -1;
             } else if (item.type == "text") {

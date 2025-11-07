@@ -22,6 +22,21 @@ selected_index = -1;      //-1 = inbox view; 0... = full email view
 close_btn = [window_x + window_w - 36, window_y + 12, 24, 24]; 
 back_btn  = [window_x + 12,            window_y + 40, 64, 24]; 
 
+// --- NEW: minimize button next to X ---
+min_btn   = [window_x + window_w - 66, window_y + 12, 24, 24];
+is_minimized = false;
+
+// --- NEW: window move/drag + cursor + click shield ---
+dragging = false; drag_dx = 0; drag_dy = 0;
+drag_border = 12; // draggable frame width (all sides)
+function _in_win(px,py){ return (px>=window_x)&&(py>=window_y)&&(px<window_x+window_w)&&(py<window_y+window_h); }
+function _on_drag_border(px,py){
+    var l = (abs(px - window_x) <= drag_border);
+    var r = (abs(px - (window_x + window_w)) <= drag_border);
+    var t = (abs(py - window_y) <= drag_border);
+    var b = (abs(py - (window_y + window_h)) <= drag_border);
+    return l || r || t || b;
+}
 
 // fonts (figure out font assets
 var fTitle = asset_get_index("f_mail_title");
@@ -92,16 +107,12 @@ puzzle_area = {
 word_btn_w = 150;
 word_btn_h = 34;
 var cols   = 5;
-var gap    = 10;
+word_gap   = 10;
 
 // --- Binary rain (Matrix-style) visual state ---
-// cell size for each glyph (px)
 bin_cell   = 14;
-// how many pixels we scroll per step (tweak to taste)
 bin_speed  = 1.2;
-// cumulative vertical scroll offset (wraps by bin_cell)
 bin_scroll = 0;
-// Area used by the corrupted message view (for 0/1 rain & scattering)
 bin_area = {
     x : window_x + 12,
     y : window_y + header_h + 8,
@@ -111,24 +122,52 @@ bin_area = {
 
 // Bottom margin region for buttons
 var btn_left = window_x + 40;
-var btn_top  = window_y + window_h - (word_btn_h*2 + gap + 40);
+var btn_top  = window_y + window_h - (word_btn_h*2 + word_gap + 40);
 
 word_btns = [];
 for (var i = 0; i < array_length(puzzle_words); i++) {
     var r = i div cols;
     var c = i mod cols;
 
-    var bx = btn_left + c * (word_btn_w + gap);
-    var by = btn_top  + r * (word_btn_h + gap);
+    var bx = btn_left + c * (word_btn_w + word_gap);
+	var by = btn_top  + r * (word_btn_h + word_gap);
 
-    // each button keeps original spawn for snap-back
     word_btns[i] = {
         text     : puzzle_words[i],
         x        : bx,  y : by,
         ox       : bx,  oy: by,   // original
         w        : word_btn_w, h: word_btn_h,
         dragging : false,
-        dx       : 0, dy: 0,      // mouse offset while dragging
-        placed   : false           // true if inside puzzle area
+        dx       : 0, dy: 0,
+        placed   : false
     };
 }
+
+// --- NEW: centralized recalc when window moves ---
+function _recalc_email_layout() {
+    list_top = window_y + header_h + 8;
+    list_left= window_x + 16;
+    list_w   = window_w - 32;
+    list_h   = window_h - header_h - 24;
+
+    close_btn[0] = window_x + window_w - 36; close_btn[1] = window_y + 12;
+    min_btn[0]   = window_x + window_w - 66; min_btn[1]   = window_y + 12;
+    back_btn[0]  = window_x + 12;            back_btn[1]  = window_y + 40;
+
+    bin_area.x = window_x + 12;
+    bin_area.y = window_y + header_h + 8;
+    bin_area.w = window_w - 24;
+    bin_area.h = window_h - header_h - 80;
+
+    puzzle_area.x = window_x + 140;
+    puzzle_area.y = window_y + 320;
+    puzzle_area.w = window_w - 280;
+
+    var btn_left2 = window_x + 40;
+    var btn_top2  = window_y + window_h - (word_btn_h*2 + word_gap + 40);
+    // keep scattered tiles where they are; just update their "snap-back" baseline proportionally
+    // (we don't change ox/oy here to preserve puzzle placements)
+}
+
+// initial cursor
+window_set_cursor(cr_default);
