@@ -1,20 +1,20 @@
-/// obj_EscapeMenu — Step (closure-free)
+/// obj_EscapeMenu — Step (edge-latched mouse + ESC; safe clearing)
 
-var mx  = device_mouse_x_to_gui(0);
-var my  = device_mouse_y_to_gui(0);
-var mbp = mouse_check_button_pressed(mb_left);
+var mx  = mx_gui;           // use cached GUI coords from Begin Step
+var my  = my_gui;
+var mbp = mb_left_edge;     // use latched click edge from Begin Step
 
 function _hit_xy(r, _mx, _my) {
     return (_mx >= r.x) && (_my >= r.y) && (_mx < r.x + r.w) && (_my < r.y + r.h);
 }
 
-// keep layout sane if GUI size changed
+// Keep layout sane if GUI size changed
 if (display_get_gui_width() != _last_gui_w || display_get_gui_height() != _last_gui_h) {
     _layout();
 }
 
-// ESC toggle
-if (keyboard_check_pressed(vk_escape)) {
+// ---------- ESC toggle (use latched edge from Begin Step) ----------
+if (esc_edge) {
     if (active) {
         if (state == "confirm") state = "submenu";
         else if (state == "submenu") { state = "root"; submenu = ""; }
@@ -24,11 +24,14 @@ if (keyboard_check_pressed(vk_escape)) {
     }
 }
 
-// toast timer
+// Toast timer
 if (toast_t > 0) toast_t--;
 
-// closed? bail
-if (!active) exit;
+// Closed? Bail
+if (!active) {
+    global.pause_menu_active = false;
+    exit;
+}
 
 switch (state) {
 
@@ -55,7 +58,7 @@ switch (state) {
 
     case "submenu": {
 
-        // back
+        // Back
         if (mbp && _hit_xy(btn_back, mx, my)) {
             if (submenu == "settings") {
                 global.master_volume = clamp(slider_val, 0, 100);
@@ -80,6 +83,7 @@ switch (state) {
                     audio_master_gain(slider_val / 100);
                 }
             }
+            // drag uses continuous button state (kept as-is)
             if (slider.dragging) {
                 if (!mouse_check_button(mb_left)) slider.dragging = false;
                 else {
@@ -126,8 +130,14 @@ switch (state) {
             }
             else if (_hit_xy(c1, mx, my)) {
                 if (submenu == "mainmenu") {
+                    // Harden against stray controllers that redirect out of Menu
+                    with (Obj_logincontrol) { alarm[0] = -1; instance_destroy(); }
+                    with (obj_SaveSelectController) instance_destroy();
+                    with (obj_SettingsController)   instance_destroy();
+
                     active = false; state = "root"; submenu = "";
-                    room_goto(room_Menu);   // we’ll spawn MenuController on Room Start
+                    var R = is_undefined(_menu_room) ? room : _menu_room();
+                    room_goto(R);
                 }
                 else if (submenu == "load") {
                     if (_save_load(confirm_slot)) { active = false; state = "root"; submenu = ""; }
@@ -148,6 +158,6 @@ switch (state) {
     } break;
 }
 
-// don’t leak clicks into the game
-mouse_clear(mb_left);
-keyboard_clear(vk_escape);
+// Swallow this frame’s inputs *after* handling
+if (mbp) mouse_clear(mb_left);       // only clear if we actually used the click
+if (esc_edge) keyboard_clear(vk_escape); // only clear when we used ESC

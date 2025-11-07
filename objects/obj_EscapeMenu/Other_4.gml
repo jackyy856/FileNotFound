@@ -12,10 +12,7 @@ if (display_get_gui_width() != _last_gui_w || display_get_gui_height() != _last_
     _layout();
 }
 
-// THE FIX: if we land in the Menu room, guarantee the controller exists.
-if (room == room_Menu) {
-    if (!instance_exists(obj_MenuController)) {
-        var lyr = layer_exists("Instances") ? "Instances" : layer_get_name(layer_get_id(0));
-        instance_create_layer(room_width * 0.5, room_height * 0.5, lyr, obj_MenuController);
-    }
+// If we land in the Menu room, guarantee the controller exists.
+if (room == _menu_room()) {
+    _ensure_menu_controller();
 }

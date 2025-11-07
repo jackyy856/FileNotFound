@@ -1,15 +1,15 @@
 /// obj_EscapeMenu — Create
 persistent = true;
 
-// GUI base
+// --- GUI base ---------------------------------------------------------------
 display_set_gui_size(1920, 1080);
 _last_gui_w = display_get_gui_width();
 _last_gui_h = display_get_gui_height();
 
 // ---------- STATE ----------
 active  = false;
-state   = "root";     
-submenu = "";         
+state   = "root";
+submenu = "";
 toast_txt = "";
 toast_t   = 0;
 
@@ -29,7 +29,7 @@ confirm_msg     = "";
 confirm_slot    = -1;
 confirm_buttons = [];
 
-// ---------- SAVE/LOAD HELPERS ----------
+// ---------- SAVE/LOAD HELPERS ----------------------------------------------
 function _slot_file(i) { return "save_slot" + string(i) + ".ini"; }
 
 function _slot_meta(i) {
@@ -63,7 +63,7 @@ function _save_pack() {
 
 function _save_write(slot_idx) {
     var f = _slot_file(slot_idx);
-    var title = string(date_current_datetime()); // simple, no re-declare drama
+    var title = string(date_current_datetime());
     var blob  = json_stringify(_save_pack());
 
     ini_open(f);
@@ -80,14 +80,9 @@ function _save_load(slot_idx) {
     var blob = ini_read_string("data","blob","{}");
     ini_close();
 
-    // guard against bad/corrupt data
     var pack = {};
     var ok = true;
-    try {
-        pack = json_parse(blob);
-    } catch(_) {
-        ok = false;
-    }
+    try { pack = json_parse(blob); } catch(_) { ok = false; }
     if (!ok || !is_struct(pack)) return false;
 
     if (!is_undefined(pack.vol)) {
@@ -102,7 +97,7 @@ function _save_load(slot_idx) {
         global.save_extra_apply(pack);
     }
 
-    var target = room_Menu;
+    var target = _menu_room(); // default back to menu if saved room missing
     if (!is_undefined(pack.room)) {
         var rn = asset_get_index(string(pack.room));
         if (rn != -1) target = rn;
@@ -111,7 +106,25 @@ function _save_load(slot_idx) {
     return true;
 }
 
-// ---------- LAYOUT REBUILDER ----------
+// ---------- MENU ROOM RESOLVER & ENSURER -----------------------------------
+// Handle the "room_Menu" vs "_Menu" name mismatch safely.
+function _menu_room() {
+    var r = asset_get_index("room_Menu");
+    if (r == -1) r = asset_get_index("_Menu");
+    // Fallback to current room if neither exists to avoid crashes.
+    return (r != -1) ? r : room;
+}
+
+// Make sure the Menu Controller exists when we're in the Menu room.
+function _ensure_menu_controller() {
+    if (room != _menu_room()) return;
+    if (!instance_exists(obj_MenuController)) {
+        var lyr = layer_exists("Instances") ? "Instances" : layer_get_name(layer_get_id(0));
+        instance_create_layer(room_width * 0.5, room_height * 0.5, lyr, obj_MenuController);
+    }
+}
+
+// ---------- LAYOUT REBUILDER -----------------------------------------------
 function _layout() {
     display_set_gui_size(1920, 1080);
     var GW = display_get_gui_width();
