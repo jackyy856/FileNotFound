@@ -9,10 +9,7 @@
     "name":"Recycle Bin",
     "path":"folders/Objects/Apps/Recycle Bin.yy",
   },
-  "parentObjectId":{
-    "name":"obj_AppBase",
-    "path":"objects/obj_AppBase/obj_AppBase.yy",
-  },
+  "parentObjectId":null,
   "persistent":false,
   "physicsAngularDamping":0.1,
   "physicsDensity":0.5,
