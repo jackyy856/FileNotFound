@@ -15,7 +15,18 @@ row_h    = 36;   //inbox row height
 window_dragging = false;
 window_drag_dx = 0;
 window_drag_dy = 0;
-is_minimized   = false;   // NEW: minimize like Sticky Note
+is_minimized   = false;   // minimize like Sticky Note
+
+// drag via border (for 4-way cursor like Files/Gallery)
+drag_border = 12;
+function _in_win(px,py){ return (px>=window_x)&&(py>=window_y)&&(px<window_x+window_w)&&(py<window_y+window_h); }
+function _on_drag_border(px,py){
+    var l = (abs(px - window_x) <= drag_border);
+    var r = (abs(px - (window_x + window_w)) <= drag_border);
+    var t = (abs(py - window_y) <= drag_border);
+    var b = (abs(py - (window_y + window_h)) <= drag_border);
+    return l || r || t || b;
+}
 
 // derived rects (recomputed on move)
 function _recalc_email_layout() {
@@ -26,7 +37,7 @@ function _recalc_email_layout() {
 
     // buttons
     close_btn = [window_x + window_w - 36,  window_y + 12, 24, 24];
-    min_btn   = [window_x + window_w - 66,  window_y + 12, 24, 24]; // NEW: minimize
+    min_btn   = [window_x + window_w - 66,  window_y + 12, 24, 24]; // minimize
     back_btn  = [window_x + 12,             window_y + 40, 64, 24];
 }
 _recalc_email_layout();
@@ -142,3 +153,6 @@ ok_btn_local     = [0,0,120,36];
 if (!variable_global_exists("_ui_click_consumed")) global._ui_click_consumed = false;
 __ui_click_inside = false;
 __ui_first_frame_block = 1; // avoid opener click passing through
+
+// small delay to stop icon click from also selecting an email row
+open_cooldown = 2;

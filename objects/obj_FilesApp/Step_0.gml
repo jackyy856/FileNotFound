@@ -22,6 +22,9 @@ function point_in_rect(px, py, x, y, w, h) {
     return (px >= x) && (py >= y) && (px < x + w) && (py < y + h);
 }
 
+// cooldown to prevent icon click from also opening a file immediately
+if (open_cooldown > 0) open_cooldown--;
+
 // --- NEW: click shield to avoid click-through ---
 if (!variable_global_exists("_ui_click_consumed")) global._ui_click_consumed = false;
 if (mouse_check_button_pressed(mb_left) && _in_win(mx,my)) {
@@ -104,7 +107,7 @@ if (!is_minimized && mode == "list") {
         (mx >= grid_x) && (mx < grid_x + cols * cell_w) &&
         (my >= grid_y) && (my < grid_y + rows * cell_h);
 
-    if (within && mouse_check_button_pressed(mb_left)) {
+    if (within && mouse_check_button_pressed(mb_left) && open_cooldown <= 0) {
         var col = floor((mx - grid_x) / cell_w);
         var row = floor((my - grid_y) / cell_h);
         var idx = row * cols + col;

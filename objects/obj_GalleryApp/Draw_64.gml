@@ -1,8 +1,11 @@
 if (!gallery_open) exit;
 
-// Draw window background
-draw_set_color(c_white);
-draw_rectangle(window_x, window_y, window_x + window_w, window_y + window_h, false);
+// If not minimized, draw full window background.
+// When minimized, we leave desktop visible and only draw header bar.
+if (!is_minimized) {
+    draw_set_color(c_white);
+    draw_rectangle(window_x, window_y, window_x + window_w, window_y + window_h, false);
+}
 
 // Draw header
 draw_set_color(c_dkgray);
