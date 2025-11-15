@@ -166,3 +166,4 @@ function _recalc_gallery_layout(){
 }
 
 window_set_cursor(cr_default);
+open_cooldown = 2;

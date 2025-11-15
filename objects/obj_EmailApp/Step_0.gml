@@ -7,6 +7,9 @@ function in_local(px, py, x, y, w, h) {
     return (px >= x) && (py >= y) && (px < x + w) && (py < y + h);
 }
 
+// cooldown to prevent double-open when app spawns
+if (open_cooldown > 0) open_cooldown--;
+
 // mark if a press started inside our active region
 if (mouse_check_button_pressed(mb_left)) {
     // If minimized, only the title bar counts as "inside"
@@ -24,10 +27,27 @@ if (mouse_check_button_pressed(mb_left)) {
 // soft block initial opener click
 if (__ui_first_frame_block > 0) __ui_first_frame_block--;
 
-// ------------------ WINDOW DRAG (title bar area) ------------------
+// ------------------ WINDOW DRAG (title bar + border) ------------------
 var in_titlebar = in_local(mx_local, my_local, 0, 0, window_w, header_h);
 
-if (mouse_check_button_pressed(mb_left) && in_titlebar) {
+// buttons (local)
+var over_close = in_local(mx_local, my_local, close_btn[0]-window_x, close_btn[1]-window_y, close_btn[2], close_btn[3]);
+var over_min   = in_local(mx_local, my_local, min_btn[0]-window_x,   min_btn[1]-window_y,   min_btn[2],   min_btn[3]);
+var over_back  = (selected_index != -1) &&
+                 in_local(mx_local, my_local, back_btn[0]-window_x,  back_btn[1]-window_y,  back_btn[2],  back_btn[3]);
+
+// 4-way cursor on frame edges, but not on buttons
+var over_drag  = _in_win(mx,my) && _on_drag_border(mx,my);
+if (over_close || over_min || over_back) {
+    window_set_cursor(cr_default);
+} else if (over_drag) {
+    window_set_cursor(cr_size_all);
+} else {
+    window_set_cursor(cr_default);
+}
+
+// begin drag from title bar OR frame border
+if (mouse_check_button_pressed(mb_left) && (in_titlebar || over_drag)) {
     window_dragging = true;
     window_drag_dx = mx - window_x;
     window_drag_dy = my - window_y;
@@ -42,12 +62,12 @@ if (window_dragging) {
 // ------------------ CLOSE / MINIMIZE ------------------
 if (mouse_check_button_pressed(mb_left)) {
     // close (X)
-    if (in_local(mx_local, my_local, close_btn[0]-window_x, close_btn[1]-window_y, close_btn[2], close_btn[3])) {
+    if (over_close) {
         instance_destroy();
         exit;
     }
     // minimize (-)
-    if (in_local(mx_local, my_local, min_btn[0]-window_x, min_btn[1]-window_y, min_btn[2], min_btn[3])) {
+    if (over_min) {
         is_minimized = !is_minimized;
         // when minimized, we ignore content interactions but can still drag the title bar
         exit;
@@ -64,7 +84,8 @@ if (is_minimized) {
 
 // ------------------ INBOX / MESSAGE NAV ------------------
 if (selected_index == -1) {
-    if (mouse_check_button_pressed(mb_left) &&
+    if (open_cooldown <= 0 &&
+        mouse_check_button_pressed(mb_left) &&
         mx >= list_left && mx <= list_left + list_w &&
         my >= list_top  && my <= list_top  + list_h)
     {
@@ -87,7 +108,7 @@ if (selected_index == -1) {
     }
 } else {
     if (mouse_check_button_pressed(mb_left)) {
-        if (in_local(mx_local, my_local, back_btn[0]-window_x, back_btn[1]-window_y, back_btn[2], back_btn[3])) {
+        if (over_back) {
             selected_index    = -1;
             puzzle_active     = false;
         }
@@ -104,7 +125,7 @@ if (selected_index != -1) {
         if (mouse_check_button_pressed(mb_left)) {
             var bx = ok_btn_local[0], by = ok_btn_local[1], bw = ok_btn_local[2], bh = ok_btn_local[3];
             if (in_local(mx_local, my_local, bx, by, bw, bh)) {
-                // dismiss modal
+                // dismiss modal (if you want to do something)
             }
         }
         exit;

@@ -1,8 +1,16 @@
 draw_set_alpha(1);
-draw_set_color(c_white);
-draw_rectangle(window_x, window_y, window_x + window_w, window_y + window_h, false);
-draw_set_color(c_black);
-draw_rectangle(window_x, window_y, window_x + window_w, window_y + window_h, true);
+if (!is_minimized) {
+    draw_set_color(c_white);
+    draw_rectangle(window_x, window_y, window_x + window_w, window_y + window_h, false);
+    draw_set_color(c_black);
+    draw_rectangle(window_x, window_y, window_x + window_w, window_y + window_h, true);
+} else {
+    // only draw header area when minimized
+    draw_set_color(c_white);
+    draw_rectangle(window_x, window_y, window_x + window_w, window_y + header_h, false);
+    draw_set_color(c_black);
+    draw_rectangle(window_x, window_y, window_x + window_w, window_y + header_h, true);
+}
 //Testing Commit Comment
 // Title bar
 draw_set_font(font_title);
@@ -29,6 +37,7 @@ draw_text(close_btn[0] + 7, close_btn[1] + 2, "X");
 
 // If minimized, skip body rendering
 if (is_minimized) exit;
+
 
 // Breadcrumbs (second line)
 draw_set_font(font_body);
