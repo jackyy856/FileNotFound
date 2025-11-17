@@ -119,6 +119,8 @@
     {"id":{"name":"spr_FilesIcon","path":"sprites/spr_FilesIcon/spr_FilesIcon.yy",},},
     {"id":{"name":"spr_GalleryIcon","path":"sprites/spr_GalleryIcon/spr_GalleryIcon.yy",},},
     {"id":{"name":"spr_HackerMsgrIcon","path":"sprites/spr_HackerMsgrIcon/spr_HackerMsgrIcon.yy",},},
+    {"id":{"name":"spr_pfp_hacker","path":"sprites/spr_pfp_hacker/spr_pfp_hacker.yy",},},
+    {"id":{"name":"spr_pfp_player","path":"sprites/spr_pfp_player/spr_pfp_player.yy",},},
     {"id":{"name":"spr_RecycleBinIcon","path":"sprites/spr_RecycleBinIcon/spr_RecycleBinIcon.yy",},},
     {"id":{"name":"spr_StickyNoteIcon","path":"sprites/spr_StickyNoteIcon/spr_StickyNoteIcon.yy",},},
     {"id":{"name":"spr_unhacked_desktop_bg","path":"sprites/spr_unhacked_desktop_bg/spr_unhacked_desktop_bg.yy",},},
@@ -126,8 +128,8 @@
   "resourceType":"GMProject",
   "resourceVersion":"2.0",
   "RoomOrderNodes":[
-    {"roomId":{"name":"room_Menu","path":"rooms/room_Menu/room_Menu.yy",},},
     {"roomId":{"name":"room_Desktop","path":"rooms/room_Desktop/room_Desktop.yy",},},
+    {"roomId":{"name":"room_Menu","path":"rooms/room_Menu/room_Menu.yy",},},
     {"roomId":{"name":"room_Black1","path":"rooms/room_Black1/room_Black1.yy",},},
     {"roomId":{"name":"room_Black2","path":"rooms/room_Black2/room_Black2.yy",},},
     {"roomId":{"name":"room_Desk_View","path":"rooms/room_Desk_View/room_Desk_View.yy",},},

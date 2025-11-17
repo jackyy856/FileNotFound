@@ -77,6 +77,8 @@
     {"name":"spr_EmailIcon","order":1,"path":"sprites/spr_EmailIcon/spr_EmailIcon.yy",},
     {"name":"spr_FilesIcon","order":2,"path":"sprites/spr_FilesIcon/spr_FilesIcon.yy",},
     {"name":"spr_GalleryIcon","order":5,"path":"sprites/spr_GalleryIcon/spr_GalleryIcon.yy",},
+    {"name":"spr_pfp_hacker","order":4,"path":"sprites/spr_pfp_hacker/spr_pfp_hacker.yy",},
+    {"name":"spr_pfp_player","order":5,"path":"sprites/spr_pfp_player/spr_pfp_player.yy",},
     {"name":"spr_RecycleBinIcon","order":4,"path":"sprites/spr_RecycleBinIcon/spr_RecycleBinIcon.yy",},
     {"name":"spr_StickyNoteIcon","order":6,"path":"sprites/spr_StickyNoteIcon/spr_StickyNoteIcon.yy",},
     {"name":"spr_unhacked_desktop_bg","order":4,"path":"sprites/spr_unhacked_desktop_bg/spr_unhacked_desktop_bg.yy",},
