@@ -20,6 +20,9 @@ if (!gallery_open) exit;
 var mx = device_mouse_x_to_gui(0);
 var my = device_mouse_y_to_gui(0);
 
+// cooldown to prevent icon click from instantly opening an image row
+if (open_cooldown > 0) open_cooldown--;
+
 // --- NEW: click shield ---
 if (!variable_global_exists("_ui_click_consumed")) global._ui_click_consumed = false;
 if (mouse_check_button_pressed(mb_left) && _in_win(mx,my)) {
@@ -92,9 +95,10 @@ if (fullscreen_mode) {
 }
 else
 {
-    // File list click opens fullscreen
-    if (mouse_check_button_pressed(mb_left)) {
+    // File list click opens fullscreen (after cooldown)
+    if (mouse_check_button_pressed(mb_left) && open_cooldown <= 0) {
         var clicked_index = get_clicked_file(mx, my);
         if (clicked_index != -1) { open_fullscreen(clicked_index); return; }
     }
 }
+

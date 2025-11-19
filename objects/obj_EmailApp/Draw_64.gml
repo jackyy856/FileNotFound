@@ -1,13 +1,24 @@
 draw_set_alpha(1);
-draw_set_color(c_white);
-draw_rectangle(window_x, window_y, window_x + window_w, window_y + window_h, false);
-draw_set_color(c_black);
-draw_rectangle(window_x, window_y, window_x + window_w, window_y + window_h, true);
 
-//header
+// draw header bar (always)
+draw_set_color(c_white);
+draw_rectangle(window_x, window_y, window_x + window_w, window_y + header_h, false);
+draw_set_color(c_black);
+draw_rectangle(window_x, window_y, window_x + window_w, window_y + header_h, true);
+
+// if not minimized, draw full body frame
+if (!is_minimized) {
+    draw_set_color(c_white);
+    draw_rectangle(window_x, window_y + header_h, window_x + window_w, window_y + window_h, false);
+    draw_set_color(c_black);
+    draw_rectangle(window_x, window_y + header_h, window_x + window_w, window_y + window_h, true);
+}
+
+//header text
 draw_set_font(font_title);
 draw_set_halign(fa_left);
 draw_set_valign(fa_top);
+draw_set_color(c_black);
 draw_text(window_x + 16, window_y + 12, "MailApp");
 
 // ---- minimize button (light gray) ----
@@ -220,26 +231,26 @@ else
         // Modal if solved (ABS)
         if (puzzle_solved) {
             var mw = 420, mh = 160;
-            var mx = window_x + (window_w - mw) * 0.5;
-            var my = window_y + (window_h - mh) * 0.5;
+            var mx2 = window_x + (window_w - mw) * 0.5;
+            var my2 = window_y + (window_h - mh) * 0.5;
 
             draw_set_color(make_colour_rgb(250,250,250));
-            draw_rectangle(mx, my, mx+mw, my+mh, false);
+            draw_rectangle(mx2, my2, mx2+mw, my2+mh, false);
             draw_set_color(c_black);
-            draw_rectangle(mx, my, mx+mw, my+mh, true);
+            draw_rectangle(mx2, my2, mx2+mw, my2+mh, true);
 
             draw_set_font(font_title);
-            draw_text(mx + 16, my + 16, "Email Recovered");
+            draw_text(mx2 + 16, my2 + 16, "Email Recovered");
 
             draw_set_font(font_body);
-            draw_text_ext(mx + 16, my + 52, puzzle_message, 12, mw - 32);
+            draw_text_ext(mx2 + 16, my2 + 52, puzzle_message, 12, mw - 32);
 
-            ok_btn_local[0] = (mx + mw - 16 - ok_btn_local[2]) - window_x;
-            ok_btn_local[1] = (my + mh - 16 - ok_btn_local[3]) - window_y;
+            ok_btn_local[0] = (mx2 + mw - 16 - ok_btn_local[2]) - window_x;
+            ok_btn_local[1] = (my2 + mh - 16 - ok_btn_local[3]) - window_y;
 
             var bcol2 = make_colour_rgb(230,230,230);
-            var obx = mx + mw - 16 - ok_btn_local[2];
-            var oby = my + mh - 16 - ok_btn_local[3];
+            var obx = mx2 + mw - 16 - ok_btn_local[2];
+            var oby = my2 + mh - 16 - ok_btn_local[3];
             draw_set_color(bcol2);
             draw_rectangle(obx, oby, obx+ok_btn_local[2], oby+ok_btn_local[3], false);
             draw_set_color(c_black);

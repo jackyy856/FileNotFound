@@ -112,3 +112,4 @@ function _recalc_files_layout() {
 }
 
 window_set_cursor(cr_default);
+open_cooldown = 2;
