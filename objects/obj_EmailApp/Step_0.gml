@@ -1,3 +1,5 @@
+/// obj_EmailApp - Step
+
 var mx = device_mouse_x_to_gui(0);
 var my = device_mouse_y_to_gui(0);
 var mx_local = mx - window_x;
@@ -69,7 +71,6 @@ if (mouse_check_button_pressed(mb_left)) {
     // minimize (-)
     if (over_min) {
         is_minimized = !is_minimized;
-        // when minimized, we ignore content interactions but can still drag the title bar
         exit;
     }
 }
@@ -79,6 +80,9 @@ if (is_minimized) {
     // advance binary rain lightly to keep animation coherent if you still draw it
     bin_scroll += bin_speed;
     if (bin_scroll >= bin_cell) bin_scroll -= bin_cell;
+    // also reset hint timer while hidden
+    puzzle_hint_timer = 0;
+    puzzle_show_hint = false;
     exit;
 }
 
@@ -95,6 +99,7 @@ if (selected_index == -1) {
             selected_index = idx;
             inbox[idx].read = true;
 
+            // unlock messenger if suspicious
             if (inbox[idx].is_suspicious) {
                 if (!is_undefined(global.apps_unlocked) && is_struct(global.apps_unlocked)) {
                     global.apps_unlocked.Messenger = true;
@@ -103,6 +108,12 @@ if (selected_index == -1) {
 
             if (idx == corrupted_index) {
                 puzzle_active     = puzzle_gate && !puzzle_solved;
+                puzzle_hint_timer = 0;
+                puzzle_show_hint  = false;
+            } else {
+                puzzle_active     = false;
+                puzzle_hint_timer = 0;
+                puzzle_show_hint  = false;
             }
         }
     }
@@ -111,6 +122,8 @@ if (selected_index == -1) {
         if (over_back) {
             selected_index    = -1;
             puzzle_active     = false;
+            puzzle_hint_timer = 0;
+            puzzle_show_hint  = false;
         }
     }
 }
@@ -120,14 +133,20 @@ if (selected_index != -1) {
     var em = inbox[selected_index];
     var _em_cor = variable_struct_exists(em,"is_corrupted") && em.is_corrupted;
 
-    // Modal OK (LOCAL) when solved
+    // Modal OK (LOCAL) when solved (no actual modal now, but keep block)
     if (_em_cor && puzzle_solved) {
         if (mouse_check_button_pressed(mb_left)) {
             var bx = ok_btn_local[0], by = ok_btn_local[1], bw = ok_btn_local[2], bh = ok_btn_local[3];
             if (in_local(mx_local, my_local, bx, by, bw, bh)) {
-                // dismiss modal (if you want to do something)
+                // dismiss modal (email already flipped to normal in success block)
             }
         }
+        // still advance binary rain
+        bin_scroll += bin_speed;
+        if (bin_scroll >= bin_cell) bin_scroll -= bin_cell;
+        // hint not needed after solved
+        puzzle_hint_timer = 0;
+        puzzle_show_hint  = false;
         exit;
     }
 
@@ -137,70 +156,176 @@ if (selected_index != -1) {
             for (var i = array_length(word_btns)-1; i >= 0; i--) {
                 var b = word_btns[i];
                 if (in_local(mx_local, my_local, b.x, b.y, b.w, b.h)) {
-                    b.dragging = true;
-                    b.dx = mx_local - b.x;
-                    b.dy = my_local - b.y;
-                    b.placed = false;
-                    word_btns[i] = b;
+                    b.dragging  = true;
+                    b.dx        = mx_local - b.x;
+                    b.dy        = my_local - b.y;
+                    b.placed    = false;
+                    b.slot_index= -1;
+                    word_btns[i]= b;
                     break;
                 }
             }
         }
+
         // DRAG
         if (mouse_check_button(mb_left)) {
-            for (var i = 0; i < array_length(word_btns); i++) if (word_btns[i].dragging) {
-                word_btns[i].x = mx_local - word_btns[i].dx;
-                word_btns[i].y = my_local - word_btns[i].dy;
+            for (var i2 = 0; i2 < array_length(word_btns); i2++) if (word_btns[i2].dragging) {
+                word_btns[i2].x = mx_local - word_btns[i2].dx;
+                word_btns[i2].y = my_local - word_btns[i2].dy;
             }
         }
+
         // DROP
         if (mouse_check_button_released(mb_left)) {
-            for (var i = 0; i < array_length(word_btns); i++) if (word_btns[i].dragging) {
-                word_btns[i].dragging = false;
+            for (var i3 = 0; i3 < array_length(word_btns); i3++) if (word_btns[i3].dragging) {
+                word_btns[i3].dragging = false;
 
-                var inside = in_local(mx_local, my_local, puzzle_area_local.x, puzzle_area_local.y, puzzle_area_local.w, puzzle_area_local.h);
+                var inside = in_local(
+                    mx_local, my_local,
+                    puzzle_area_local.x, puzzle_area_local.y,
+                    puzzle_area_local.w, puzzle_area_local.h
+                );
+
                 if (inside) {
-                    word_btns[i].placed = true;
+                    var snapped = false;
+
+                    var slot_len = array_length(puzzle_slots);
+                    if (slot_len > 0) {
+                        var best_slot = 0;
+                        var best_dist = 1000000000;
+
+                        // compare tile's current x with each slot.x
+                        for (var s = 0; s < slot_len; s++) {
+                            var sx = puzzle_slots[s].x;
+                            var d  = abs(word_btns[i3].x - sx);
+                            if (d < best_dist) {
+                                best_dist = d;
+                                best_slot = s;
+                            }
+                        }
+
+                        // check if that slot is already taken by another tile
+                        var slot_taken = false;
+                        for (var k = 0; k < array_length(word_btns); k++) {
+                            if (k != i3) {
+                                var wb2 = word_btns[k];
+                                if (wb2.placed && wb2.slot_index == best_slot) {
+                                    slot_taken = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (!slot_taken) {
+                            // snap into that slot
+                            word_btns[i3].placed     = true;
+                            word_btns[i3].slot_index = best_slot;
+                            word_btns[i3].x          = puzzle_slots[best_slot].x;
+                            word_btns[i3].y          = puzzle_slots[best_slot].y;
+                            snapped = true;
+                        }
+                    }
+
+                    // if couldn't snap (slot taken or no slots), return to bottom
+                    if (!snapped) {
+                        word_btns[i3].placed     = false;
+                        word_btns[i3].slot_index = -1;
+                        word_btns[i3].x          = word_btns[i3].ox;
+                        word_btns[i3].y          = word_btns[i3].oy;
+                    }
                 } else {
-                    word_btns[i].placed = false;
-                    word_btns[i].x = word_btns[i].ox;
-                    word_btns[i].y = word_btns[i].oy;
+                    // dropped outside puzzle box → return to bottom
+                    word_btns[i3].placed     = false;
+                    word_btns[i3].slot_index = -1;
+                    word_btns[i3].x          = word_btns[i3].ox;
+                    word_btns[i3].y          = word_btns[i3].oy;
                 }
             }
 
-            // Validate order (by LOCAL x)
-            var placed = [];
-            for (var j = 0; j < array_length(word_btns); j++) if (word_btns[j].placed) array_push(placed, word_btns[j]);
-            array_sort(placed, function(a,b){ return a.x - b.x; });
+            // Validate order based on slots
+            var slots_n        = array_length(puzzle_target);
+            var slot_word_texts= array_create(slots_n, undefined);
+            var slot_tile_index= array_create(slots_n, -1);
+            var slot_filled    = 0;
 
-            var placed_texts = [];
-            for (var k = 0; k < array_length(placed); k++) array_push(placed_texts, placed[k].text);
+            for (var j = 0; j < array_length(word_btns); j++) {
+                var wb = word_btns[j];
+                if (wb.placed && wb.slot_index >= 0 && wb.slot_index < slots_n) {
+                    slot_filled++;
+                    slot_word_texts[wb.slot_index] = wb.text;
+                    slot_tile_index[wb.slot_index] = j;
+                }
+            }
 
-            var ok = (array_length(placed_texts) == array_length(puzzle_target));
+            var ok = (slot_filled == slots_n);
             if (ok) {
-                for (var t = 0; t < array_length(puzzle_target); t++) {
-                    if (placed_texts[t] != puzzle_target[t]) { ok = false; break; }
+                // text order check
+                for (var t = 0; t < slots_n; t++) {
+                    if (is_undefined(slot_word_texts[t]) || slot_word_texts[t] != puzzle_target[t]) {
+                        ok = false;
+                        break;
+                    }
                 }
             }
 
             if (ok) {
+                // (shape compatibility is still in data but visually removed – we can ignore it now)
+
                 puzzle_solved  = true;
                 puzzle_active  = false;
 
                 var title_text = "";
-                for (var p = 0; p < array_length(puzzle_target); p++) {
-                    title_text += (p==0)? puzzle_target[p] : (" " + puzzle_target[p]);
+                for (var q = 0; q < array_length(puzzle_target); q++) {
+                    title_text += (q==0)? puzzle_target[q] : (" " + puzzle_target[q]);
                 }
 
                 inbox[corrupted_index].subject = title_text;
                 inbox[corrupted_index].body =
-                    "Great work. The Wi-Fi password is: \"ARCADIA-Guest-42\".\n\n" +
-                    "You can now connect to proceed."; // TODO: your text
+                    "It does.\n\nHere's your first key sucker.";
+
                 inbox[corrupted_index].is_corrupted = false;
 
                 puzzle_message = "The message has been reconstructed.\n" +
-                                 "Title recovered: \"" + title_text + "\"";
+                                 "Real subject: \"" + title_text + "\"";
+
+                // reset hint state
+                puzzle_hint_timer = 0;
+                puzzle_show_hint  = false;
             }
+        }
+    }
+}
+
+// ------------------ HINT TIMER (20s on corrupted puzzle) ------------------
+if (selected_index == corrupted_index && puzzle_active && !puzzle_solved) {
+    puzzle_hint_timer += 1;
+    if (puzzle_hint_timer >= room_speed * 20) {
+        puzzle_show_hint = true;
+    }
+} else if (!puzzle_solved) {
+    // reset if not actively puzzling
+    puzzle_hint_timer = 0;
+    puzzle_show_hint  = false;
+}
+
+// ------------------ CLICKABLE KEY (first key reward) ------------------
+if (selected_index == corrupted_index && puzzle_solved && !email_key1_collected) {
+    if (mouse_check_button_pressed(mb_left)) {
+        var kx = email_key1_rect[0];
+        var ky = email_key1_rect[1];
+        var kw = email_key1_rect[2];
+        var kh = email_key1_rect[3];
+
+        if (mx >= kx && my >= ky && mx <= kx + kw && my <= ky + kh) {
+            // mark collected
+            email_key1_collected = true;
+
+            // ensure global array exists
+            if (!variable_global_exists("key_collected")) {
+                global.key_collected = array_create(3, false);
+            }
+
+            global.key_collected[0] = true;
         }
     }
 }
