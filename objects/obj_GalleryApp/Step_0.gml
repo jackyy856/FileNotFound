@@ -20,6 +20,7 @@ if (!gallery_open) exit;
 var mx = device_mouse_x_to_gui(0);
 var my = device_mouse_y_to_gui(0);
 
+
 // cooldown to prevent icon click from instantly opening an image row
 if (open_cooldown > 0) open_cooldown--;
 
