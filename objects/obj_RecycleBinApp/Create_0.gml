@@ -21,24 +21,25 @@ var off_y_top    = -40;
 var off_y_mid    = 0;
 var off_y_bottom = 40;
 
-// NOTE: use '#' for line breaks (GameMaker style)
+// TEXT CONTENTS – short memes + kaomojis + transcript
 var content_meme1 =
 "deleted_meme_01.txt# #" +
 "(╯°□°）╯︵ ┻━┻#" +
-"User: \"I only changed one line.\"#" +
-"Server: (¬_¬)";
+"\"I only changed one line.\"#" +
+"– every broken build";
 
 var content_meme2 =
 "office_meme_02.png# #" +
 "(ಥ﹏ಥ)#" +
-"\"When the bug fix introduces#three new bugs.\"";
+"\"When the bug fix introduces#" +
+"three new bugs.\"";
 
 var content_decoy_note =
 "Slack – #random# #" +
 "dev1: did anyone push to prod on Friday?#" +
-"dev2: (╥﹏╥)#" +
-"dev3: I'll pretend I didn't see this.# #" +
-"Thread archived. Nothing useful here.";
+"dev2: (o_o)#" +
+"dev3: let's never speak of this again.# #" +
+"(Just junk. No useful clues here.)";
 
 var content_vanessa_thomas =
 "Thomas: Close the door behind you.#" +
