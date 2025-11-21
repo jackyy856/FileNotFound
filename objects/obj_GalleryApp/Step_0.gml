@@ -1,4 +1,5 @@
 if (gallery_open) {
+    // Update button positions
     close_btn = [window_x + window_w - 40, window_y + 10, 30, 30]; 
     back_btn  = [window_x + 15, window_y + 10, 70, 30];
     left_btn  = [window_x + 30, window_y + window_h/2 - nav_btn_size/2, nav_btn_size, nav_btn_size];
@@ -21,9 +22,26 @@ if (mouse_check_button_pressed(mb_left)) {
     var mx = mouse_x;
     var my = mouse_y;
     
-    if (point_in_rectangle(mx, my, close_btn[0], close_btn[1], close_btn[0] + close_btn[2], close_btn[1] + close_btn[3])) {
-        instance_destroy();
+    // Close button works in all modes
+    if (check_button_click(mx, my, close_btn)) {
+        if (puzzle_mode) {
+            exit_puzzle();
+        } else if (fullscreen_mode) {
+            exit_fullscreen();
+        } else {
+            instance_destroy();
+        }
         exit;
+    }
+    
+    if (puzzle_mode) {
+        // In puzzle mode, only handle back button - puzzle handles the rest
+        if (check_button_click(mx, my, back_btn)) {
+            exit_puzzle();
+            return;
+        }
+        // Let the puzzle manager handle other clicks
+        return;
     }
     
     if (fullscreen_mode) {
@@ -93,8 +111,13 @@ if (fullscreen_mode && is_dragging) {
     pan_y = mouse_y - drag_start_y;
 }
 
-// Handle zoom and navigation in fullscreen mode
-if (fullscreen_mode) {
+// Handle keyboard controls
+if (puzzle_mode) {
+    // ESC to exit puzzle
+    if (keyboard_check_pressed(vk_escape)) {
+        exit_puzzle();
+    }
+} else if (fullscreen_mode) {
     // Keyboard zoom controls
     if (keyboard_check_pressed(ord("=")) || keyboard_check_pressed(vk_add)) {
         zoom_scale = min(zoom_scale + 0.3, max_zoom);

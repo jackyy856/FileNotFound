@@ -222,7 +222,7 @@ function draw_network_input_field(network_index, start_y) {
     
     // Character counter
     draw_set_color(make_color_rgb(150, 150, 150));
-    draw_text(left_column_x + input_field_width + 5, input_field_y + 8, string(string_length(input_text)) + "/10");
+    draw_text(left_column_x + input_field_width + 5, input_field_y + 8, string(string_length(input_text)) + "/20");
     
     // For Myers0923 ONLY, show password dropdown and Connect button
     if (current_network_name == "Myers0923") {

@@ -1,25 +1,39 @@
 if (gallery_open) {
-    // Draw window background
-    draw_set_color(c_white);
-    draw_rectangle(window_x, window_y, window_x + window_w, window_y + window_h, false);
-    
-    // Draw header
-    draw_set_color(c_dkgray);
-    draw_rectangle(window_x, window_y, window_x + window_w, window_y + header_h, false);
-    
-    // Draw title
-    draw_set_color(c_white);
-    draw_set_halign(fa_center);
-    draw_set_valign(fa_middle);
-    draw_text(window_x + window_w/2, window_y + header_h/2, "Gallery");
-    
-    // Draw close button
-    draw_set_color(c_red);
-    draw_rectangle(close_btn[0], close_btn[1], close_btn[0] + close_btn[2], close_btn[1] + close_btn[3], false);
-    draw_set_color(c_white);
-    draw_text(close_btn[0] + close_btn[2]/2, close_btn[1] + close_btn[3]/2, "X");
-
-    if (!fullscreen_mode) {
+    if (puzzle_mode) {
+        // PUZZLE MODE: Don't draw the gallery browser
+        // Only draw the close and back buttons
+        draw_set_color(c_red);
+        draw_rectangle(close_btn[0], close_btn[1], close_btn[0] + close_btn[2], close_btn[1] + close_btn[3], false);
+        draw_set_color(c_white);
+        draw_text(close_btn[0] + close_btn[2]/2, close_btn[1] + close_btn[3]/2, "X");
+        
+        draw_set_color(c_white);
+        draw_rectangle(back_btn[0], back_btn[1], back_btn[0] + back_btn[2], back_btn[1] + back_btn[3], false);
+        draw_set_color(c_black);
+        draw_text(back_btn[0] + back_btn[2]/2, back_btn[1] + back_btn[3]/2, "Back");
+        
+    } else if (!fullscreen_mode) {
+        // GALLERY BROWSER MODE: Draw the file browser
+        // Draw window background
+        draw_set_color(c_white);
+        draw_rectangle(window_x, window_y, window_x + window_w, window_y + window_h, false);
+        
+        // Draw header
+        draw_set_color(c_dkgray);
+        draw_rectangle(window_x, window_y, window_x + window_w, window_y + header_h, false);
+        
+        // Draw title
+        draw_set_color(c_white);
+        draw_set_halign(fa_center);
+        draw_set_valign(fa_middle);
+        draw_text(window_x + window_w/2, window_y + header_h/2, "Gallery");
+        
+        // Draw close button
+        draw_set_color(c_red);
+        draw_rectangle(close_btn[0], close_btn[1], close_btn[0] + close_btn[2], close_btn[1] + close_btn[3], false);
+        draw_set_color(c_white);
+        draw_text(close_btn[0] + close_btn[2]/2, close_btn[1] + close_btn[3]/2, "X");
+        
         // Draw file browser style
         draw_set_color(c_black);
         draw_set_halign(fa_left);
@@ -76,11 +90,32 @@ if (gallery_open) {
         }
         
     } else {
+        // FULLSCREEN IMAGE MODE: Draw the image viewer
+        // Draw window background
+        draw_set_color(c_white);
+        draw_rectangle(window_x, window_y, window_x + window_w, window_y + window_h, false);
+        
+        // Draw header
+        draw_set_color(c_dkgray);
+        draw_rectangle(window_x, window_y, window_x + window_w, window_y + header_h, false);
+        
+        // Draw title
+        draw_set_color(c_white);
+        draw_set_halign(fa_center);
+        draw_set_valign(fa_middle);
+        draw_text(window_x + window_w/2, window_y + header_h/2, "Gallery");
+        
+        // Draw close button
+        draw_set_color(c_red);
+        draw_rectangle(close_btn[0], close_btn[1], close_btn[0] + close_btn[2], close_btn[1] + close_btn[3], false);
+        draw_set_color(c_white);
+        draw_text(close_btn[0] + close_btn[2]/2, close_btn[1] + close_btn[3]/2, "X");
+        
         // Draw fullscreen view background
         draw_set_color(c_black);
         draw_rectangle(window_x + 10, window_y + header_h + 10, window_x + window_w - 10, window_y + window_h - 10, false);
         
-        // Draw image with pan and zoom - AUTO-SIZED AND CENTERED
+        // Draw image with pan and zoom
         if (current_image_index >= 0 && current_image_index < total_images) {
             var current_img = gallery_images[current_image_index].sprite;
             
@@ -88,7 +123,7 @@ if (gallery_open) {
                 var img_width = sprite_get_width(current_img);
                 var img_height = sprite_get_height(current_img);
                 
-                // Calculate available display area (with margins)
+                // Calculate available display area
                 var display_x = window_x + 10;
                 var display_y = window_y + header_h + 10;
                 var display_width = window_w - 20;
@@ -135,7 +170,6 @@ if (gallery_open) {
             draw_set_halign(fa_center);
             draw_text(window_x + window_w/2, window_y + window_h - 30, 
                      gallery_images[current_image_index].name + " (" + string(current_image_index + 1) + "/" + string(total_images) + ")");
-           
         }
     }
     

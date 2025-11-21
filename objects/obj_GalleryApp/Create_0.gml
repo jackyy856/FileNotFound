@@ -5,7 +5,7 @@ window_x = 120;
 window_y = 100;
 
 header_h = 50;
-row_height =35;
+row_height = 35;
 
 // File browser style layout
 files_top = window_y + header_h + 20;
@@ -17,6 +17,8 @@ files_height = window_h - header_h - 40;
 gallery_open = false;
 fullscreen_mode = false;
 current_image_index = -1;
+puzzle_mode = false;
+puzzle_completed = false;
 
 // Buttons
 close_btn = [window_x + window_w - 40, window_y + 10, 30, 30]; 
@@ -29,18 +31,18 @@ zoom_in_btn = [window_x + window_w - 50, window_y + header_h + 100, 40, 30];
 zoom_out_btn = [window_x + window_w - 50, window_y + header_h + 140, 40, 30];
 zoom_reset_btn = [window_x + window_w - 50, window_y + header_h + 180, 40, 30];
 
-// Image data - using your exact names
+// Image data - with puzzle integration
 gallery_images = [
-    { id: 0, sprite: Image1, name: "Image 1", date: "2024-01-01" },
-    { id: 1, sprite: Image2, name: "Image 2", date: "2024-03-02" },
-    { id: 2, sprite: Image3, name: "Image 3", date: "2024-04-13" },
-    { id: 3, sprite: Image4, name: "Image 4", date: "2024-04-29" },
-    { id: 4, sprite: Image5, name: "Image 5", date: "2024-05-25" },
-    { id: 5, sprite: Image6, name: "Image 6", date: "2024-07-06" },
-    { id: 6, sprite: Image7, name: "Image 7", date: "2024-08-25" },
-    { id: 7, sprite: Image8, name: "Image 8", date: "2024-10-08" },
-    { id: 8, sprite: Image9, name: "Image 9", date: "2024-11-29" },
-    { id: 9, sprite: Image10, name: "Image 10", date: "2024-12-14" }
+    { id: 0, sprite: Image1, name: "Info", date: "2024-01-01", is_puzzle: false },
+    { id: 1, sprite: Image2, name: "files", date: "2024-03-02", is_puzzle: false },
+    { id: 2, sprite: Image3, name: "Images", date: "2024-04-13", is_puzzle: false },
+    { id: 3, sprite: Image4, name: "Latop", date: "2024-04-29", is_puzzle: false },
+    { id: 4, sprite: Image5, name: "??????", date: "2024-05-25", is_puzzle: true }, // Puzzle image!
+    { id: 5, sprite: Image6, name: "****", date: "2024-07-06", is_puzzle: false },
+    { id: 6, sprite: Image7, name: "Project", date: "2024-08-25", is_puzzle: false },
+    { id: 7, sprite: Image8, name: "Personal", date: "2024-10-08", is_puzzle: false },
+    { id: 8, sprite: Image9, name: "Document", date: "2024-11-29", is_puzzle: false },
+    { id: 9, sprite: Image10, name: "Desktop", date: "2024-12-14", is_puzzle: false }
 ];
 
 total_images = array_length(gallery_images);
@@ -59,6 +61,7 @@ drag_start_y = 0;
 open_gallery = function() {
     gallery_open = true;
     fullscreen_mode = false;
+    puzzle_mode = false;
     current_image_index = -1;
     zoom_scale = 1.0;
     pan_x = 0;
@@ -68,11 +71,30 @@ open_gallery = function() {
 // Function to close gallery
 close_gallery = function() {
     gallery_open = false;
+    puzzle_mode = false;
+    fullscreen_mode = false;
 }
 
 // Function to open fullscreen view
 open_fullscreen = function(index) {
+    // Check if this is the puzzle image
+    var is_puzzle_image = gallery_images[index].is_puzzle;
+    
+    if (is_puzzle_image) {
+        // Open puzzle mode instead of normal fullscreen
+        puzzle_mode = true;
+        fullscreen_mode = false;
+        current_image_index = index;
+        
+        // Create puzzle controller
+        instance_create_layer(0, 0, "Instances", obj_puzzle_manager);
+        
+        return;
+    }
+    
+    // Normal image - proceed with regular fullscreen
     fullscreen_mode = true;
+    puzzle_mode = false;
     current_image_index = index;
     
     var current_img = gallery_images[index].sprite;
@@ -90,7 +112,7 @@ open_fullscreen = function(index) {
     
     pan_x = 0;
     pan_y = 0;
-} 
+}
 
 // Function to exit fullscreen
 exit_fullscreen = function() {
@@ -99,6 +121,22 @@ exit_fullscreen = function() {
     zoom_scale = 1.0;
     pan_x = 0;
     pan_y = 0;
+}
+
+// Function to exit puzzle mode
+exit_puzzle = function() {
+    puzzle_mode = false;
+    current_image_index = -1;
+    
+    // Destroy puzzle manager if it exists
+    if (instance_exists(obj_puzzle_manager)) {
+        instance_destroy(obj_puzzle_manager);
+    }
+    
+    // Destroy all puzzle pieces
+    with (obj_puzzle_piece) {
+        instance_destroy();
+    }
 }
 
 // Function to navigate between images
@@ -133,6 +171,15 @@ get_clicked_file = function(mx, my) {
         file_y += (row_height + 6);
     }
     return -1;
+}
+
+// Function called when puzzle is completed
+complete_puzzle = function() {
+    puzzle_completed = true;
+    global.puzzleComplete = true; // Set global flag for save system
+    
+    // Change the puzzle image name to show it's solved
+    gallery_images[4].name = "Solved Puzzle!";
 }
 
 // Utility function
