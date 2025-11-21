@@ -1,4 +1,4 @@
-/// Draw Slack-style UI with simple, non-overlapping bubbles
+/// Draw Slack-style UI with proper wrapping and non-overlapping bubbles
 
 draw_set_alpha(1);
 draw_set_font(font_body);
@@ -35,13 +35,13 @@ draw_text(window_x + 14, window_y + 10, "Slack");
 // Header buttons
 draw_set_font(font_body);
 
-// minimize button
+// minimize
 draw_set_color(make_color_rgb(180, 190, 200));
 draw_rectangle(btn_min_x1, btn_min_y1, btn_min_x1 + btn_w, btn_min_y1 + btn_h, false);
 draw_set_color(make_color_rgb(30, 34, 40));
 draw_text(btn_min_x1 + 7, btn_min_y1 + 3, "_");
 
-// close button
+// close
 draw_set_color(make_color_rgb(220, 80, 80));
 draw_rectangle(btn_close_x1, btn_close_y1, btn_close_x1 + btn_w, btn_close_y1 + btn_h, false);
 draw_set_color(c_white);
@@ -104,43 +104,59 @@ draw_line(sidebar_x2, content_y1, sidebar_x2, content_y2);
 draw_set_font(font_body);
 
 if (selected_dm >= 0 && selected_dm < array_length(dm_convos)) {
+    // Header: DM name
     var dm_name = dm_names[selected_dm];
     draw_set_color(c_white);
     draw_text(chat_x1 + 12, content_y1 + 6, dm_name);
 
-    // Layout constants for bubbles
+    // layout constants inside chat panel
     var chat_y_start = content_y1 + 32;
-    var line_y       = chat_y_start - chat_scroll;
-    var chat_inner_w = (chat_x2 - chat_x1) - 24;
-    var bubble_w     = chat_inner_w * 0.90;
-    var text_wrap_w  = bubble_w - 18; // inside the bubble
-    var bubble_h     = 56;            // FIXED height per message
-    var bubble_gap   = 14;            // vertical gap between messages
-    var line_sep     = 4;             // draw_text_ext line spacing
+    var chat_w       = (chat_x2 - chat_x1) - 24;  // inner width
+    var bubble_w     = chat_w * 0.86;             // bubble width
+
+    var pad_x    = 10;
+    var pad_y    = 8;
+    var gap_y    = 14;
+    var line_sep = 4;
+    var wrap_w   = bubble_w - pad_x * 2;
+
+    // scrolling baseline
+    var line_y = chat_y_start - chat_scroll;
 
     var msgs      = dm_convos[selected_dm];
     var msg_count = array_length(msgs);
+
+    // visible vertical range
+    var clip_y  = chat_y_start;
+    var clip_y2 = content_y2 - 4;
+
+    var line_h = string_height("Ag"); // height of one line with current font
 
     for (i = 0; i < msg_count; i++) {
         var m     = msgs[i];
         var text  = m.text;
         var is_me = (m.who == "me");
 
-        // bubble x position: them = left, me = right
+        // bubble X: them = left, me = right
         var bx1;
         if (is_me) {
-            // align to the right side of the chat panel
-            bx1 = chat_x1 + (chat_inner_w - bubble_w) + 12;
+            bx1 = chat_x1 + (chat_w - bubble_w) + 12; // right side bubble
         } else {
-            // align to the left side
-            bx1 = chat_x1 + 12;
+            bx1 = chat_x1 + 12;                       // left side bubble
         }
 
-        var by1 = line_y;
-        var by2 = line_y + bubble_h;
+        // ------------ USE OUR WRAP FUNCTION ------------
+        var lines = _wrap_text(text, wrap_w);
+        var lc    = array_length(lines);
 
-        // only draw if visible in chat area
-        if (by2 >= content_y1 && by1 <= content_y2) {
+        var th = lc * line_h + line_sep * (lc - 1); // text height
+        var bh = th + pad_y * 2;                    // bubble height
+
+        var by1 = floor(line_y);
+        var by2 = by1 + bh;
+
+        // draw only if inside visible chat area
+        if (by2 >= clip_y && by1 <= clip_y2) {
             if (is_me) {
                 draw_set_color(make_color_rgb(67, 181, 129)); // green bubble
             } else {
@@ -149,12 +165,17 @@ if (selected_dm >= 0 && selected_dm < array_length(dm_convos)) {
 
             draw_roundrect(bx1, by1, bx1 + bubble_w, by2, false);
 
+            // draw each wrapped line manually
             draw_set_color(c_white);
-            draw_text_ext(bx1 + 9, by1 + 8, text, line_sep, text_wrap_w);
+            var ty = by1 + pad_y;
+            for (var j = 0; j < lc; j++) {
+                draw_text(bx1 + pad_x, ty, lines[j]);
+                ty += line_h + line_sep;
+            }
         }
 
-        // move down: fixed height + fixed gap so nothing can overlap
-        line_y += bubble_h + bubble_gap;
+        // move down for next bubble
+        line_y += bh + gap_y;
     }
 }
 else if (selected_channel >= 0 && selected_channel < array_length(channels)) {

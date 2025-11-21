@@ -1,9 +1,9 @@
-/// Slack-style messaging app window
+/// Slack-style messaging app window (clean version)
 
 // ---------------- Window & layout ----------------
-window_x = 260;
-window_y = 120;
-window_w = 920;   // a bit wider than before
+window_x = 220;
+window_y = 110;
+window_w = 980;   // wide enough for long lines
 window_h = 560;
 header_h = 38;
 
@@ -11,21 +11,23 @@ is_dragging = false;
 drag_dx = 0;
 drag_dy = 0;
 
-is_minimized = false;
-open_cooldown = 6;  // avoid click-through when freshly opened
+is_minimized   = false;
+open_cooldown  = 6;   // slight delay to avoid click-through when opened
+window_focus   = true;
 
-sidebar_w = 270;    // slightly wider sidebar
-row_h = 26;
+sidebar_w = 270;  // left panel width
+row_h     = 26;
 
-window_focus = true;
-
+// helper: hit-test rectangle
 function _rect_contains(px, py, rx, ry, rw, rh) {
     return (px >= rx) && (py >= ry) && (px < rx + rw) && (py < ry + rh);
 }
 
+// compute all layout rectangles based on window position/size
 function _recalc_layout() {
     window_x2 = window_x + window_w;
     window_y2 = window_y + window_h;
+
     header_y2 = window_y + header_h;
 
     sidebar_x1 = window_x;
@@ -38,8 +40,8 @@ function _recalc_layout() {
     chat_x2 = window_x2 - 1;
 
     // header buttons
-    btn_w = 24;
-    btn_h = 18;
+    btn_w  = 24;
+    btn_h  = 18;
     btn_pad = 6;
 
     btn_close_x1 = window_x2 - btn_w - btn_pad;
@@ -51,9 +53,44 @@ function _recalc_layout() {
 
 _recalc_layout();
 
+// helper: simple word-wrap that returns an array of lines
+function _wrap_text(str, max_w) {
+    var words = string_split(str, " ");
+    var lines = [];
+    var cur   = "";
+
+    var wc = array_length(words);
+    for (var i = 0; i < wc; i++) {
+        var word = words[i];
+        var test = (cur == "") ? word : cur + " " + word;
+
+        // if adding this word makes the line too wide, start a new line
+        if (string_width(test) > max_w && cur != "") {
+            var idx = array_length(lines);
+            lines[idx] = cur;
+            cur = word;
+        } else {
+            cur = test;
+        }
+    }
+
+    // last line
+    if (cur != "") {
+        var idx2 = array_length(lines);
+        lines[idx2] = cur;
+    }
+
+    // handle empty string
+    if (array_length(lines) == 0) {
+        lines[0] = "";
+    }
+
+    return lines;
+}
+
 // ---------------- Fonts ----------------
-font_title = -1; // default
-font_body  = -1; // default
+font_title = -1; // default or project-defined
+font_body  = -1;
 
 // ---------------- Channels ----------------
 channels = [
@@ -63,9 +100,9 @@ channels = [
     "#IT_helpdesk"
 ];
 
-// start in DMs (Sofia)
+// start in DM view (Sofia)
 selected_channel = -1;
-selected_dm = 0;
+selected_dm      = 0;
 
 // ---------------- Direct Messages data ----------------
 // message: { who:"me"/"them", text:"..." }
@@ -107,37 +144,33 @@ var thomas = [
     { who:"me",   text:"Alright." },
     { who:"them", text:"I need someone now to fix this." },
     { who:"me",   text:"Ok." },
-    { who:"them", text:"I know what you did.\nLet’s talk face-to-face tomorrow." },
+    { who:"them", text:"I know what you did. Lets talk face-to-face tomorrow." },
     { who:"me",   text:"I recorded it." },
     { who:"them", text:"Made sure to eliminate it." }
 ];
 
 // Leonn S – starts awkward, becomes friendly & info source
 var leonn = [
-    { who:"them", text:"um hi Ms Myers, my name is Leonn, i’m an intern under Mr Fowler.\nI fixed the VPN thing.." },
+    { who:"them", text:"um hi Ms Myers, my name is Leonn, im an intern under Mr Fowler. I fixed the VPN thing.." },
     { who:"me",   text:"Thanks." },
     { who:"them", text:"I saw you in the cafeteria today" },
     { who:"me",   text:"?" },
     { who:"them", text:"Everyone in my office went out for lunch but me. I saw you from afar." },
     { who:"me",   text:"??" },
-    { who:"them", text:"I’m heading to your office to check on the router! And also bringing some donuts?" },
+    { who:"them", text:"Im heading to your office to check on the router! And also bringing some donuts?" },
     { who:"me",   text:"You should not use my DMs for this." },
     { who:"them", text:"sorry sorry omg" },
-    { who:"me",   text:"Don’t do it too much." },
-    { who:"them", text:"ooh. yes ma’am! 😺" },
-    { who:"them", text:"can I stay in your office for a bit? Richard is being weird today." },
-    { who:"me",   text:"Sure. Close the door." },
+    { who:"me",   text:"Dont do it too much." },
     { who:"them", text:"my boss is kinda bothersome" },
     { who:"me",   text:"Is he? How?" },
-    { who:"them", text:"yes! he thinks he truly is the best but well, he is a senior but that’s all for connections – he is close to the CTO." },
-    { who:"them", text:"otherwise he wouldnt be there… his code isn’t even THAT good, i can do better than that as an intern." },
+    { who:"them", text:"yes! he thinks he truly is the best but well, he is a senior but thats all for connections – he is close to the CTO." },
+    { who:"them", text:"otherwise he wouldnt be there… his code isnt even THAT good, i can do better than that as an intern." },
     { who:"me",   text:"That’s cool." },
     { who:"them", text:"…yeah. I am. I wish I had a boss like you, Van" },
     { who:"me",   text:"Van?" },
     { who:"them", text:"likeanicknameuknow uh ah yes." },
     { who:"them", text:"whatevs. i got left behind again by the rest of IT. wanna have lunch together?" },
-    { who:"me",   text:"Sure. Tell me more about Richard." },
-    { who:"them", text:"😅🐱✨" } // random emojis Vanessa ignores
+    { who:"me",   text:"Sure. Tell me more about Richard." }
 ];
 
 dm_names = [
@@ -160,6 +193,6 @@ dm_convos = [
 chat_scroll = 0;
 
 // ---------------- Minimized tab layout ----------------
-min_tab_w = 180;
-min_tab_h = 24;
+min_tab_w      = 180;
+min_tab_h      = 24;
 min_tab_margin = 12;

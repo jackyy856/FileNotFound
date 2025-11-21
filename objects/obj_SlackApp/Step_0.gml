@@ -3,11 +3,10 @@
 var mx = device_mouse_x_to_gui(0);
 var my = device_mouse_y_to_gui(0);
 
-var is_down   = mouse_check_button(mb_left);
-var pressed   = mouse_check_button_pressed(mb_left);
-var released  = mouse_check_button_released(mb_left);
+var is_down  = mouse_check_button(mb_left);
+var pressed  = mouse_check_button_pressed(mb_left);
+var released = mouse_check_button_released(mb_left);
 
-// ensure click gate exists
 if (!variable_global_exists("_ui_click_consumed")) {
     global._ui_click_consumed = false;
 }
@@ -28,11 +27,10 @@ if (is_minimized) {
         global._ui_click_consumed = true;
     }
 
-    // when minimized, ignore everything else
     exit;
 }
 
-// ---------------- Stop dragging when mouse released ----------------
+// stop dragging as soon as button is released
 if (released) {
     is_dragging = false;
 }
@@ -64,21 +62,19 @@ if (pressed && !global._ui_click_consumed) {
     }
 }
 
-// apply dragging while mouse is held
+// Apply dragging
 if (is_dragging && is_down) {
     window_x = mx - drag_dx;
     window_y = my - drag_dy;
     _recalc_layout();
 }
 
-// safety: if mouse button not held at all, do not drag
 if (!is_down) {
     is_dragging = false;
 }
 
 // ---------------- Sidebar selection (channels / DMs) ----------------
 if (pressed && !global._ui_click_consumed) {
-    // inside sidebar?
     if (_rect_contains(mx, my, sidebar_x1, content_y1, sidebar_w, content_y2 - content_y1)) {
 
         var ch_title_y = content_y1 + 4;
@@ -112,7 +108,6 @@ if (pressed && !global._ui_click_consumed) {
                     selected_dm = d_idx;
                     selected_channel = -1;
                     chat_scroll = 0;
-                    global._ui_click_consumed = true;
                 }
             }
         }
@@ -121,8 +116,8 @@ if (pressed && !global._ui_click_consumed) {
 
 // ---------------- Chat scroll with mouse wheel ----------------
 var scroll_delta = 0;
-if (mouse_wheel_up())   scroll_delta -= 24;
-if (mouse_wheel_down()) scroll_delta += 24;
+if (mouse_wheel_up())   scroll_delta -= 30;
+if (mouse_wheel_down()) scroll_delta += 30;
 
 if (scroll_delta != 0) {
     if (_rect_contains(mx, my, chat_x1, content_y1, chat_x2 - chat_x1, content_y2 - content_y1)) {
