@@ -1,3 +1,5 @@
+/// obj_EmailApp - Draw GUI
+
 draw_set_alpha(1);
 
 // draw header bar (always)
@@ -14,7 +16,7 @@ if (!is_minimized) {
     draw_rectangle(window_x, window_y + header_h, window_x + window_w, window_y + window_h, true);
 }
 
-//header text
+// header text
 draw_set_font(font_title);
 draw_set_halign(fa_left);
 draw_set_valign(fa_top);
@@ -29,7 +31,7 @@ draw_set_color(c_black);
 draw_rectangle(min_btn[0], min_btn[1], min_btn[0] + min_btn[2], min_btn[1] + min_btn[3], true);
 draw_text(min_btn[0] + 8, min_btn[1] + 2, "-");
 
-//close button (light gray fill + black border/text)
+// close button (light gray fill + black border/text)
 var bcol = make_colour_rgb(230,230,230);
 draw_set_color(bcol);
 draw_rectangle(close_btn[0], close_btn[1], close_btn[0] + close_btn[2], close_btn[1] + close_btn[3], false);
@@ -38,25 +40,31 @@ draw_rectangle(close_btn[0], close_btn[1], close_btn[0] + close_btn[2], close_bt
 draw_text(close_btn[0] + 7, close_btn[1] + 2, "X");
 
 // If minimized: don't draw the body/content; only title bar visible
-if (is_minimized) exit;
+if (is_minimized) {
+    // reset state for others and exit
+    draw_set_halign(fa_left);
+    draw_set_valign(fa_top);
+    draw_set_font(-1);
+    draw_set_color(c_white);
+    draw_set_alpha(1);
+    exit;
+}
 
-//content
+// content
 draw_set_font(font_body);
 draw_set_color(c_black);
 
-if (selected_index == -1) 
-{
+if (selected_index == -1) {
+    // inbox list
     var rowY = list_top;
     var len = array_length(inbox);
-    for (var i = 0; i < len; i++) 
-    {
+    for (var i = 0; i < len; i++) {
         draw_set_alpha(0.08);
         draw_set_color(c_black);
         draw_rectangle(list_left, rowY, list_left + list_w, rowY + row_h, false);
         draw_set_alpha(1);
 
-        if (!inbox[i].read) 
-        {
+        if (!inbox[i].read) {
             draw_circle(list_left + 10, rowY + row_h * 0.5, 4, false);
         }
 
@@ -109,9 +117,8 @@ if (selected_index == -1)
         rowY += row_h;
         if (rowY > list_top + list_h) break;
     }
-} 
-else 
-{
+}
+else {
     // back button
     var bcol_back = make_colour_rgb(230,230,230);
     draw_set_color(bcol_back);
@@ -123,34 +130,79 @@ else
     var em = inbox[selected_index];
 
     var _em_cor = variable_struct_exists(em, "is_corrupted") && em.is_corrupted;
-    if (!_em_cor || puzzle_solved) {
-        var tx = window_x + 20;
-        var ty = window_y + header_h + 12;
 
-        draw_set_color(c_black);
-        draw_set_font(font_title);
-        draw_text(tx, ty, em.subject);
-        ty += 28;
+    // == Normal mail / solved ==
+	if (!_em_cor || puzzle_solved) {
+	    var tx = window_x + 20;
+	    var ty = window_y + header_h + 12;
 
-        draw_set_font(font_body);
-        draw_text(tx, ty, "From: " + em.from);
-        ty += 22;
+	    // Subject
+	    draw_set_color(c_black);
+	    draw_set_font(font_title);
+	    draw_text(tx, ty, em.subject);
+	    ty += 28;
 
-        var body_w = window_w - 40;
-        draw_text_ext(tx, ty, em.body, 12, body_w);
-    }
-    else
-    {
-        var tx = window_x + 20;
-        var ty = window_y + header_h + 12;
+	    // From
+	    draw_set_font(font_body);
+	    draw_text(tx, ty, "From: " + em.from);
+	    ty += 22;
+
+	    // Special layout for recovered corrupted email
+	    if (selected_index == corrupted_index && puzzle_solved) {
+	        // Line 1 + line 2
+	        var line1 = "It does.";
+	        var line2 = "Here's your key, sucker.";
+
+	        // First line
+	        draw_text(tx, ty, line1);
+	        ty += 24;
+
+	        // Second line
+	        draw_text(tx, ty, line2);
+
+	        // Choose key sprite (glow variant if collected)
+	        var key_spr = email_key1_collected ? spr_green_glow_key : spr_green_key;
+
+	        var raw_w = sprite_get_width(key_spr);
+	        var raw_h = sprite_get_height(key_spr);
+
+	        // scale down big PNGs to a nice height (e.g. 64px)
+	        var desired_h = 64;
+	        var key_scale = (raw_h > 0) ? (desired_h / raw_h) : 1;
+
+	        var key_w = raw_w * key_scale;
+	        var key_h = raw_h * key_scale;
+
+	        // Place key just to the right of the second line
+	        var gap   = 20; // space between text and key
+	        var key_x = tx + string_width(line2) + gap;
+	        var key_y = ty - key_h * 0.6; // slight lift so it sits nicely with text
+
+	        // store rect for Step click detection (scaled)
+	        email_key1_rect = [key_x, key_y, key_w, key_h];
+
+	        // subtle glow if not yet collected
+	        if (!email_key1_collected) {
+	            draw_set_alpha(0.4);
+	            draw_set_color(c_white);
+	            draw_roundrect(key_x - 6, key_y - 6,
+	                           key_x + key_w + 6, key_y + key_h + 6, false);
+	            draw_set_alpha(1);
+	        }
+
+	        // draw key sprite at scale
+	        draw_sprite_ext(key_spr, 0, key_x, key_y, key_scale, key_scale, 0, c_white, 1);
+	    }
+	    else {
+	        // normal emails: just draw the body
+	        var body_w = window_w - 40;
+	        draw_text_ext(tx, ty, em.body, 12, body_w);
+	    }
+	}
+	
+    // == Corrupted view with riddle, binary rain, and puzzle ==
+    else {
         var neon = make_colour_rgb(0, 200, 0);
-
-        draw_set_font(font_title);
-        draw_set_color(neon);
-        draw_text(tx, ty, "Email Corrupted");
-        draw_text(tx+1, ty, "Email Corrupted");
-        draw_text(tx-1, ty, "Email Corrupted");
-        ty += 28;
 
         // Binary rain background area (ABS using local struct)
         var rx = window_x + bin_area_local.x;
@@ -185,6 +237,46 @@ else
             }
         }
 
+        // Email Corrupted title in white area above hacker box
+		var neon    = make_colour_rgb(0, 200, 0);
+		draw_set_font(font_title);
+		draw_set_color(neon);
+
+		var title_x = window_x + 100;
+		var title_y = window_y + 30;
+		draw_text(title_x, title_y, "Email Corrupted");
+
+		// Riddle text, plain black, in the white box
+		var riddle_text = "Riddle: What an awful job!";
+		var riddle_x    = title_x + 600;
+		var riddle_y    = title_y - 5;
+
+		draw_set_font(font_body); // or font_riddle if you prefer that one
+		draw_set_color(c_black);
+		draw_text(riddle_x, riddle_y, riddle_text);
+
+
+        // Hint dialog box (on top of binary rain, so readable)
+        if (puzzle_show_hint) {
+            var hw = 420;
+            var hh = 80;
+            var hx = rx + (rw - hw) * 0.5;
+            var hy = ry + 20;
+
+            draw_set_color(make_colour_rgb(240,240,240));
+            draw_rectangle(hx, hy, hx + hw, hy + hh, false);
+            draw_set_color(c_black);
+            draw_rectangle(hx, hy, hx + hw, hy + hh, true);
+
+            var hint_tx = hx + 12;
+            var hint_ty = hy + 14;
+
+            draw_set_font(font_body);
+            draw_set_color(c_black);
+            draw_text(hint_tx, hint_ty, "Hint: Those emails look messy....");
+            draw_text(hint_tx, hint_ty + 20, "What do you really think about that place?");
+        }
+
         // Puzzle area (ABS)
         var pax = window_x + puzzle_area_local.x;
         var pay = window_y + puzzle_area_local.y;
@@ -209,26 +301,32 @@ else
         draw_set_color(c_white);
         draw_text(pax, pay-26, itext);
 
-        // Word tiles (ABS from LOCAL)
-        for (var i = 0; i < array_length(word_btns); i++) {
-            var b = word_btns[i];
-            var ax = window_x + b.x;
-            var ay = window_y + b.y;
+        // === WORD TILES (ABS from LOCAL, old style: black bg, green outline) ===
+        for (var i2 = 0; i2 < array_length(word_btns); i2++) {
+            var b2 = word_btns[i2];
+            var ax = window_x + b2.x;
+            var ay = window_y + b2.y;
 
+            var w2 = b2.w;
+            var h2 = b2.h;
+
+            // fill
             draw_set_color(c_black);
-            draw_rectangle(ax, ay, ax + b.w, ay + b.h, false);
+            draw_rectangle(ax, ay, ax + w2, ay + h2, false);
 
+            // outline
             draw_set_color(neon);
-            draw_rectangle(ax, ay, ax + b.w, ay + b.h, true);
+            draw_rectangle(ax, ay, ax + w2, ay + h2, true);
 
+            // text
             draw_set_font(font_body);
             draw_set_halign(fa_center);
             draw_set_valign(fa_middle);
             draw_set_color(neon);
-            draw_text(ax + b.w * 0.5, ay + b.h * 0.5, b.text);
+            draw_text(ax + w2 * 0.5, ay + h2 * 0.5, b2.text);
         }
 
-        // Modal if solved (ABS)
+        // (Optional modal if you ever re-enable it; harmless now)
         if (puzzle_solved) {
             var mw = 420, mh = 160;
             var mx2 = window_x + (window_w - mw) * 0.5;
@@ -261,3 +359,10 @@ else
         }
     }
 }
+
+// ---- RESET DRAW STATE so other apps (taskbar clock, notes) aren't affected ----
+draw_set_halign(fa_left);
+draw_set_valign(fa_top);
+draw_set_font(-1);
+draw_set_color(c_white);
+draw_set_alpha(1);

@@ -1,5 +1,5 @@
 // layout
-event_inherited();   // gets base geometry and state
+event_inherited();   // gets base geometry and state (from AppBase if needed)
 title = "Mail";      // window title
 
 // Base window geom (absolute GUI)
@@ -23,7 +23,7 @@ function _in_win(px,py){ return (px>=window_x)&&(py>=window_y)&&(px<window_x+win
 function _on_drag_border(px,py){
     var l = (abs(px - window_x) <= drag_border);
     var r = (abs(px - (window_x + window_w)) <= drag_border);
-    var t = (abs(py - window_y) <= drag_border);
+    var t = (abs(py - (window_y + header_h)) <= drag_border);
     var b = (abs(py - (window_y + window_h)) <= drag_border);
     return l || r || t || b;
 }
@@ -53,24 +53,39 @@ font_body  = (fBody  != -1) ? fBody  : -1;
 
 // inbox data
 inbox = [
-	{ id:0, from:"announcementz@rosenwood.hr", subject:"You have been selected for a bonus opportunity!",
-      body:"Congratulations! Thanks to your outstanding performance, we have an amazing notice to share. Please click here to redeem your certificate of recognition. Thank you for your hard work!",
-      read:false, is_suspicious:true, is_corrupted:false },
-	  
-    { id:1, from:"IT Support", subject:"Action Required: Password Reset",
-      body:"Your password expires today. Click the in-app link to reset.", read:false, is_suspicious:false, is_corrupted:false },
-
-    { id:2, from:"Unknown", subject:"[URGENT] Outstanding invoice (open immediately)",
-      body:"This message contains your invoice.",
-      read:false, is_suspicious:false, is_corrupted:false },
-      
-    { id:3, from:"Patrica Conway", subject:"Friday Office Party",
-      body:"Hey! Sharing the office party photos. Don't let the boss see ;)",
-      read:false, is_suspicious:false, is_corrupted:false }
+    {
+        id:0,
+        from:"announcementz@rosenwood.hr",
+        subject:"You have been selected for a bonus opportunity!",
+        body:"Congratulations! Thanks to your outstanding performance, we have an amazing notice to share. Please click here to redeem your certificate of recognition. Thank you for your hard work!",
+        read:false, is_suspicious:true, is_corrupted:false
+    },
+    {
+        id:1,
+        from:"IT Support",
+        subject:"Action Required: Password Reset",
+        body:"Your password expires today. Click the in-app link to reset.",
+        read:false, is_suspicious:false, is_corrupted:false
+    },
+    {
+        id:2,
+        from:"Unknown",
+        subject:"[URGENT] Outstanding invoice (open immediately)",
+        body:"This message contains your invoice.",
+        read:false, is_suspicious:false, is_corrupted:false
+    },
+    {
+        id:3,
+        from:"Patrica Conway",
+        subject:"Friday Office Party",
+        body:"Hey! Sharing the office party photos. Don't let the boss see ;)",
+        read:false, is_suspicious:false, is_corrupted:false
+    }
 ];
 
-/// --- Email Puzzle ---
-puzzle_gate = true; // TODO: wire to your real story flag
+/// --- Email Puzzle / Corrupted mail ---
+
+puzzle_gate = true; // still here if you want to gate later
 
 // Add a corrupted email entry
 var _len = array_length(inbox);
@@ -78,16 +93,28 @@ inbox[_len] = {
     id           : 4,
     from         : "System",
     subject      : "[CORRUPTED] \u2588\u2592\u2591\u2592\u2588",
-    body         : "This email is corrupted. Recover it to reveal the Wi-Fi password.",
+    body         : "This email is corrupted. Recover it to reveal your first key.",
     read         : false,
     is_suspicious: false,
     is_corrupted : true
 };
 corrupted_index = _len;
 
-// Puzzle definition
-puzzle_target = ["Recover", "your", "password"];
-puzzle_words  = ["your","where","find","Steal","Recover","I","for","password","Ground","down"];
+// Target sentence & word list
+puzzle_target = ["Rosenwood", "Corps", "sucks"];
+
+puzzle_words  = [
+    "Rosenwood",
+    "Lilywood",
+    "family",
+    "Recover",
+    "Corps",
+    "amazing",
+    "is",
+    "dogs",
+    "sucks",
+    "where"
+];
 
 // ---- LOCAL GEOMETRY (relative to window_x, window_y) ----
 bin_area_local = {
@@ -97,7 +124,7 @@ bin_area_local = {
     h : window_h - header_h - 80
 };
 
-// Puzzle target area (LOCAL; center-bottom)
+// Puzzle target area (LOCAL; where pieces snap)
 puzzle_area_local = {
     x : 140,
     y : 320,
@@ -105,7 +132,7 @@ puzzle_area_local = {
     h : 160
 };
 
-// Word tile sizing + centered 2-row layout
+// Word tile sizing + centered 2-row layout (spawn rows at bottom)
 word_btn_w = 150;
 word_btn_h = 34;
 var cols   = 5;
@@ -127,14 +154,72 @@ for (var i = 0; i < array_length(puzzle_words); i++) {
     var by = (r == 0) ? row0_y : row1_y;
 
     word_btns[i] = {
-        text     : puzzle_words[i],
-        x        : bx,  y : by,     // LOCAL coords
-        ox       : bx,  oy: by,     // LOCAL spawn
-        w        : word_btn_w, h: word_btn_h,
-        dragging : false,
-        dx       : 0, dy: 0,
-        placed   : false
+        text      : puzzle_words[i],
+        x         : bx,  y : by,     // LOCAL coords
+        ox        : bx,  oy: by,     // LOCAL spawn
+        w         : word_btn_w, h: word_btn_h,
+        dragging  : false,
+        dx        : 0, dy: 0,
+        placed    : false,
+        slot_index: -1,
+        shape_start: 0,
+        shape_end  : 0,
+        shape_start_group: 1,
+        shape_end_group  : 1
     };
+}
+
+// Assign shape patterns based on word text
+for (var j = 0; j < array_length(word_btns); j++) {
+    var btxt = word_btns[j].text;
+
+    var s_start = 0;
+    var s_end   = 0;
+    var g_start = 1; // 0 = first-group, 1 = middle-group, 2 = last-group
+    var g_end   = 1;
+
+    // First words: Rosenwood, Lilywood, Recover
+    //   - edge on END side (type 1), visually "first" group (higher teeth)
+    if (btxt == "Rosenwood" || btxt == "Lilywood" || btxt == "Recover") {
+        s_end = 1;
+        g_end = 0; // first group
+    }
+    // Middle words: Corps, is
+    //   - start edge fits first words (type 1)
+    //   - end edge fits last words (type 2)
+    else if (btxt == "Corps" || btxt == "is") {
+        s_start = 1;
+        s_end   = 2;
+        g_start = 1; // middle group
+        g_end   = 1; // middle group
+    }
+    // Last words: family, amazing, sucks, dogs
+    //   - only START edge (type 2), in "last" group (lowest)
+    else if (btxt == "family" || btxt == "amazing" || btxt == "sucks" || btxt == "dogs") {
+        s_start = 2;
+        g_start = 2; // last group
+    }
+    // "where" stays flat
+
+    word_btns[j].shape_start       = s_start;
+    word_btns[j].shape_end         = s_end;
+    word_btns[j].shape_start_group = g_start;
+    word_btns[j].shape_end_group   = g_end;
+}
+
+// --- Puzzle snap slots for the 3 target words inside the black box (LOCAL) ---
+// Use structs { x, y } so we can control spacing and vertical center
+var slot_count = array_length(puzzle_target);
+puzzle_slots   = array_create(slot_count);
+
+var base_spacing = word_btn_w + 24; // give extra space so teeth don't overlap
+var total_span   = base_spacing * (slot_count - 1) + word_btn_w;
+var slots_left   = puzzle_area_local.x + max(0, (puzzle_area_local.w - total_span) * 0.5);
+var slot_y       = puzzle_area_local.y + (puzzle_area_local.h - word_btn_h) * 0.5;
+
+for (var s = 0; s < slot_count; s++) {
+    var sx = slots_left + s * base_spacing;
+    puzzle_slots[s] = { x: sx, y: slot_y };
 }
 
 // Binary rain
@@ -148,6 +233,14 @@ puzzle_solved    = false;
 puzzle_scattered = true; // keep neat rows
 puzzle_message   = "";
 ok_btn_local     = [0,0,120,36];
+
+// Riddle / hint timer
+puzzle_hint_timer = 0;
+puzzle_show_hint  = false;
+
+// Email key reward
+email_key1_collected = false;
+email_key1_rect      = [0,0,0,0]; // x,y,w,h
 
 // click-through claim helpers
 if (!variable_global_exists("_ui_click_consumed")) global._ui_click_consumed = false;
