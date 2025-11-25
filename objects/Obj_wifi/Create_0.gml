@@ -43,7 +43,7 @@ password_dropdown_visible = false;
 // Input field
 input_field_visible = false;
 input_text = "";
-input_max_length = 10;
+input_max_length = 20;
 input_field_has_focus = false;
 
 // Message display

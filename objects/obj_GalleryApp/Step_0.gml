@@ -1,105 +1,146 @@
-/// --- CLICK-THROUGH GUARD (header, do not clear mouse here) ---
-if (!variable_global_exists("_ui_click_consumed")) global._ui_click_consumed = false;
-if (!variable_instance_exists(id, "__ui_click_inside")) __ui_click_inside = false;
+if (gallery_open) {
+    // Update button positions
+    close_btn = [window_x + window_w - 40, window_y + 10, 30, 30]; 
+    back_btn  = [window_x + 15, window_y + 10, 70, 30];
+    left_btn  = [window_x + 30, window_y + window_h/2 - nav_btn_size/2, nav_btn_size, nav_btn_size];
+    right_btn = [window_x + window_w - nav_btn_size - 30, window_y + window_h/2 - nav_btn_size/2, nav_btn_size, nav_btn_size];
+    
+    // Zoom buttons
+    zoom_in_btn = [window_x + window_w - 50, window_y + header_h + 100, 40, 30];
+    zoom_out_btn = [window_x + window_w - 50, window_y + header_h + 140, 40, 30];
+    zoom_reset_btn = [window_x + window_w - 50, window_y + header_h + 180, 40, 30];
+    
+    // Update file browser layout too
+    files_top = window_y + header_h + 20;
+    files_left = window_x + 20;
+    files_width = window_w - 40;
+    files_height = window_h - header_h - 40;
+}
 
-var _mx = device_mouse_x_to_gui(0);
-var _my = device_mouse_y_to_gui(0);
-var _wx = window_x, _wy = window_y, _ww = window_w, _wh = window_h;
-
+// Handle mouse clicks
 if (mouse_check_button_pressed(mb_left)) {
-    if (_mx >= _wx && _my >= _wy && _mx < _wx + _ww && _my < _wy + _wh) {
-        // Remember that this frame started with a click inside our window.
-        // We’ll actually mark it as “consumed” in End Step, AFTER our own UI has used it.
-        __ui_click_inside = true;
+    var mx = mouse_x;
+    var my = mouse_y;
+    
+    // Close button works in all modes
+    if (check_button_click(mx, my, close_btn)) {
+        if (puzzle_mode) {
+            exit_puzzle();
+        } else if (fullscreen_mode) {
+            exit_fullscreen();
+        } else {
+            instance_destroy();
+        }
+        exit;
     }
-}
-
-
-if (!gallery_open) exit;
-
-var mx = device_mouse_x_to_gui(0);
-var my = device_mouse_y_to_gui(0);
-
-
-// cooldown to prevent icon click from instantly opening an image row
-if (open_cooldown > 0) open_cooldown--;
-
-// --- NEW: click shield ---
-if (!variable_global_exists("_ui_click_consumed")) global._ui_click_consumed = false;
-if (mouse_check_button_pressed(mb_left) && _in_win(mx,my)) {
-    global._ui_click_consumed = true;
-}
-
-// --- NEW: cursor on frame vs buttons ---
-var over_close = check_button_click(mx,my, close_btn);
-var over_min   = check_button_click(mx,my, min_btn);
-var over_back  = check_button_click(mx,my, back_btn);
-var over_drag  = _in_win(mx,my) && _on_drag_border(mx,my);
-if (over_close || over_min || (fullscreen_mode && over_back)) window_set_cursor(cr_default);
-else if (over_drag) window_set_cursor(cr_size_all);
-else window_set_cursor(cr_default);
-
-// Handle mouse clicks (top-level buttons)
-if (mouse_check_button_pressed(mb_left)) {
-    if (check_button_click(mx,my, close_btn)) { instance_destroy(); exit; }
-    if (check_button_click(mx,my, min_btn)) { is_minimized = !is_minimized; exit; }
-}
-
-// --- NEW: drag frame (disabled when minimized) ---
-if (!is_minimized) {
-    if (mouse_check_button_pressed(mb_left) && over_drag) {
-        dragging = true; 
-        drag_dx = mx - window_x; 
-        drag_dy = my - window_y;
+    
+    if (puzzle_mode) {
+        // In puzzle mode, only handle back button - puzzle handles the rest
+        if (check_button_click(mx, my, back_btn)) {
+            exit_puzzle();
+            return;
+        }
+        // Let the puzzle manager handle other clicks
+        return;
     }
-    if (dragging) {
-        window_x = mx - drag_dx;
-        window_y = my - drag_dy;
-        _recalc_gallery_layout();
-        if (!mouse_check_button(mb_left)) dragging = false;
-    }
-}
-
-// if minimized, skip inner interactions
-if (is_minimized) exit;
-
-// Fullscreen mode interactions
-if (fullscreen_mode) {
-    if (mouse_check_button_pressed(mb_left)) {
-        if (check_button_click(mx, my, back_btn)) { exit_fullscreen(); return; }
-        if (check_button_click(mx, my, left_btn)) { navigate_image(-1); return; }
-        if (check_button_click(mx, my, right_btn)) { navigate_image(1);  return; }
-        if (check_button_click(mx, my, zoom_in_btn))    { zoom_scale = min(zoom_scale + 0.3, max_zoom); return; }
-        if (check_button_click(mx, my, zoom_out_btn))   { zoom_scale = max(zoom_scale - 0.3, min_zoom); return; }
-        if (check_button_click(mx, my, zoom_reset_btn)) { zoom_scale = 1.0; pan_x = 0; pan_y = 0; return; }
-
-        // Start dragging image
-        if (!check_button_click(mx,my,left_btn) && !check_button_click(mx,my,right_btn)
-         && !check_button_click(mx,my,back_btn) && !check_button_click(mx,my,zoom_in_btn)
-         && !check_button_click(mx,my,zoom_out_btn) && !check_button_click(mx,my,zoom_reset_btn)
-         && !check_button_click(mx,my,close_btn) && !check_button_click(mx,my,min_btn)) {
+    
+    if (fullscreen_mode) {
+        // Back button in fullscreen
+        if (check_button_click(mx, my, back_btn)) {
+            exit_fullscreen();
+            return;
+        }
+        
+        // Navigation arrows
+        if (check_button_click(mx, my, left_btn)) {
+            navigate_image(-1);
+            return;
+        }
+        if (check_button_click(mx, my, right_btn)) {
+            navigate_image(1);
+            return;
+        }
+        
+        // ZOOM BUTTONS
+        if (check_button_click(mx, my, zoom_in_btn)) {
+            zoom_scale = min(zoom_scale + 0.3, max_zoom);
+            return;
+        }
+        if (check_button_click(mx, my, zoom_out_btn)) {
+            zoom_scale = max(zoom_scale - 0.3, min_zoom);
+            return;
+        }
+        if (check_button_click(mx, my, zoom_reset_btn)) {
+            zoom_scale = 1.0;
+            pan_x = 0;
+            pan_y = 0;
+            return;
+        }
+        
+        // Start dragging if clicking on image area
+        if (!check_button_click(mx, my, left_btn) && 
+            !check_button_click(mx, my, right_btn) &&
+            !check_button_click(mx, my, back_btn) &&
+            !check_button_click(mx, my, zoom_in_btn) &&
+            !check_button_click(mx, my, zoom_out_btn) &&
+            !check_button_click(mx, my, zoom_reset_btn) &&
+            !check_button_click(mx, my, close_btn)) {
+            
             is_dragging = true;
             drag_start_x = mx - pan_x;
             drag_start_y = my - pan_y;
         }
-    }
-
-    if (mouse_check_button_released(mb_left)) is_dragging = false;
-    if (is_dragging) { pan_x = mx - drag_start_x; pan_y = my - drag_start_y; }
-
-    if (keyboard_check_pressed(ord("=")) || keyboard_check_pressed(vk_add)) zoom_scale = min(zoom_scale + 0.3, max_zoom);
-    if (keyboard_check_pressed(ord("-")) || keyboard_check_pressed(vk_subtract)) zoom_scale = max(zoom_scale - 0.3, min_zoom);
-    if (keyboard_check_pressed(vk_escape)) exit_fullscreen();
-    if (keyboard_check_pressed(vk_left))  navigate_image(-1);
-    if (keyboard_check_pressed(vk_right)) navigate_image(1);
-    if (keyboard_check_pressed(ord("R"))) { zoom_scale = 1.0; pan_x = 0; pan_y = 0; }
-}
-else
-{
-    // File list click opens fullscreen (after cooldown)
-    if (mouse_check_button_pressed(mb_left) && open_cooldown <= 0) {
+    } else {
+        // Gallery view - check file clicks
         var clicked_index = get_clicked_file(mx, my);
-        if (clicked_index != -1) { open_fullscreen(clicked_index); return; }
+        if (clicked_index != -1) {
+            open_fullscreen(clicked_index);
+            return;
+        }
     }
 }
 
+// Handle mouse release
+if (mouse_check_button_released(mb_left)) {
+    is_dragging = false;
+}
+
+// Handle dragging in fullscreen mode
+if (fullscreen_mode && is_dragging) {
+    pan_x = mouse_x - drag_start_x;
+    pan_y = mouse_y - drag_start_y;
+}
+
+// Handle keyboard controls
+if (puzzle_mode) {
+    // ESC to exit puzzle
+    if (keyboard_check_pressed(vk_escape)) {
+        exit_puzzle();
+    }
+} else if (fullscreen_mode) {
+    // Keyboard zoom controls
+    if (keyboard_check_pressed(ord("=")) || keyboard_check_pressed(vk_add)) {
+        zoom_scale = min(zoom_scale + 0.3, max_zoom);
+    }
+    if (keyboard_check_pressed(ord("-")) || keyboard_check_pressed(vk_subtract)) {
+        zoom_scale = max(zoom_scale - 0.3, min_zoom);
+    }
+    
+    // Keyboard navigation
+    if (keyboard_check_pressed(vk_escape)) {
+        exit_fullscreen();
+    }
+    if (keyboard_check_pressed(vk_left)) {
+        navigate_image(-1);
+    }
+    if (keyboard_check_pressed(vk_right)) {
+        navigate_image(1);
+    }
+    
+    // Reset view with R key
+    if (keyboard_check_pressed(ord("R"))) {
+        zoom_scale = 1.0;
+        pan_x = 0;
+        pan_y = 0;
+    }
+}
