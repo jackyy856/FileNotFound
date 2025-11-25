@@ -19,6 +19,7 @@ fullscreen_mode = false;
 current_image_index = -1;
 puzzle_mode = false;
 puzzle_completed = false;
+is_minimized = false;
 
 // Buttons
 close_btn = [window_x + window_w - 40, window_y + 10, 30, 30]; 
@@ -81,38 +82,48 @@ open_fullscreen = function(index) {
     var is_puzzle_image = gallery_images[index].is_puzzle;
     
     if (is_puzzle_image) {
-        // Open puzzle mode instead of normal fullscreen
-        puzzle_mode = true;
-        fullscreen_mode = false;
+        // --- PUZZLE MODE ---
+        puzzle_mode      = true;
+        fullscreen_mode  = false;
         current_image_index = index;
-        
-        // Create puzzle controller
-        instance_create_layer(0, 0, "Instances", obj_puzzle_manager);
-        
+
+        // Bring the Gallery window to the front
+        if (!variable_global_exists("window_z_next")) {
+            global.window_z_next = -10;
+        }
+        depth = global.window_z_next;
+        global.window_z_next -= 1;
+
+        // Create puzzle controller and put it slightly IN FRONT of Gallery
+        var pm = instance_create_layer(0, 0, "Instances", obj_puzzle_manager);
+        if (pm != noone) {
+            pm.depth = depth - 1; // smaller depth = drawn on top
+        }
+
         return;
     }
     
-    // Normal image - proceed with regular fullscreen
+    // --- NORMAL FULLSCREEN IMAGE MODE ---
     fullscreen_mode = true;
-    puzzle_mode = false;
+    puzzle_mode     = false;
     current_image_index = index;
     
-    var current_img = gallery_images[index].sprite;
-    var img_width = sprite_get_width(current_img);
-    var img_height = sprite_get_height(current_img);
+    var current_img  = gallery_images[index].sprite;
+    var img_width    = sprite_get_width(current_img);
+    var img_height   = sprite_get_height(current_img);
     
     // Set fixed box size
-    var box_width = 600;   
+    var box_width  = 600;   
     var box_height = 400;  
     
     // Calculate scale to fit within box (maintains aspect ratio)
-    var scale_x = box_width / img_width;
+    var scale_x = box_width  / img_width;
     var scale_y = box_height / img_height;
     zoom_scale = min(scale_x, scale_y);  // Fits entirely within box
     
     pan_x = 0;
     pan_y = 0;
-}
+};
 
 // Function to exit fullscreen
 exit_fullscreen = function() {
@@ -161,17 +172,21 @@ navigate_image = function(direction) {
 // Function to check which file was clicked
 get_clicked_file = function(mx, my) {
     if (mx < files_left || mx > files_left + files_width) return -1;
-    if (my < files_top || my > files_top + files_height) return -1;
-    
-    var file_y = files_top + 10;
+    if (my < files_top  || my > files_top  + files_height) return -1;
+
+    // must match Draw GUI (files_top + 40)
+    var file_y = files_top + 40;  // <-- change from +10 to +40
+
     for (var i = 0; i < total_images; i++) {
-        if (check_point_in_rect(mx, my, files_left, file_y, files_left + files_width, file_y + row_height)) {
+        if (check_point_in_rect(mx, my,
+                                files_left, file_y,
+                                files_left + files_width, file_y + row_height)) {
             return i;
         }
         file_y += (row_height + 6);
     }
     return -1;
-}
+};
 
 // Function called when puzzle is completed
 complete_puzzle = function() {

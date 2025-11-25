@@ -46,9 +46,12 @@ if (gallery_open) {
         draw_text(files_left + 10, files_top + 12, "Name");
         draw_text(files_left + files_width - 100, files_top + 12, "Date");
         
-        var file_y = files_top + 40;  
-        for (var i = 0; i < total_images; i++) {
-            var is_hover = (get_clicked_file(mouse_x, mouse_y) == i);
+        var gmx = device_mouse_x_to_gui(0);
+		var gmy = device_mouse_y_to_gui(0);
+
+		var file_y = files_top + 40;  
+		for (var i = 0; i < total_images; i++) {
+		    var is_hover = (get_clicked_file(gmx, gmy) == i);
             var is_selected = (i == current_image_index);
             
             // Draw file row background

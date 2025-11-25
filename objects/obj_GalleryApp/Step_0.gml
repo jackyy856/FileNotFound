@@ -1,3 +1,15 @@
+/// obj_GalleryApp - Step
+
+// --- CLICK-THROUGH SHIELD (so desktop icons don't fire when we click the window) ---
+if (!variable_global_exists("_ui_click_consumed")) {
+    global._ui_click_consumed = false;
+}
+
+var mx = mouse_x;
+var my = mouse_y;
+var left_press = mouse_check_button_pressed(mb_left);
+
+// If the gallery window is open, keep all its rects in sync with window_x/y
 if (gallery_open) {
     // Update button positions
     close_btn = [window_x + window_w - 40, window_y + 10, 30, 30]; 
@@ -6,23 +18,28 @@ if (gallery_open) {
     right_btn = [window_x + window_w - nav_btn_size - 30, window_y + window_h/2 - nav_btn_size/2, nav_btn_size, nav_btn_size];
     
     // Zoom buttons
-    zoom_in_btn = [window_x + window_w - 50, window_y + header_h + 100, 40, 30];
-    zoom_out_btn = [window_x + window_w - 50, window_y + header_h + 140, 40, 30];
+    zoom_in_btn    = [window_x + window_w - 50, window_y + header_h + 100, 40, 30];
+    zoom_out_btn   = [window_x + window_w - 50, window_y + header_h + 140, 40, 30];
     zoom_reset_btn = [window_x + window_w - 50, window_y + header_h + 180, 40, 30];
     
-    // Update file browser layout too
-    files_top = window_y + header_h + 20;
-    files_left = window_x + 20;
-    files_width = window_w - 40;
+    // File browser layout
+    files_top    = window_y + header_h + 20;
+    files_left   = window_x + 20;
+    files_width  = window_w - 40;
     files_height = window_h - header_h - 40;
 }
 
-// Handle mouse clicks
-if (mouse_check_button_pressed(mb_left)) {
-    var mx = mouse_x;
-    var my = mouse_y;
-    
-    // Close button works in all modes
+// ---------- HANDLE CLICKS ----------
+if (left_press) {
+
+    // 1) Mark this click as "used" if it lands anywhere inside the gallery window
+    if (mx >= window_x && my >= window_y &&
+        mx <  window_x + window_w &&
+        my <  window_y + window_h) {
+        global._ui_click_consumed = true;
+    }
+
+    // 2) Close button works in all modes
     if (check_button_click(mx, my, close_btn)) {
         if (puzzle_mode) {
             exit_puzzle();
@@ -34,18 +51,17 @@ if (mouse_check_button_pressed(mb_left)) {
         exit;
     }
     
+    // 3) Puzzle mode: only Back is handled here; pieces are handled by obj_puzzle_piece
     if (puzzle_mode) {
-        // In puzzle mode, only handle back button - puzzle handles the rest
         if (check_button_click(mx, my, back_btn)) {
             exit_puzzle();
             return;
         }
-        // Let the puzzle manager handle other clicks
         return;
     }
     
+    // 4) Fullscreen image mode
     if (fullscreen_mode) {
-        // Back button in fullscreen
         if (check_button_click(mx, my, back_btn)) {
             exit_fullscreen();
             return;
@@ -61,7 +77,7 @@ if (mouse_check_button_pressed(mb_left)) {
             return;
         }
         
-        // ZOOM BUTTONS
+        // Zoom buttons
         if (check_button_click(mx, my, zoom_in_btn)) {
             zoom_scale = min(zoom_scale + 0.3, max_zoom);
             return;
@@ -77,7 +93,7 @@ if (mouse_check_button_pressed(mb_left)) {
             return;
         }
         
-        // Start dragging if clicking on image area
+        // Start dragging image if click wasn’t on any button
         if (!check_button_click(mx, my, left_btn) && 
             !check_button_click(mx, my, right_btn) &&
             !check_button_click(mx, my, back_btn) &&
@@ -86,12 +102,13 @@ if (mouse_check_button_pressed(mb_left)) {
             !check_button_click(mx, my, zoom_reset_btn) &&
             !check_button_click(mx, my, close_btn)) {
             
-            is_dragging = true;
+            is_dragging  = true;
             drag_start_x = mx - pan_x;
             drag_start_y = my - pan_y;
         }
-    } else {
-        // Gallery view - check file clicks
+    }
+    else {
+        // 5) Browser mode: click on a row opens that image / puzzle
         var clicked_index = get_clicked_file(mx, my);
         if (clicked_index != -1) {
             open_fullscreen(clicked_index);
@@ -100,25 +117,26 @@ if (mouse_check_button_pressed(mb_left)) {
     }
 }
 
-// Handle mouse release
+// ---------- DRAGGING / KEYBOARD ----------
+
+// Mouse release stops dragging
 if (mouse_check_button_released(mb_left)) {
     is_dragging = false;
 }
 
-// Handle dragging in fullscreen mode
+// Drag image while in fullscreen
 if (fullscreen_mode && is_dragging) {
     pan_x = mouse_x - drag_start_x;
     pan_y = mouse_y - drag_start_y;
 }
 
-// Handle keyboard controls
+// Keyboard controls
 if (puzzle_mode) {
-    // ESC to exit puzzle
     if (keyboard_check_pressed(vk_escape)) {
         exit_puzzle();
     }
-} else if (fullscreen_mode) {
-    // Keyboard zoom controls
+}
+else if (fullscreen_mode) {
     if (keyboard_check_pressed(ord("=")) || keyboard_check_pressed(vk_add)) {
         zoom_scale = min(zoom_scale + 0.3, max_zoom);
     }
@@ -126,7 +144,6 @@ if (puzzle_mode) {
         zoom_scale = max(zoom_scale - 0.3, min_zoom);
     }
     
-    // Keyboard navigation
     if (keyboard_check_pressed(vk_escape)) {
         exit_fullscreen();
     }
@@ -137,7 +154,6 @@ if (puzzle_mode) {
         navigate_image(1);
     }
     
-    // Reset view with R key
     if (keyboard_check_pressed(ord("R"))) {
         zoom_scale = 1.0;
         pan_x = 0;
