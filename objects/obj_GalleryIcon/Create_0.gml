@@ -1,2 +1,3 @@
-app_key = "Gallery";          // matches key in global.apps_unlocked
-app_obj = obj_GalleryApp;     // icon opens gallery app obj
+/// obj_GalleryIcon - Create
+app_key = "Gallery";
+app_obj = obj_GalleryApp;

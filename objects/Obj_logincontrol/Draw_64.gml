@@ -11,8 +11,8 @@ if (hint_clicked) {
     draw_set_color(c_red);
     draw_text(900, 630, "Hint: City");
 } else {
-    draw_set_color(c_gray);
-    draw_text(920, 630, "Hint");
+    draw_set_color(c_white);
+    draw_text(920, 630, "Hint:");
 }
 
 //incorrect message 
