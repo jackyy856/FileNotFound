@@ -1,7 +1,11 @@
 {
   "$GMObject":"",
   "%Name":"obj_HackerMsgrApp",
-  "eventList":[],
+  "eventList":[
+    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":0,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
+    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":64,"eventType":8,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
+    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":3,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
+  ],
   "managed":true,
   "name":"obj_HackerMsgrApp",
   "overriddenProperties":[],
@@ -9,10 +13,7 @@
     "name":"HackerMsgr",
     "path":"folders/Objects/Apps/HackerMsgr.yy",
   },
-  "parentObjectId":{
-    "name":"obj_AppBase",
-    "path":"objects/obj_AppBase/obj_AppBase.yy",
-  },
+  "parentObjectId":null,
   "persistent":false,
   "physicsAngularDamping":0.1,
   "physicsDensity":0.5,

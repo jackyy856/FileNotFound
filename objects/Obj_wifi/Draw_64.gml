@@ -1,7 +1,7 @@
 // Draw taskbar background
-draw_set_color(make_color_rgb(40, 40, 40));
-draw_set_alpha(0.95);
-draw_rectangle(0, taskbar_y, 1920, 1080, true);
+draw_set_color(c_black); // was make_color_rgb(40, 40, 40)
+draw_set_alpha(1);
+draw_rectangle(0, taskbar_y, 1920, 1080, false); // was 'true' (outline) -> 'false' (filled)
 draw_set_alpha(1);
 
 // Draw search button

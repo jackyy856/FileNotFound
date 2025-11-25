@@ -160,3 +160,11 @@ if (pw_modal_open) {
         }
     }
 }
+
+if (mouse_check_button_pressed(mb_left)) {
+    var mx = device_mouse_x_to_gui(0);
+    var my = device_mouse_y_to_gui(0);
+    if (mx >= x1 && mx < x2 && my >= y1 && my < y2) {
+        global._ui_click_consumed = true;
+    }
+}

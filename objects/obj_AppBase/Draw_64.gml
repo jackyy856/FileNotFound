@@ -16,20 +16,27 @@ draw_text(x1 + 12, y1 + 10, title);
 // buttons: minimize and close
 var bx_close_x1 = x2 - btn_pad - btn_w;
 var bx_close_y1 = y1 + btn_pad;
-var bx_min_x1   = bx_close_x1 - 6 - btn_w;
-var bx_min_y1   = bx_close_y1;
+var bx_close_x2 = bx_close_x1 + btn_w;
+var bx_close_y2 = bx_close_y1 + btn_h;
+
+var bx_min_x1 = bx_close_x1 - 6 - btn_w;
+var bx_min_y1 = bx_close_y1;
+var bx_min_x2 = bx_min_x1 + btn_w;
+var bx_min_y2 = bx_min_y1 + btn_h;
 
 // minimize
 draw_set_color(make_color_rgb(215,215,215));
-draw_roundrect(bx_min_x1, bx_min_y1, bx_min_x1+btn_w, bx_min_y1+btn_h, false);
+draw_roundrect(bx_min_x1, bx_min_y1, bx_min_x2, bx_min_y2, false);
 draw_set_color(c_black);
-draw_text(bx_min_x1+7, bx_min_y1+3, "_");
+draw_set_halign(fa_center);
+draw_set_valign(fa_middle);
+draw_text((bx_min_x1 + bx_min_x2) * 0.5, (bx_min_y1 + bx_min_y2) * 0.5, "_");
 
 // close
 draw_set_color(make_color_rgb(230,70,70));
-draw_roundrect(bx_close_x1, bx_close_y1, bx_close_x1+btn_w, bx_close_y1+btn_h, false);
+draw_roundrect(bx_close_x1, bx_close_y1, bx_close_x2, bx_close_y2, false);
 draw_set_color(c_white);
-draw_text(bx_close_x1+7, bx_close_y1+3, "x");
+draw_text((bx_close_x1 + bx_close_x2) * 0.5, (bx_close_y1 + bx_close_y2) * 0.5, "x");
 
 // body
 if (!is_minimized) 
