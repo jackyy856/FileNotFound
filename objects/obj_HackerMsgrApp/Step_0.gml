@@ -260,7 +260,7 @@ if (intro_active)
         }
         else
         {
-            // safety: no messages left
+            // safety: no message left
             typing       = false;
 			intro_active = false;
 
