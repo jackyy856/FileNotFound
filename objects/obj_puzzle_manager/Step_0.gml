@@ -1,4 +1,4 @@
-/// obj_puzzle_controller – Step
+
 // When all pieces are placed, notify the Gallery app once
 if (global.pieces_placed >= global.total_pieces) {
     if (instance_exists(obj_GalleryApp)) {

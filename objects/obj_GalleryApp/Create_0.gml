@@ -34,16 +34,13 @@ zoom_reset_btn = [window_x + window_w - 50, window_y + header_h + 180, 40, 30];
 
 // Image data - with puzzle integration
 gallery_images = [
-    { id: 0, sprite: Image1, name: "Info", date: "2024-01-01", is_puzzle: false },
-    { id: 1, sprite: Image2, name: "files", date: "2024-03-02", is_puzzle: false },
-    { id: 2, sprite: Image3, name: "Images", date: "2024-04-13", is_puzzle: false },
-    { id: 3, sprite: Image4, name: "Latop", date: "2024-04-29", is_puzzle: false },
+    { id: 0, sprite: Image1, name: "Cat", date: "2024-01-01", is_puzzle: false },
+    { id: 1, sprite: Image2, name: "People", date: "2024-01-02", is_puzzle: false },
+    { id: 2, sprite: Image3, name: "Store", date: "2024-02-13", is_puzzle: false },
+    { id: 3, sprite: Image4, name: "!!!", date: "2024-02-29", is_puzzle: false },
     { id: 4, sprite: Image5, name: "??????", date: "2024-05-25", is_puzzle: true }, // Puzzle image!
-    { id: 5, sprite: Image6, name: "****", date: "2024-07-06", is_puzzle: false },
+    { id: 5, sprite: Image6, name: "Building", date: "2024-07-06", is_puzzle: false },
     { id: 6, sprite: Image7, name: "Project", date: "2024-08-25", is_puzzle: false },
-    { id: 7, sprite: Image8, name: "Personal", date: "2024-10-08", is_puzzle: false },
-    { id: 8, sprite: Image9, name: "Document", date: "2024-11-29", is_puzzle: false },
-    { id: 9, sprite: Image10, name: "Desktop", date: "2024-12-14", is_puzzle: false }
 ];
 
 total_images = array_length(gallery_images);
@@ -76,7 +73,7 @@ close_gallery = function() {
     fullscreen_mode = false;
 }
 
-// Function to open fullscreen view
+// Function to open fullscreen view 
 open_fullscreen = function(index) {
     // Check if this is the puzzle image
     var is_puzzle_image = gallery_images[index].is_puzzle;
@@ -97,13 +94,13 @@ open_fullscreen = function(index) {
         // Create puzzle controller and put it slightly IN FRONT of Gallery
         var pm = instance_create_layer(0, 0, "Instances", obj_puzzle_manager);
         if (pm != noone) {
-            pm.depth = depth - 1; // smaller depth = drawn on top
+            pm.depth = depth - 1; 
         }
 
         return;
     }
     
-    // --- NORMAL FULLSCREEN IMAGE MODE ---
+
     fullscreen_mode = true;
     puzzle_mode     = false;
     current_image_index = index;
@@ -112,14 +109,14 @@ open_fullscreen = function(index) {
     var img_width    = sprite_get_width(current_img);
     var img_height   = sprite_get_height(current_img);
     
-    // Set fixed box size
-    var box_width  = 600;   
-    var box_height = 400;  
+    var target_display_width = 1150;
+    var target_display_height = 1000;  
     
-    // Calculate scale to fit within box (maintains aspect ratio)
-    var scale_x = box_width  / img_width;
-    var scale_y = box_height / img_height;
-    zoom_scale = min(scale_x, scale_y);  // Fits entirely within box
+    var scale_width = target_display_width / img_width;
+    var scale_height = target_display_height / img_height;
+
+    zoom_scale = min(scale_width, scale_height);
+    zoom_scale = clamp(zoom_scale, 0.3, 3.0);
     
     pan_x = 0;
     pan_y = 0;
@@ -150,7 +147,7 @@ exit_puzzle = function() {
     }
 }
 
-// Function to navigate between images
+// Function to navigate between images 
 navigate_image = function(direction) {
     current_image_index += direction;
     
@@ -160,10 +157,18 @@ navigate_image = function(direction) {
         current_image_index = 0;
     }
     
-    // Set the same pixel width for the new image
     var current_img = gallery_images[current_image_index].sprite;
     var img_width = sprite_get_width(current_img);
-    zoom_scale = 600 / img_width;  // Same 600 pixel width
+    var img_height = sprite_get_height(current_img);
+    
+    var target_display_width = 1150;
+    var target_display_height = 1100; 
+    
+    var scale_width = target_display_width / img_width;
+    var scale_height = target_display_height / img_height;
+
+    zoom_scale = min(scale_width, scale_height);
+    zoom_scale = clamp(zoom_scale, 0.3, 3.0);
     
     pan_x = 0;
     pan_y = 0;
@@ -174,8 +179,7 @@ get_clicked_file = function(mx, my) {
     if (mx < files_left || mx > files_left + files_width) return -1;
     if (my < files_top  || my > files_top  + files_height) return -1;
 
-    // must match Draw GUI (files_top + 40)
-    var file_y = files_top + 40;  // <-- change from +10 to +40
+    var file_y = files_top + 40; 
 
     for (var i = 0; i < total_images; i++) {
         if (check_point_in_rect(mx, my,
@@ -191,9 +195,8 @@ get_clicked_file = function(mx, my) {
 // Function called when puzzle is completed
 complete_puzzle = function() {
     puzzle_completed = true;
-    global.puzzleComplete = true; // Set global flag for save system
+    global.puzzleComplete = true; 
     
-    // Change the puzzle image name to show it's solved
     gallery_images[4].name = "Solved Puzzle!";
 }
 

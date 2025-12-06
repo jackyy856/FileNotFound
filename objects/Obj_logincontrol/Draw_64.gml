@@ -3,16 +3,16 @@ draw_set_color(c_white);
 draw_set_font(Login_username);
 
 // Draw fixed username
-draw_text(900, 510, "Boss");
+draw_text(780, 520, "Vanessa Myers");
 
 //if hit hint
 draw_set_font(Login_hint)
 if (hint_clicked) {
-    draw_set_color(c_red);
-    draw_text(900, 630, "Hint: City");
+    draw_set_color(c_black);
+    draw_text(900, 650, "Hint: City");
 } else {
     draw_set_color(c_white);
-    draw_text(920, 630, "Hint:");
+    draw_text(920, 650, "Hint:");
 }
 
 //incorrect message 

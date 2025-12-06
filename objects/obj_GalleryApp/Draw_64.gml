@@ -1,7 +1,8 @@
+// obj_GalleryApp - Draw GUI Event
 if (gallery_open) {
     if (puzzle_mode) {
-        // PUZZLE MODE: Don't draw the gallery browser
-        // Only draw the close and back buttons
+       
+  
         draw_set_color(c_red);
         draw_rectangle(close_btn[0], close_btn[1], close_btn[0] + close_btn[2], close_btn[1] + close_btn[3], false);
         draw_set_color(c_white);
@@ -13,7 +14,8 @@ if (gallery_open) {
         draw_text(back_btn[0] + back_btn[2]/2, back_btn[1] + back_btn[3]/2, "Back");
         
     } else if (!fullscreen_mode) {
-        // GALLERY BROWSER MODE: Draw the file browser
+      
+        
         // Draw window background
         draw_set_color(c_white);
         draw_rectangle(window_x, window_y, window_x + window_w, window_y + window_h, false);
@@ -46,12 +48,11 @@ if (gallery_open) {
         draw_text(files_left + 10, files_top + 12, "Name");
         draw_text(files_left + files_width - 100, files_top + 12, "Date");
         
-        var gmx = device_mouse_x_to_gui(0);
-		var gmy = device_mouse_y_to_gui(0);
-
-		var file_y = files_top + 40;  
-		for (var i = 0; i < total_images; i++) {
-		    var is_hover = (get_clicked_file(gmx, gmy) == i);
+        var file_y = files_top + 40;  
+        for (var i = 0; i < total_images; i++) {
+            var gmx = device_mouse_x_to_gui(0);
+            var gmy = device_mouse_y_to_gui(0);
+            var is_hover = (get_clicked_file(gmx, gmy) == i);
             var is_selected = (i == current_image_index);
             
             // Draw file row background
@@ -93,7 +94,7 @@ if (gallery_open) {
         }
         
     } else {
-        // FULLSCREEN IMAGE MODE: Draw the image viewer
+        
         // Draw window background
         draw_set_color(c_white);
         draw_rectangle(window_x, window_y, window_x + window_w, window_y + window_h, false);

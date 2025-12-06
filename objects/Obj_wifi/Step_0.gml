@@ -1,5 +1,3 @@
-/// Obj_wifi - Step Event
-
 // --- Timers & clock ---------------------------------------------------------
 
 // Update time every second
@@ -50,11 +48,18 @@ if (!pause_menu_active && input_field_visible && input_field_has_focus) {
         handle_password_submission();
     }
 
-    // IMPORTANT: only clear keys we actually handled, and NEVER ESC.
-    // This prevents eating the ESC key used by the global pause menu toggle.
     var last = keyboard_lastkey;
     if (last != 0 && last != vk_escape) {
         keyboard_clear(last);
+    }
+}
+
+
+if (connection_message_timer > 0) {
+    connection_message_timer--;
+    if (connection_message_timer <= 0) {
+        connection_success = false;
+   
     }
 }
 

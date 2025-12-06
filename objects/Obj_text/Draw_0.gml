@@ -18,14 +18,14 @@ if (active) {
     draw_set_color(make_color_rgb(100, 100, 255)); // Blue border when active
     draw_roundrect(x - 1, y - 1, x + width + 1, y + height + 1, corner_radius + 1);
 } else {
-    draw_set_color(make_color_rgb(150, 150, 150)); // Gray border when inactive
+    draw_set_color(c_black); // Gray border when inactive
     draw_roundrect(x, y, x + width, y + height, corner_radius);
 }
 
 // Draw text or placeholder - LEFT ALIGNED
 var display_text = text;
 if (text == "" && placeholder != "") {
-    draw_set_color(make_color_rgb(150, 150, 150)); // Light gray for placeholder
+    draw_set_color(c_white); //White for placeholder
     display_text = placeholder;
 } else {
     draw_set_color(c_white);
@@ -69,7 +69,7 @@ if (active && cursor_visible) {
     }
     
     // Draw cursor line
-    draw_set_color(c_white);
+    draw_set_color(c_black);
     draw_line(cursor_x, y + 5, cursor_x, y + height - 5);
 }
 
