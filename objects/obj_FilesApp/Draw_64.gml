@@ -1,308 +1,315 @@
-/// obj_FilesApp – Draw GUI
+/// obj_FilesApp - Draw GUI
 
 draw_set_alpha(1);
-
-// Window frame
-if (!is_minimized) {
-    draw_set_color(c_white);
-    draw_rectangle(window_x, window_y, window_x + window_w, window_y + window_h, false);
-    draw_set_color(c_black);
-    draw_rectangle(window_x, window_y, window_x + window_w, window_y + window_h, true);
-} else {
-    // only draw header when minimized
-    draw_set_color(c_white);
-    draw_rectangle(window_x, window_y, window_x + window_w, window_y + header_h, false);
-    draw_set_color(c_black);
-    draw_rectangle(window_x, window_y, window_x + window_w, window_y + header_h, true);
-}
-
-// Title bar
-draw_set_font(font_title);
+draw_set_font(-1);
 draw_set_halign(fa_left);
 draw_set_valign(fa_top);
-draw_set_color(c_black);
-draw_text(window_x + 16, window_y + 12, "Files");
 
-// Minimize button
-var bmin = make_colour_rgb(230,230,230);
-draw_set_color(bmin);
-draw_rectangle(min_btn[0], min_btn[1], min_btn[0] + min_btn[2], min_btn[1] + min_btn[3], false);
-draw_set_color(c_black);
-draw_rectangle(min_btn[0], min_btn[1], min_btn[0] + min_btn[2], min_btn[1] + min_btn[3], true);
-draw_text(min_btn[0] + 8, min_btn[1] + 2, "-");
+// white window background
+draw_set_color(c_white);
+draw_rectangle(window_x, window_y,
+               window_x + window_w,
+               window_y + window_h, false);
 
-// Close button
+// optional border
+draw_set_color(c_black);
+draw_rectangle(window_x, window_y,
+               window_x + window_w,
+               window_y + window_h, true);
+
+// title
+draw_set_color(c_black);
+draw_text(window_x + 8, window_y + 8, "Files");
+
+// close / minimize buttons
 var bcol = make_colour_rgb(230,230,230);
+
+// minimize
 draw_set_color(bcol);
-draw_rectangle(close_btn[0], close_btn[1], close_btn[0] + close_btn[2], close_btn[1] + close_btn[3], false);
+draw_rectangle(files_min_btn[0], files_min_btn[1],
+               files_min_btn[0] + files_min_btn[2],
+               files_min_btn[1] + files_min_btn[3], false);
 draw_set_color(c_black);
-draw_rectangle(close_btn[0], close_btn[1], close_btn[0] + close_btn[2], close_btn[1] + close_btn[3], true);
-draw_text(close_btn[0] + 7, close_btn[1] + 2, "X");
+draw_rectangle(files_min_btn[0], files_min_btn[1],
+               files_min_btn[0] + files_min_btn[2],
+               files_min_btn[1] + files_min_btn[3], true);
+draw_text(files_min_btn[0] + 8, files_min_btn[1] + 2, "-");
 
-// If minimized, skip body
-if (is_minimized) exit;
-
-// Breadcrumbs (second line)
-draw_set_font(font_body);
-draw_set_color(make_colour_rgb(60,60,60));
-var bc_text = "";
-for (var i = 0; i < array_length(breadcrumbs); i++) {
-    if (i > 0) bc_text += " / ";
-    bc_text += string(breadcrumbs[i].name);
-}
-draw_text(list_left, breadcrumbs_y, bc_text);
-
-// Back / Up buttons
-if (mode == "view") {
-    var bcol1 = make_colour_rgb(230,230,230);
-    draw_set_color(bcol1);
-    draw_rectangle(back_btn[0], back_btn[1], back_btn[0] + back_btn[2], back_btn[1] + back_btn[3], false);
-    draw_set_color(c_black);
-    draw_rectangle(back_btn[0], back_btn[1], back_btn[0] + back_btn[2], back_btn[1] + back_btn[3], true);
-    draw_text(back_btn[0] + 10, back_btn[1] + 3, "< Back");
-}
-if (cwd.parent != noone) {
-    var bcol2 = make_colour_rgb(230,230,230);
-    draw_set_color(bcol2);
-    draw_rectangle(up_btn[0], up_btn[1], up_btn[0] + up_btn[2], up_btn[1] + up_btn[3], false);
-    draw_set_color(c_black);
-    draw_rectangle(up_btn[0], up_btn[1], up_btn[0] + up_btn[2], up_btn[1] + up_btn[3], true);
-    draw_text(up_btn[0] + 14, up_btn[1] + 3, "Up");
-}
-
-// ------------------ CONTENT ------------------
-draw_set_font(font_body);
+// close
+draw_set_color(bcol);
+draw_rectangle(files_close_btn[0], files_close_btn[1],
+               files_close_btn[0] + files_close_btn[2],
+               files_close_btn[1] + files_close_btn[3], false);
 draw_set_color(c_black);
+draw_rectangle(files_close_btn[0], files_close_btn[1],
+               files_close_btn[0] + files_close_btn[2],
+               files_close_btn[1] + files_close_btn[3], true);
+draw_text(files_close_btn[0] + 7, files_close_btn[1] + 2, "X");
 
-if (mode == "list") {
-    // ------- ICON GRID -------
-    var folder_spr = asset_get_index("spr_FilesIcon");
-    var text_spr   = asset_get_index("spr_StickyNoteIcon");
-
-    var items = cwd.children;
-    var len   = array_length(items);
-    var cols  = grid_cols;
-    var x0    = list_left;
-    var y0    = content_top;
-
-    for (var i2 = 0; i2 < len; i2++) {
-        var col = i2 mod cols;
-        var row = i2 div cols;
-
-        var cell_x = x0 + col * cell_w;
-        var cell_y = y0 + row * cell_h;
-
-        var icon_x = cell_x + (cell_w - icon_w) * 0.5;
-        var icon_y = cell_y;
-
-        var it = items[i2];
-
-        if (it.type == "folder") {
-            if (folder_spr != -1) {
-                draw_sprite_ext(folder_spr, 0, icon_x + icon_w*0.5, icon_y + icon_h*0.5, 1, 1, 0, c_white, 1);
-            } else {
-                draw_set_alpha(0.06);
-                draw_set_color(c_black);
-                draw_rectangle(icon_x, icon_y, icon_x + icon_w, icon_y + icon_h, false);
-                draw_set_alpha(1);
-            }
-        } else if (it.type == "text") {
-            if (text_spr != -1) {
-                draw_sprite_ext(text_spr, 0, icon_x + icon_w*0.5, icon_y + icon_h*0.5, 1, 1, 0, c_white, 1);
-            } else {
-                draw_set_alpha(0.06);
-                draw_set_color(c_black);
-                draw_rectangle(icon_x, icon_y, icon_x + icon_w, icon_y + icon_h, false);
-                draw_set_alpha(1);
-                draw_set_color(c_black);
-                draw_text(icon_x + 8, icon_y + 8, "TXT");
-            }
-        } else if (it.type == "image") {
-            if (!is_undefined(it.sprite) && it.sprite != -1) {
-                var scale = 0.75;
-                draw_sprite_ext(it.sprite, 0,
-                    icon_x + icon_w*0.5, icon_y + icon_h*0.5,
-                    scale, scale, 0, c_white, 1);
-            } else {
-                draw_set_alpha(0.06);
-                draw_set_color(c_black);
-                draw_rectangle(icon_x, icon_y, icon_x + icon_w, icon_y + icon_h, false);
-                draw_set_alpha(1);
-                draw_set_color(c_black);
-                draw_text(icon_x + 8, icon_y + 8, "IMG");
-            }
-        } else if (it.type == "puzzle_firewall") {
-            // Firewall.exe icon – simple placeholder
-            draw_set_alpha(0.06);
-            draw_set_color(c_black);
-            draw_rectangle(icon_x, icon_y, icon_x + icon_w, icon_y + icon_h, false);
-            draw_set_alpha(1);
-            draw_set_color(c_black);
-            draw_text(icon_x + 12, icon_y + 32, "FW");
-        }
-
-        draw_set_color(c_black);
-        draw_set_halign(fa_center);
-        var label_x = cell_x + cell_w * 0.5;
-        var label_y = icon_y + icon_h + 8;
-        draw_text_ext(label_x, label_y, string(it.name), 8, cell_w - 8);
-        draw_set_halign(fa_left);
-    }
+if (is_minimized) {
+    draw_set_alpha(1);
+    exit;
 }
-else if (mode == "view") {
-	// draw red key icon if this view wants it
-    if (viewer_show_red_key) {
-        var spr_key  = asset_get_index("spr_red_key");
-        var spr_glow = asset_get_index("spr_red_glow_key");
 
-        // position near bottom-right inside the Files window
-        var key_x = window_x + window_w - 180;
-        var key_y = window_y + window_h - 140;
+// -----------------------------------------------------------------------
+//                               HOME VIEW
+// -----------------------------------------------------------------------
+if (view_mode == 0) {
 
-        if (spr_glow != -1) {
-            draw_sprite_ext(spr_glow, 0, key_x, key_y, 1, 1, 0, c_white, 1);
-        }
-        if (spr_key != -1) {
-            draw_sprite_ext(spr_key, 0, key_x, key_y, 1, 1, 0, c_white, 1);
-        }
-    }
-	
-    // ------- STANDARD PREVIEW -------
-    var tx = list_left;
-    var ty = content_top;
+    draw_set_color(c_black);
+    draw_text(window_x + 8, window_y + header_h + 4, "Home");
 
-    draw_set_font(font_title);
-    draw_text(tx, breadcrumbs_y + 28, "Preview");
+    var spr_icon = spr_FilesIcon; // no-text logo
 
-    draw_set_font(font_body);
-    if (viewer_type == "text") {
-        var body_w = window_w - 40;
-        draw_text_ext(tx, ty + 24, viewer_text, 12, body_w);
-    } else if (viewer_type == "image") {
-        if (viewer_sprite != -1) {
-            var cx = window_x + window_w * 0.5;
-            var cy = window_y + header_h + (window_h - header_h) * 0.5;
-            draw_sprite_ext(viewer_sprite, 0, cx, cy, 1, 1, 0, c_white, 1);
+    for (var i = 0; i < array_length(home_entries); i++) {
+        var e = home_entries[i];
+
+        // card background (light grey)
+        var grey = make_colour_rgb(240,240,240);
+        draw_set_color(grey);
+        draw_rectangle(e.rx, e.ry, e.rx + e.rw, e.ry + e.rh, false);
+
+        // icon sprite
+        if (spr_icon != -1) {
+            var sw = sprite_get_width(spr_icon);
+            var sh = sprite_get_height(spr_icon);
+
+            var cx = e.rx + e.rw * 0.5;
+            var cy = e.ry + e.rh * 0.5;
+
+            var scale = 1;
+            if (sw > 0 && sh > 0) {
+                var sx = (e.rw - 20) / sw;
+                var sy = (e.rh - 20) / sh;
+                scale = min(sx, sy);
+            }
+
+            draw_sprite_ext(spr_icon, 0, cx, cy, scale, scale, 0, c_white, 1);
         } else {
-            draw_set_alpha(0.05);
+            // fallback border
             draw_set_color(c_black);
-            var px1 = tx, py1 = ty, px2 = window_x + window_w - 20, py2 = window_y + window_h - 20;
-            draw_rectangle(px1, py1, px2, py2, false);
-            draw_set_alpha(1);
-            draw_set_color(c_black);
-            draw_text(tx, ty, "(Image placeholder — assign a sprite to this file to preview)");
+            draw_rectangle(e.rx, e.ry, e.rx + e.rw, e.ry + e.rh, true);
         }
+
+        // special "FW" marking on Firewall.exe card
+        if (e.kind == "firewall") {
+            draw_set_color(c_black);
+            draw_set_halign(fa_center);
+            draw_set_valign(fa_middle);
+            draw_text(e.rx + e.rw * 0.5, e.ry + e.rh * 0.5, "FW");
+        }
+
+        // label under icon
+        draw_set_halign(fa_left);
+        draw_set_valign(fa_top);
+        draw_set_color(c_black);
+        draw_text(e.rx, e.ry + e.rh + 10, e.label);
     }
+
+    draw_set_alpha(1);
+    exit;
 }
-else if (mode == "firewall") {
-    // ------- FIREWALL PUZZLE UI -------
 
-    // big black panel
-    var panel_x1 = window_x + 140;
-    var panel_y1 = content_top + 20;
-    var panel_x2 = window_x + window_w - 140;
-    var panel_y2 = window_y + window_h - 80;
+// -----------------------------------------------------------------------
+//                        FIREWALL PUZZLE VIEW
+// -----------------------------------------------------------------------
+if (view_mode == 1) {
 
+    // breadcrumb
     draw_set_color(c_black);
-    draw_rectangle(panel_x1, panel_y1, panel_x2, panel_y2, false);
-
-    // deny / admit columns
-    var deny_x1 = panel_x1 + 40;
-    var deny_y1 = panel_y1 + 40;
-    var deny_x2 = (panel_x1 + panel_x2) * 0.5 - 20;
-    var deny_y2 = panel_y2 - 40;
-
-    var admit_x1 = (panel_x1 + panel_x2) * 0.5 + 20;
-    var admit_y1 = deny_y1;
-    var admit_x2 = panel_x2 - 40;
-    var admit_y2 = deny_y2;
-
-    var col_deny  = make_colour_rgb(150, 80, 80);
-    var col_admit = make_colour_rgb(70, 100, 150);
-
-    draw_set_color(col_deny);
-    draw_rectangle(deny_x1, deny_y1, deny_x2, deny_y2, false);
-
-    draw_set_color(col_admit);
-    draw_rectangle(admit_x1, admit_y1, admit_x2, admit_y2, false);
-
-    // headings
-    draw_set_font(font_title);
-    draw_set_halign(fa_center);
-    draw_set_color(c_white);
-    draw_text((deny_x1 + deny_x2) * 0.5, deny_y1 + 16, "Deny");
-    draw_text((admit_x1 + admit_x2) * 0.5, admit_y1 + 16, "Admit");
-
-    // top text
-    draw_set_font(font_body);
-    if (firewall_state == "play") {
-        draw_text((panel_x1 + panel_x2) * 0.5, panel_y1 + 4,
-                  "Drag each sentence to Deny or Admit.");
-    } else if (firewall_state == "auto") {
-        draw_text((panel_x1 + panel_x2) * 0.5, panel_y1 + 4,
-                  "You can't hide the truth from me.");
-    } else if (firewall_state == "done") {
-        draw_text((panel_x1 + panel_x2) * 0.5, panel_y1 + 4,
-                  "I know everything you tried to bury.");
-    }
-
-    // cards
     draw_set_halign(fa_left);
-    var n_cards = array_length(firewall_cards);
-    for (var i3 = 0; i3 < n_cards; i3++) {
-        var c = firewall_cards[i3];
+    draw_text(window_x + 8, window_y + header_h + 4, "Home / Firewall.exe");
+
+    // instruction (a bit higher)
+    draw_set_halign(fa_center);
+    draw_set_color(c_black);
+    draw_text(window_x + window_w * 0.5,
+              window_y + window_h - 180,
+              "Drag the sentences to your answer honestly");
+
+    // outer frame (just around panels)
+    draw_set_halign(fa_left);
+    draw_set_color(c_black);
+    draw_rectangle(fw_frame.x, fw_frame.y,
+                   fw_frame.x + fw_frame.w,
+                   fw_frame.y + fw_frame.h, false);
+
+    // deny panel (left)
+    var deny_col = make_colour_rgb(140, 70, 70);
+    draw_set_color(deny_col);
+    draw_rectangle(fw_deny.x, fw_deny.y,
+                   fw_deny.x + fw_deny.w,
+                   fw_deny.y + fw_deny.h, false);
+
+    // admit panel (right)
+    var admit_col = make_colour_rgb(70, 90, 140);
+    draw_set_color(admit_col);
+    draw_rectangle(fw_admit.x, fw_admit.y,
+                   fw_admit.x + fw_admit.w,
+                   fw_admit.y + fw_admit.h, false);
+
+    // panel labels
+    draw_set_color(c_white);
+    draw_set_halign(fa_center);
+    draw_set_valign(fa_top);
+    draw_text(fw_deny.x + fw_deny.w * 0.5, fw_deny.y + 8, "Deny");
+    draw_text(fw_admit.x + fw_admit.w * 0.5, fw_admit.y + 8, "Admit");
+
+    // sentence tiles
+    draw_set_halign(fa_left);
+    draw_set_valign(fa_top);
+
+    for (var t = 0; t < array_length(fw_tiles); t++) {
+        var tile = fw_tiles[t];
+
+        var tx = tile.x;
+        var ty = tile.y;
+        var tw = tile.w;
+        var th = tile.h;
 
         draw_set_color(c_white);
-        draw_rectangle(c.x, c.y, c.x + c.w, c.y + c.h, false);
-        draw_set_color(c_black);
-        draw_rectangle(c.x, c.y, c.x + c.w, c.y + c.h, true);
+        draw_rectangle(tx, ty, tx + tw, ty + th, false);
 
         draw_set_color(c_black);
-        draw_text_ext(c.x + 18, c.y + 18, c.text, 10, c.w - 36);
+        draw_rectangle(tx, ty, tx + tw, ty + th, true);
+
+        // center text vertically in tile
+        draw_set_color(c_black);
+        var text_y = ty + (th - 14) * 0.5;
+        draw_text(tx + 6, text_y, tile.text);
     }
 
-    // confirm popup
-    if (firewall_state == "confirm") {
-        var cw = 420;
-        var ch = 140;
-        var cx = window_x + (window_w - cw) * 0.5;
-        var cy = window_y + (window_h - ch) * 0.5;
+    // ---- CONFIRM POPUP ----
+    if (fw_confirm_open) {
+        var mw  = 420;
+        var mh  = 160;
+        var mx2 = window_x + (window_w - mw) * 0.5;
+        var my2 = window_y + (window_h - mh) * 0.5;
 
-        var ok_w = 96, ok_h = 32;
-        var ok_x = cx + cw - ok_w - 24;
-        var ok_y = cy + ch - ok_h - 24;
-
-        var cancel_w = 96, cancel_h = 32;
-        var cancel_x = cx + 24;
-        var cancel_y = ok_y;
-
-        // dialog box
-        draw_set_alpha(0.85);
+        // dark box
+        draw_set_alpha(0.95);
         draw_set_color(c_black);
-        draw_rectangle(cx, cy, cx + cw, cy + ch, false);
+        draw_rectangle(mx2, my2, mx2 + mw, my2 + mh, false);
+
         draw_set_alpha(1);
         draw_set_color(c_white);
-        draw_rectangle(cx + 2, cy + 2, cx + cw - 2, cy + ch - 2, true);
+        draw_rectangle(mx2, my2, mx2 + mw, my2 + mh, true);
 
-        draw_set_color(c_black);
-        draw_set_font(font_body);
+        // text
         draw_set_halign(fa_left);
-        draw_text(cx + 20, cy + 24, "Lock these answers in?");
+        draw_set_valign(fa_top);
+        draw_set_color(c_white);
+        draw_text(mx2 + 20, my2 + 20, "Lock these answers?");
 
-        // OK button
-        draw_set_color(make_colour_rgb(230,230,230));
-        draw_rectangle(ok_x, ok_y, ok_x + ok_w, ok_y + ok_h, false);
-        draw_set_color(c_black);
-        draw_rectangle(ok_x, ok_y, ok_x + ok_w, ok_y + ok_h, true);
-        draw_text(ok_x + 30, ok_y + 8, "OK");
+        // buttons
+        var btn_w = 100;
+        var btn_h = 30;
+        var gap_x = 30;
+        var btn_y = my2 + mh - 50;
 
-        // Cancel button
-        draw_set_color(make_colour_rgb(230,230,230));
-        draw_rectangle(cancel_x, cancel_y, cancel_x + cancel_w, cancel_y + cancel_h, false);
+        var cancel_x = mx2 + 40;
+        var ok_x     = cancel_x + btn_w + gap_x;
+
+        var bc = make_colour_rgb(200,200,200);
+
+        // cancel
+        draw_set_color(bc);
+        draw_rectangle(cancel_x, btn_y, cancel_x + btn_w, btn_y + btn_h, false);
         draw_set_color(c_black);
-        draw_rectangle(cancel_x, cancel_y, cancel_x + cancel_w, cancel_y + cancel_h, true);
-        draw_text(cancel_x + 16, cancel_y + 8, "Cancel");
+        draw_rectangle(cancel_x, btn_y, cancel_x + btn_w, btn_y + btn_h, true);
+        draw_set_color(c_black);
+        draw_set_halign(fa_center);
+        draw_set_valign(fa_middle);
+        draw_text(cancel_x + btn_w * 0.5, btn_y + btn_h * 0.5, "Cancel");
+
+        // OK
+        draw_set_color(bc);
+        draw_rectangle(ok_x, btn_y, ok_x + btn_w, btn_y + btn_h, false);
+        draw_set_color(c_black);
+        draw_rectangle(ok_x, btn_y, ok_x + btn_w, btn_y + btn_h, true);
+        draw_set_color(c_black);
+        draw_text(ok_x + btn_w * 0.5, btn_y + btn_h * 0.5, "OK");
     }
 
-    draw_set_halign(fa_left);
+    draw_set_alpha(1);
+    exit;
 }
+
+// -----------------------------------------------------------------------
+//                         FIREWALL LOG / KEY VIEW
+// -----------------------------------------------------------------------
+if (view_mode == 2) {
+
+    draw_set_color(c_black);
+    draw_set_halign(fa_left);
+    draw_text(window_x + 8, window_y + header_h + 4, "Home / Firewall.exe");
+
+    // Back button
+    var back_btn_x = window_x + window_w - 120;
+    var back_btn_y = window_y + 60;
+    var back_btn_w = 80;
+    var back_btn_h = 24;
+
+    var back_col = make_colour_rgb(230,230,230);
+    draw_set_color(back_col);
+    draw_rectangle(back_btn_x, back_btn_y,
+                   back_btn_x + back_btn_w,
+                   back_btn_y + back_btn_h, false);
+    draw_set_color(c_black);
+    draw_rectangle(back_btn_x, back_btn_y,
+                   back_btn_x + back_btn_w,
+                   back_btn_y + back_btn_h, true);
+    draw_set_halign(fa_center);
+    draw_set_valign(fa_middle);
+    draw_text(back_btn_x + back_btn_w * 0.5,
+              back_btn_y + back_btn_h * 0.5, "< Back");
+
+    // Log text
+    draw_set_halign(fa_left);
+    draw_set_valign(fa_top);
+    draw_set_color(c_black);
+    var tx = window_x + 8;
+    var ty = window_y + header_h + 40;
+    draw_text(tx, ty, "Preview");
+    ty += 24;
+    draw_text_ext(tx, ty, fw_log_text, 12, window_w - 40);
+
+    // position key near "Click the gold key."
+    var line_prefix = "Click the gold key.";
+    var line_w = string_width(line_prefix);
+
+    var key_spr = fw_key_collected_local ? spr_golden_glow_key : spr_golden_key;
+
+    if (key_spr != -1) {
+        var raw_w = sprite_get_width(key_spr);
+        var raw_h = sprite_get_height(key_spr);
+
+        var desired_h = 64; // bigger key
+        var sc = (raw_h > 0) ? (desired_h / raw_h) : 1;
+
+        var key_w = raw_w * sc;
+        var key_h = raw_h * sc;
+
+        // moved a bit further down to match extra spacing
+        var key_y = window_y + header_h + 40 + 24 + 7 * 16;
+        var key_x = tx + line_w + 32;
+
+        // store rect for Step
+        fw_key_rect[0] = key_x;
+        fw_key_rect[1] = key_y;
+        fw_key_rect[2] = key_w;
+        fw_key_rect[3] = key_h;
+
+        draw_sprite_ext(key_spr, 0, key_x, key_y, sc, sc, 0, c_white, 1);
+    }
+
+    draw_set_alpha(1);
+    exit;
+}
+
+// reset draw state
+draw_set_halign(fa_left);
+draw_set_valign(fa_top);
+draw_set_font(-1);
+draw_set_color(c_white);
+draw_set_alpha(1);

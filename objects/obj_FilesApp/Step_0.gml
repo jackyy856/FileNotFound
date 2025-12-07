@@ -1,348 +1,276 @@
-/// --- CLICK-THROUGH GUARD (header, do not clear mouse here) ---
-if (!variable_global_exists("_ui_click_consumed")) global._ui_click_consumed = false;
-if (!variable_instance_exists(id, "__ui_click_inside")) __ui_click_inside = false;
-
-var _mx = device_mouse_x_to_gui(0);
-var _my = device_mouse_y_to_gui(0);
-var _wx = window_x, _wy = window_y, _ww = window_w, _wh = window_h;
-
-if (mouse_check_button_pressed(mb_left)) {
-    if (_mx >= _wx && _my >= _wy && _mx < _wx + _ww && _my < _wy + _wh) {
-        __ui_click_inside = true;
-    }
-}
+/// obj_FilesApp - Step
 
 var mx = device_mouse_x_to_gui(0);
 var my = device_mouse_y_to_gui(0);
 
-function point_in_rect(px, py, x, y, w, h) {
-    return (px >= x) && (py >= y) && (px < x + w) && (py < y + h);
-}
+// ----------------- WINDOW CLOSE / MINIMIZE (top-right) -----------------
+var over_close = (mx >= files_close_btn[0] && mx <= files_close_btn[0] + files_close_btn[2] &&
+                  my >= files_close_btn[1] && my <= files_close_btn[1] + files_close_btn[3]);
+var over_min   = (mx >= files_min_btn[0] && mx <= files_min_btn[0] + files_min_btn[2] &&
+                  my >= files_min_btn[1] && my <= files_min_btn[1] + files_min_btn[3]);
 
-// cooldown to prevent icon click from also opening a file immediately
-if (open_cooldown > 0) open_cooldown--;
-
-// --- NEW: click shield to avoid click-through ---
-if (!variable_global_exists("_ui_click_consumed")) global._ui_click_consumed = false;
-if (mouse_check_button_pressed(mb_left) && _in_win(mx,my)) {
-    global._ui_click_consumed = true;
-}
-
-// --- NEW: cursor logic (4-way on frame; default on buttons) ---
-var over_close = point_in_rect(mx,my, close_btn[0],close_btn[1],close_btn[2],close_btn[3]);
-var over_min   = point_in_rect(mx,my, min_btn[0],  min_btn[1],  min_btn[2],  min_btn[3]);
-var over_back  = point_in_rect(mx,my, back_btn[0], back_btn[1], back_btn[2], back_btn[3]);
-var over_up    = point_in_rect(mx,my, up_btn[0],   up_btn[1],   up_btn[2],   up_btn[3]);
-
-var over_drag  = _in_win(mx,my) && _on_drag_border(mx,my);
-if (over_close || over_min || (mode=="view" && over_back) || (cwd.parent!=noone && over_up)) {
-    window_set_cursor(cr_default);
-}
-else if (over_drag && mode != "firewall") {
-    window_set_cursor(cr_size_all);
-}
-else {
-    window_set_cursor(cr_default);
-}
-
-// Close
-if (mouse_check_button_pressed(mb_left) && over_close) {
-    instance_destroy();
-    exit;
-}
-
-// Minimize
-if (mouse_check_button_pressed(mb_left) && over_min) {
-    is_minimized = !is_minimized;
-    exit;
-}
-
-// --- drag frame (disabled when minimized OR in firewall puzzle) ---
-if (!is_minimized && mode != "firewall") {
-    if (mouse_check_button_pressed(mb_left) && over_drag) {
-        dragging = true; 
-        drag_dx = mx - window_x; 
-        drag_dy = my - window_y;
-    }
-    if (dragging) {
-        window_x = mx - drag_dx;
-        window_y = my - drag_dy;
-        _recalc_files_layout();
-        if (!mouse_check_button(mb_left)) dragging = false;
-    }
-}
-
-// ESC behavior
-if (keyboard_check_pressed(vk_escape)) {
-    if (mode == "view") {
-        mode = "list";
-        selected_index = -1;
-    } else if (mode == "firewall") {
-        mode = "list";
-        firewall_state = "idle";
-    } else {
-        instance_destroy();
-    }
-}
-
-// Back / Up (on breadcrumbs line)
 if (mouse_check_button_pressed(mb_left)) {
-    if (mode == "view" && over_back) {
-        mode = "list";
-        selected_index = -1;
+    if (over_close) {
+        instance_destroy();
         exit;
     }
-    if (cwd.parent != noone && over_up) {
-        cwd = cwd.parent;
-        var n = array_length(breadcrumbs);
-        if (n > 0) array_resize(breadcrumbs, n - 1);
-        mode = "list";
-        selected_index = -1;
-        exit;
+    if (over_min) {
+        is_minimized = !is_minimized;
     }
 }
 
-// Grid interactions (list mode) — disabled when minimized
-if (!is_minimized && mode == "list") {
-    var grid_x = list_left;
-    var grid_y = content_top;
-    var cols   = grid_cols;
-    var rows   = ceil(array_length(cwd.children) / cols);
+if (is_minimized) {
+    exit;
+}
 
-    var within =
-        (mx >= grid_x) && (mx < grid_x + cols * cell_w) &&
-        (my >= grid_y) && (my < grid_y + rows * cell_h);
+// =======================================================================
+//                               HOME VIEW
+// =======================================================================
+if (view_mode == 0) {
 
-    if (within && mouse_check_button_pressed(mb_left) && open_cooldown <= 0) {
-        var col = floor((mx - grid_x) / cell_w);
-        var row = floor((my - grid_y) / cell_h);
-        var idx = row * cols + col;
+    if (mouse_check_button_pressed(mb_left)) {
+        for (var i = 0; i < array_length(home_entries); i++) {
+            var e = home_entries[i];
+            if (mx >= e.rx && mx <= e.rx + e.rw &&
+                my >= e.ry && my <= e.ry + e.rh) {
 
-        var len = array_length(cwd.children);
-        if (idx >= 0 && idx < len) {
-            selected_index = idx;
-            var item = cwd.children[idx];
-
-            if (item.type == "folder") {
-                cwd = item;
-                breadcrumbs[array_length(breadcrumbs)] = cwd;
-                selected_index = -1;
-            } else if (item.type == "text") {
-                viewer_type = "text";
-                viewer_text = string(item.content);
-                mode = "view";
-            } else if (item.type == "image") {
-                viewer_type = "image";
-                if (is_undefined(item.sprite)) { viewer_sprite = -1; } else { viewer_sprite = item.sprite; }
-                mode = "view";
-            } else if (item.type == "puzzle_firewall") {
-                mode = "firewall";
-                firewall_start();
+                if (e.kind == "firewall") {
+                    view_mode = 1; // go to firewall puzzle
+                }
+                break;
             }
         }
     }
+
+    exit;
 }
 
-// --- Firewall puzzle interactions ---
-if (!is_minimized && mode == "firewall") {
+// =======================================================================
+//                          FIREWALL PUZZLE VIEW
+// =======================================================================
+if (view_mode == 1) {
 
-    // ----- column geometry (match Draw GUI exactly) -----
-    var panel_x1 = window_x + 140;
-    var panel_y1 = content_top + 20;
-    var panel_x2 = window_x + window_w - 140;
-    var panel_y2 = window_y + window_h - 80;
+    // ----------------- HOLD AFTER ANIMATION (extra couple seconds) -----------------
+    if (fw_anim_hold) {
+        fw_anim_hold_time += 1;
+        if (fw_anim_hold_time >= room_speed * 2) { // ~2 seconds
+            fw_anim_hold      = false;
+            fw_anim_hold_time = 0;
+            view_mode         = 2;
+        }
+        exit;
+    }
 
-    var deny_x1 = panel_x1 + 40;
-    var deny_y1 = panel_y1 + 40;
-    var deny_x2 = (panel_x1 + panel_x2) * 0.5 - 20;
-    var deny_y2 = panel_y2 - 40;
+    // ----------------- ANIMATION: slide everything to Admit -----------------
+    if (fw_animating) {
+        fw_anim_t += 0.06;
+        var t = clamp(fw_anim_t, 0, 1);
 
-    var admit_x1 = (panel_x1 + panel_x2) * 0.5 + 20;
-    var admit_y1 = deny_y1;
-    var admit_x2 = panel_x2 - 40;
-    var admit_y2 = deny_y2;
+        for (var ai = 0; ai < array_length(fw_tiles); ai++) {
+            var atile = fw_tiles[ai];
+            atile.x = atile.start_x + (atile.target_x - atile.start_x) * t;
+            atile.y = atile.start_y + (atile.target_y - atile.start_y) * t;
+            fw_tiles[ai] = atile;
+        }
 
-    // rects used for hit tests
-    var deny_x  = deny_x1;
-    var deny_y  = deny_y1;
-    var deny_w  = deny_x2 - deny_x1;
-    var deny_h  = deny_y2 - deny_y1;
+        if (fw_anim_t >= 1) {
+            fw_animating      = false;
+            fw_anim_t         = 1;
+            fw_anim_hold      = true;
+            fw_anim_hold_time = 0;
 
-    var admit_x = admit_x1;
-    var admit_y = admit_y1;
-    var admit_w = admit_x2 - admit_x1;
-    var admit_h = admit_y2 - admit_y1;
+            // snap to final positions
+            for (var aj = 0; aj < array_length(fw_tiles); aj++) {
+                var f = fw_tiles[aj];
+                f.x = f.target_x;
+                f.y = f.target_y;
+                fw_tiles[aj] = f;
+            }
+        }
 
-    // confirm dialog rect + buttons (must match Draw)
-    var cw = 420;
-    var ch = 140;
-    var cx = window_x + (window_w - cw) * 0.5;
-    var cy = window_y + (window_h - ch) * 0.5;
+        exit;
+    }
 
-    var ok_w = 96, ok_h = 32;
-    var ok_x = cx + cw - ok_w - 24;
-    var ok_y = cy + ch - ok_h - 24;
-
-    var cancel_w = 96, cancel_h = 32;
-    var cancel_x = cx + 24;
-    var cancel_y = ok_y;
-
-    var n_cards = array_length(firewall_cards);
-
-    // ----- drag cards (only in play/confirm) -----
-    if (firewall_state == "play" || firewall_state == "confirm") {
-
-        // pick up card
+    // ----------------- CONFIRM POPUP HANDLING -----------------
+    if (fw_confirm_open) {
         if (mouse_check_button_pressed(mb_left)) {
-            for (var i = n_cards - 1; i >= 0; i--) {
-                var c = firewall_cards[i];
-                if (point_in_rect(mx, my, c.x, c.y, c.w, c.h)) {
-                    c.dragging = true;
-                    c.drag_dx  = mx - c.x;
-                    c.drag_dy  = my - c.y;
+            var mw  = 420;
+            var mh  = 160;
+            var mx2 = window_x + (window_w - mw) * 0.5;
+            var my2 = window_y + (window_h - mh) * 0.5;
 
-                    // bring to front
-                    var last = n_cards - 1;
-                    firewall_cards[i] = firewall_cards[last];
-                    firewall_cards[last] = c;
-                    break;
+            var btn_w = 100;
+            var btn_h = 30;
+            var gap_x = 30;
+            var btn_y = my2 + mh - 50;
+
+            var cancel_x = mx2 + 40;
+            var ok_x     = cancel_x + btn_w + gap_x;
+
+            var over_cancel = (mx >= cancel_x && mx <= cancel_x + btn_w &&
+                               my >= btn_y   && my <= btn_y   + btn_h);
+            var over_ok     = (mx >= ok_x     && mx <= ok_x     + btn_w &&
+                               my >= btn_y   && my <= btn_y   + btn_h);
+
+            if (over_ok) {
+                // set up animation to move all tiles into Admit
+                fw_confirm_open = false;
+                fw_animating    = true;
+                fw_anim_t       = 0;
+
+                var n      = array_length(fw_tiles);
+                var sy     = 12; // vertical spacing
+                var base_x = fw_admit.x + (fw_admit.w - fw_tile_max_w) * 0.5;
+                var base_y = fw_admit.y + 60;
+
+                for (var iok = 0; iok < n; iok++) {
+                    var tile_ok = fw_tiles[iok];
+
+                    var row = iok;
+                    var tx  = base_x;
+                    var ty  = base_y + row * (tile_ok.h + sy);
+
+                    tile_ok.start_x  = tile_ok.x;
+                    tile_ok.start_y  = tile_ok.y;
+                    tile_ok.target_x = tx;
+                    tile_ok.target_y = ty;
+                    tile_ok.side     = 1; // everything ends in Admit
+
+                    fw_tiles[iok] = tile_ok;
+                }
+
+            } else if (over_cancel) {
+                // Cancel: close popup and reset all tiles back to home positions
+                fw_confirm_open = false;
+
+                for (var ic = 0; ic < array_length(fw_tiles); ic++) {
+                    var tile_c = fw_tiles[ic];
+                    tile_c.side     = -1;
+                    tile_c.dragging = false;
+                    tile_c.x        = tile_c.home_x;
+                    tile_c.y        = tile_c.home_y;
+                    fw_tiles[ic]    = tile_c;
                 }
             }
         }
 
-        // move + drop
-        for (var j = 0; j < n_cards; j++) {
-            var cc = firewall_cards[j];
-            if (cc.dragging) {
-                cc.x = mx - cc.drag_dx;
-                cc.y = my - cc.drag_dy;
+        exit;
+    }
 
-                if (!mouse_check_button(mb_left)) {
-                    cc.dragging = false;
+    // ----------------- DRAG START -----------------
+    if (mouse_check_button_pressed(mb_left)) {
+        for (var i2 = array_length(fw_tiles) - 1; i2 >= 0; i2--) {
+            var t = fw_tiles[i2];
+            if (mx >= t.x && mx <= t.x + t.w &&
+                my >= t.y && my <= t.y + t.h) {
 
-                    var cx2 = cc.x + cc.w * 0.5;
-                    var cy2 = cc.y + cc.h * 0.5;
-
-                    if (point_in_rect(cx2, cy2, deny_x, deny_y, deny_w, deny_h)) {
-                        cc.col = 0; // Deny
-                    } else if (point_in_rect(cx2, cy2, admit_x, admit_y, admit_w, admit_h)) {
-                        cc.col = 1; // Admit
-                    } else {
-                        cc.col = -1; // not in any box
-                    }
-                }
+                t.dragging = true;
+                t.dx = mx - t.x;
+                t.dy = my - t.y;
+                fw_tiles[i2] = t;
+                break;
             }
-            firewall_cards[j] = cc;
+        }
+    }
+
+    // ----------------- DRAG MOVE -----------------
+    if (mouse_check_button(mb_left)) {
+        for (var j = 0; j < array_length(fw_tiles); j++) {
+            if (fw_tiles[j].dragging) {
+                fw_tiles[j].x = mx - fw_tiles[j].dx;
+                fw_tiles[j].y = my - fw_tiles[j].dy;
+            }
+        }
+    }
+
+    // ----------------- DRAG RELEASE -----------------
+    if (mouse_check_button_released(mb_left)) {
+        for (var k = 0; k < array_length(fw_tiles); k++) {
+            if (fw_tiles[k].dragging) {
+                var tt = fw_tiles[k];
+                tt.dragging = false;
+
+                // check deny / admit zones
+                var in_deny  = (mx >= fw_deny.x && mx <= fw_deny.x + fw_deny.w &&
+                                my >= fw_deny.y && my <= fw_deny.y + fw_deny.h);
+                var in_admit = (mx >= fw_admit.x && mx <= fw_admit.x + fw_admit.w &&
+                                my >= fw_admit.y && my <= fw_admit.y + fw_admit.h);
+
+                if (in_deny) {
+                    tt.side = 0;
+                    tt.x = clamp(tt.x, fw_deny.x + 8, fw_deny.x + fw_deny.w - tt.w - 8);
+                    tt.y = clamp(tt.y, fw_deny.y + 8, fw_deny.y + fw_deny.h - tt.h - 8);
+                }
+                else if (in_admit) {
+                    tt.side = 1;
+                    tt.x = clamp(tt.x, fw_admit.x + 8, fw_admit.x + fw_admit.w - tt.w - 8);
+                    tt.y = clamp(tt.y, fw_admit.y + 8, fw_admit.y + fw_admit.h - tt.h - 8);
+                }
+                else {
+                    // return to home row
+                    tt.side = -1;
+                    tt.x = tt.home_x;
+                    tt.y = tt.home_y;
+                }
+
+                fw_tiles[k] = tt;
+            }
         }
 
-        // are ALL cards placed in *either* column?
-        var all_placed = (n_cards > 0);
-        for (var k = 0; k < n_cards; k++) {
-            if (firewall_cards[k].col < 0) { // -1 = unplaced
+        // if all tiles are placed (side != -1), open confirm
+        var all_placed = true;
+        for (var p = 0; p < array_length(fw_tiles); p++) {
+            if (fw_tiles[p].side == -1) {
                 all_placed = false;
                 break;
             }
         }
-
-        if (all_placed && firewall_state == "play") {
-            firewall_state = "confirm";
-        }
-        if (!all_placed && firewall_state == "confirm") {
-            firewall_state = "play";
+        if (all_placed) {
+            fw_confirm_open = true;
         }
     }
 
-    // ----- confirm popup buttons -----
-    if (firewall_state == "confirm") {
-        if (mouse_check_button_pressed(mb_left)) {
-            if (point_in_rect(mx, my, ok_x, ok_y, ok_w, ok_h)) {
-                // lock answers -> start auto "truth" animation
-                firewall_state  = "auto";
-                firewall_auto_t = 0;
-            } else if (point_in_rect(mx, my, cancel_x, cancel_y, cancel_w, cancel_h)) {
-                firewall_state = "play";
+    exit;
+}
+
+// =======================================================================
+//                         FIREWALL LOG / KEY VIEW
+// =======================================================================
+if (view_mode == 2) {
+
+    // back button near top-right of Files window
+    var back_btn_x = window_x + window_w - 120;
+    var back_btn_y = window_y + 60;
+    var back_btn_w = 80;
+    var back_btn_h = 24;
+
+    if (mouse_check_button_pressed(mb_left)) {
+        // back to home
+        if (mx >= back_btn_x && mx <= back_btn_x + back_btn_w &&
+            my >= back_btn_y && my <= back_btn_y + back_btn_h) {
+
+            view_mode = 0;
+        } else {
+            // gold key click
+            var kx = fw_key_rect[0];
+            var ky = fw_key_rect[1];
+            var kw = fw_key_rect[2];
+            var kh = fw_key_rect[3];
+
+            if (mx >= kx && mx <= kx + kw &&
+                my >= ky && my <= ky + kh) {
+
+                fw_key_collected_local = true;
+
+                if (!variable_global_exists("key_collected")) {
+                    global.key_collected = array_create(3, false);
+                }
+
+                // 2 = golden key slot
+                global.key_collected[2] = true;
             }
         }
     }
 
-        // ----- auto-move: stack everything in Admit -----
-    if (firewall_state == "auto") {
-        firewall_auto_t += 1;
-
-        var admit_mid_x = (admit_x1 + admit_x2) * 0.5;
-        var base_y      = deny_y1 + 60;
-        var row_h       = 72;
-
-        // Build order: first all cards the player put in Admit, then Deny
-        var admit_list = [];
-        var deny_list  = [];
-
-        for (var a = 0; a < n_cards; a++) {
-            var ca = firewall_cards[a];
-            if (ca.col == 1) {
-                admit_list[array_length(admit_list)] = a;
-            } else {
-                deny_list[array_length(deny_list)] = a;
-            }
-        }
-
-        var slot = 0;
-
-        // cards already in Admit stay on top, just tidy into stack
-        for (var ai = 0; ai < array_length(admit_list); ai++) {
-            var idx_a = admit_list[ai];
-            var cA    = firewall_cards[idx_a];
-
-            var tx = admit_mid_x - cA.w * 0.5;
-            var ty = base_y + slot * row_h;
-
-            cA.x += (tx - cA.x) * 0.2;
-            cA.y += (ty - cA.y) * 0.2;
-            cA.col = 1;
-
-            firewall_cards[idx_a] = cA;
-            slot++;
-        }
-
-        // cards from Deny slide over and stack underneath
-        for (var di = 0; di < array_length(deny_list); di++) {
-            var idx_d = deny_list[di];
-            var cD    = firewall_cards[idx_d];
-
-            var tx2 = admit_mid_x - cD.w * 0.5;
-            var ty2 = base_y + slot * row_h;
-
-            cD.x += (tx2 - cD.x) * 0.2;
-            cD.y += (ty2 - cD.y) * 0.2;
-            cD.col = 1;
-
-            firewall_cards[idx_d] = cD;
-            slot++;
-        }
-
-        // after short delay, show hacker file (always) and only grant key once
-        if (firewall_auto_t > 45) {
-            firewall_state = "done";
-
-            // give the red key once
-            if (!firewall_key_given) {
-                firewall_key_given = true;
-                global.key_red = true;
-            }
-
-            viewer_type = "text";
-            viewer_text =
-                "FIREWALL LOG UNLOCKED\n\n" +
-                "Hacker: \"Yeah. That's right, Vanessa. You did all of it.\n" +
-                "You lit the match. You walked away. You buried the truth.\"\n\n" +
-                "Hacker: \"I know everything you tried to bury. And now you do too.\"\n\n" +
-                "Click the red key.";
-
-            // tell view mode to draw the key sprites
-            viewer_show_red_key = true;
-
-            mode = "view";
-            selected_index = -1;
-        }
-    }
+    exit;
 }
