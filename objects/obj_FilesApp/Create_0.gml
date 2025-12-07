@@ -23,13 +23,18 @@ window_dragging = false;
 window_drag_dx  = 0;
 window_drag_dy  = 0;
 
+// small delay to ignore the click that opened this app
+spawn_click_cooldown = round(room_speed * 0.15); // ~0.15s
+
 // ------------------------------------
 // STATE
 // ------------------------------------
-view_mode = 0; // 0 = home, 1 = firewall puzzle, 2 = firewall log/preview
+// 0 = home, 1 = firewall puzzle, 2 = firewall log, 3 = generic folder (OPEN ME/HR/Images)
+view_mode       = 0;
+current_folder  = "";
 
 // ------------------------------------
-// HOME ENTRIES (Projects / HR / Images / Firewall.exe)
+// HOME ENTRIES (OPEN ME / HR / Images / Firewall.exe)
 // ------------------------------------
 home_entries = [];
 
@@ -40,7 +45,7 @@ var base_x   = window_x + 40;
 var base_y   = window_y + header_h + 40;
 
 var labels = [
-    "Projects",
+    "OPEN ME",
     "HR",
     "Images",
     "Firewall.exe"
@@ -49,7 +54,7 @@ var labels = [
 for (var i = 0; i < array_length(labels); i++) {
     var cx = base_x + i * (card_w + margin_x);
     var cy = base_y;
-
+	
     var kind = "folder";
     if (i == 3) kind = "firewall";
 
@@ -233,3 +238,8 @@ if (!variable_global_exists("_ui_click_consumed")) {
 }
 __ui_click_inside      = false;
 __ui_first_frame_block = 1;
+
+// ------------------------------------
+// VIDEO (OPEN ME folder)
+// ------------------------------------
+video_active = false;

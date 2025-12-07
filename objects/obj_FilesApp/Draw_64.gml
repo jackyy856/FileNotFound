@@ -5,13 +5,60 @@ draw_set_font(-1);
 draw_set_halign(fa_left);
 draw_set_valign(fa_top);
 
-// white window background
+// -----------------------------------------------------------------------
+// MINIMIZED: draw only top bar
+// -----------------------------------------------------------------------
+if (is_minimized) {
+    // header bar
+    draw_set_color(c_white);
+    draw_rectangle(window_x, window_y,
+                   window_x + window_w,
+                   window_y + header_h, false);
+
+    draw_set_color(c_black);
+    draw_rectangle(window_x, window_y,
+                   window_x + window_w,
+                   window_y + header_h, true);
+
+    // title
+    draw_set_color(c_black);
+    draw_text(window_x + 8, window_y + 8, "Files");
+
+    // minimize button
+    var bcol_min = make_colour_rgb(230,230,230);
+    draw_set_color(bcol_min);
+    draw_rectangle(files_min_btn[0], files_min_btn[1],
+                   files_min_btn[0] + files_min_btn[2],
+                   files_min_btn[1] + files_min_btn[3], false);
+    draw_set_color(c_black);
+    draw_rectangle(files_min_btn[0], files_min_btn[1],
+                   files_min_btn[0] + files_min_btn[2],
+                   files_min_btn[1] + files_min_btn[3], true);
+    draw_text(files_min_btn[0] + 8, files_min_btn[1] + 2, "-");
+
+    // close button
+    draw_set_color(bcol_min);
+    draw_rectangle(files_close_btn[0], files_close_btn[1],
+                   files_close_btn[0] + files_close_btn[2],
+                   files_close_btn[1] + files_close_btn[3], false);
+    draw_set_color(c_black);
+    draw_rectangle(files_close_btn[0], files_close_btn[1],
+                   files_close_btn[0] + files_close_btn[2],
+                   files_close_btn[1] + files_close_btn[3], true);
+    draw_text(files_close_btn[0] + 7, files_close_btn[1] + 2, "X");
+
+    draw_set_alpha(1);
+    exit;
+}
+
+// -----------------------------------------------------------------------
+// FULL WINDOW BACKGROUND
+// -----------------------------------------------------------------------
 draw_set_color(c_white);
 draw_rectangle(window_x, window_y,
                window_x + window_w,
                window_y + window_h, false);
 
-// optional border
 draw_set_color(c_black);
 draw_rectangle(window_x, window_y,
                window_x + window_w,
@@ -46,11 +93,6 @@ draw_rectangle(files_close_btn[0], files_close_btn[1],
                files_close_btn[1] + files_close_btn[3], true);
 draw_text(files_close_btn[0] + 7, files_close_btn[1] + 2, "X");
 
-if (is_minimized) {
-    draw_set_alpha(1);
-    exit;
-}
-
 // -----------------------------------------------------------------------
 //                               HOME VIEW
 // -----------------------------------------------------------------------
@@ -59,17 +101,12 @@ if (view_mode == 0) {
     draw_set_color(c_black);
     draw_text(window_x + 8, window_y + header_h + 4, "Home");
 
-    var spr_icon = spr_FilesIcon; // no-text logo
+    var spr_icon = spr_FilesIcon; // folder sprite
 
     for (var i = 0; i < array_length(home_entries); i++) {
         var e = home_entries[i];
 
-        // card background (light grey)
-        var grey = make_colour_rgb(240,240,240);
-        draw_set_color(grey);
-        draw_rectangle(e.rx, e.ry, e.rx + e.rw, e.ry + e.rh, false);
-
-        // icon sprite
+        // NO grey card background anymore – just the icon
         if (spr_icon != -1) {
             var sw = sprite_get_width(spr_icon);
             var sh = sprite_get_height(spr_icon);
@@ -120,14 +157,34 @@ if (view_mode == 1) {
     draw_set_halign(fa_left);
     draw_text(window_x + 8, window_y + header_h + 4, "Home / Firewall.exe");
 
-    // instruction (a bit higher)
+    // Back button
+    var back_btn_x = window_x + window_w - 120;
+    var back_btn_y = window_y + 60;
+    var back_btn_w = 80;
+    var back_btn_h = 24;
+
+    var back_col = make_colour_rgb(230,230,230);
+    draw_set_color(back_col);
+    draw_rectangle(back_btn_x, back_btn_y,
+                   back_btn_x + back_btn_w,
+                   back_btn_y + back_btn_h, false);
+    draw_set_color(c_black);
+    draw_rectangle(back_btn_x, back_btn_y,
+                   back_btn_x + back_btn_w,
+                   back_btn_y + back_btn_h, true);
+    draw_set_halign(fa_center);
+    draw_set_valign(fa_middle);
+    draw_text(back_btn_x + back_btn_w * 0.5,
+              back_btn_y + back_btn_h * 0.5, "< Back");
+
+    // instruction text (centered)
     draw_set_halign(fa_center);
     draw_set_color(c_black);
     draw_text(window_x + window_w * 0.5,
               window_y + window_h - 180,
               "Drag the sentences to your answer honestly");
 
-    // outer frame (just around panels)
+    // outer frame
     draw_set_halign(fa_left);
     draw_set_color(c_black);
     draw_rectangle(fw_frame.x, fw_frame.y,
@@ -245,24 +302,24 @@ if (view_mode == 2) {
     draw_text(window_x + 8, window_y + header_h + 4, "Home / Firewall.exe");
 
     // Back button
-    var back_btn_x = window_x + window_w - 120;
-    var back_btn_y = window_y + 60;
-    var back_btn_w = 80;
-    var back_btn_h = 24;
+    var back_btn_x2 = window_x + window_w - 120;
+    var back_btn_y2 = window_y + 60;
+    var back_btn_w2 = 80;
+    var back_btn_h2 = 24;
 
-    var back_col = make_colour_rgb(230,230,230);
-    draw_set_color(back_col);
-    draw_rectangle(back_btn_x, back_btn_y,
-                   back_btn_x + back_btn_w,
-                   back_btn_y + back_btn_h, false);
+    var back_col2 = make_colour_rgb(230,230,230);
+    draw_set_color(back_col2);
+    draw_rectangle(back_btn_x2, back_btn_y2,
+                   back_btn_x2 + back_btn_w2,
+                   back_btn_y2 + back_btn_h2, false);
     draw_set_color(c_black);
-    draw_rectangle(back_btn_x, back_btn_y,
-                   back_btn_x + back_btn_w,
-                   back_btn_y + back_btn_h, true);
+    draw_rectangle(back_btn_x2, back_btn_y2,
+                   back_btn_x2 + back_btn_w2,
+                   back_btn_y2 + back_btn_h2, true);
     draw_set_halign(fa_center);
     draw_set_valign(fa_middle);
-    draw_text(back_btn_x + back_btn_w * 0.5,
-              back_btn_y + back_btn_h * 0.5, "< Back");
+    draw_text(back_btn_x2 + back_btn_w2 * 0.5,
+              back_btn_y2 + back_btn_h2 * 0.5, "< Back");
 
     // Log text
     draw_set_halign(fa_left);
@@ -301,6 +358,79 @@ if (view_mode == 2) {
         fw_key_rect[3] = key_h;
 
         draw_sprite_ext(key_spr, 0, key_x, key_y, sc, sc, 0, c_white, 1);
+    }
+
+    draw_set_alpha(1);
+    exit;
+}
+
+// -----------------------------------------------------------------------
+//                 GENERIC FOLDER VIEW (OPEN ME / HR / Images)
+// -----------------------------------------------------------------------
+if (view_mode == 3) {
+
+    draw_set_color(c_black);
+    draw_set_halign(fa_left);
+    draw_text(window_x + 8, window_y + header_h + 4,
+              "Home / " + string(current_folder));
+
+    // Back button
+    var back_btn_x3 = window_x + window_w - 120;
+    var back_btn_y3 = window_y + 60;
+    var back_btn_w3 = 80;
+    var back_btn_h3 = 24;
+
+    var back_col3 = make_colour_rgb(230,230,230);
+    draw_set_color(back_col3);
+    draw_rectangle(back_btn_x3, back_btn_y3,
+                   back_btn_x3 + back_btn_w3,
+                   back_btn_y3 + back_btn_h3, false);
+    draw_set_color(c_black);
+    draw_rectangle(back_btn_x3, back_btn_y3,
+                   back_btn_x3 + back_btn_w3,
+                   back_btn_y3 + back_btn_h3, true);
+    draw_set_halign(fa_center);
+    draw_set_valign(fa_middle);
+    draw_text(back_btn_x3 + back_btn_w3 * 0.5,
+              back_btn_y3 + back_btn_h3 * 0.5, "< Back");
+
+    // content
+    if (current_folder == "OPEN ME") {
+        // draw video inside folder window
+        if (video_active) {
+            var vd = video_draw();
+            var status = vd[0];
+
+            if (status == 0) {
+                var surf = vd[1];
+
+                if (surface_exists(surf)) {
+                    var px = window_x + 40;
+                    var py = window_y + header_h + 80;
+                    var pw = window_w - 80;
+                    var ph = window_h - header_h - 120;
+
+                    draw_surface_stretched(surf, px, py, pw, ph);
+                }
+            } else {
+                video_close();
+                video_active = false;
+            }
+        } else {
+            draw_set_halign(fa_left);
+            draw_set_valign(fa_top);
+            draw_set_color(c_black);
+            draw_text(window_x + 40, window_y + header_h + 80,
+                      "(Video not playing.)");
+        }
+
+    } else {
+        // simple placeholder text inside other folders
+        draw_set_halign(fa_left);
+        draw_set_valign(fa_top);
+        draw_set_color(c_black);
+        draw_text(window_x + 40, window_y + header_h + 80,
+                  "(This folder is empty.)");
     }
 
     draw_set_alpha(1);
