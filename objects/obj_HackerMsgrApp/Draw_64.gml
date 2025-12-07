@@ -1,4 +1,3 @@
-
 var x1 = win_x;
 var y1 = win_y;
 var x2 = win_x + win_w;
