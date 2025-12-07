@@ -1,5 +1,21 @@
 /// obj_EmailApp - Step
 
+
+// added: 
+
+/// Build visible email list for click detection
+visible_emails = []; // store it as an instance variable
+
+for (var k = 0; k < array_length(inbox); k++) {
+    if (!variable_struct_exists(inbox[k], "show_in_inbox")
+    || inbox[k].show_in_inbox)
+    {
+        array_push(visible_emails, k);
+    }
+}
+
+/// the same: 
+
 var mx = device_mouse_x_to_gui(0);
 var my = device_mouse_y_to_gui(0);
 var mx_local = mx - window_x;
@@ -8,6 +24,7 @@ var my_local = my - window_y;
 function in_local(px, py, x, y, w, h) {
     return (px >= x) && (py >= y) && (px < x + w) && (py < y + h);
 }
+
 
 // cooldown to prevent double-open when app spawns
 if (open_cooldown > 0) open_cooldown--;
@@ -28,6 +45,9 @@ if (mouse_check_button_pressed(mb_left)) {
 
 // soft block initial opener click
 if (__ui_first_frame_block > 0) __ui_first_frame_block--;
+
+
+
 
 // ------------------ WINDOW DRAG (title bar + border) ------------------
 var in_titlebar = in_local(mx_local, my_local, 0, 0, window_w, header_h);
@@ -93,11 +113,18 @@ if (selected_index == -1) {
         mx >= list_left && mx <= list_left + list_w &&
         my >= list_top  && my <= list_top  + list_h)
     {
-        var idx = floor((my - list_top) / row_h);
-        var len = array_length(inbox);
-        if (idx >= 0 && idx < len) {
-            selected_index = idx;
-            inbox[idx].read = true;
+
+		var idx = floor((my - list_top) / row_h);
+		var len = array_length(visible_emails);
+
+		if (idx >= 0 && idx < len) {
+
+		    // Get the REAL inbox index
+		    var real_i = visible_emails[idx];
+
+		    selected_index = real_i;
+		    inbox[real_i].read = true;
+
 
             // unlock messenger if suspicious
             if (inbox[idx].is_suspicious) {

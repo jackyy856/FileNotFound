@@ -1,7 +1,7 @@
 // Self-contained sticky-notes window. No parents, no globals, no dependencies.
 
 // ---------- Window/layout ----------
-x1 = 260; y1 = 120;  w = 820; h = 560;  bar_h = 40;
+x1 = 260; y1 = 120;  w = 820; h = 560;  bar_h = 60;
 x2 = x1 + w; y2 = y1 + h;
 
 title = "Notes";
@@ -9,7 +9,7 @@ window_focus = true;
 dragging = false; drag_dx = 0; drag_dy = 0;
 is_minimized = false;
 
-btn_w = 24; btn_h = 20; btn_pad = 8;
+btn_w = 35; btn_h = 35; btn_pad = 20;
 
 pad = 12;
 content_x1 = x1 + pad;

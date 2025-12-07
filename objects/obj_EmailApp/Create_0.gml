@@ -11,11 +11,16 @@ window_y = 90;
 header_h = 55;   //header height
 row_h    = 36;   //inbox row height
 
+// height for principal tab png
+tab_sprite = spr_mail_principal;
+tab_h = sprite_get_height(tab_sprite) + 10;
+
 // ---- window state ----
 window_dragging = false;
 window_drag_dx = 0;
 window_drag_dy = 0;
 is_minimized   = false;   // minimize like Sticky Note
+
 
 // drag via border (for 4-way cursor like Files/Gallery)
 drag_border = 12;
@@ -30,57 +35,178 @@ function _on_drag_border(px,py){
 
 // derived rects (recomputed on move)
 function _recalc_email_layout() {
-    list_top  = window_y + header_h + 8;
+    list_top  = window_y + header_h + tab_h + 8;
     list_left = window_x + 16;
     list_w    = window_w - 32;
-    list_h    = window_h - header_h - 24;
+    list_h    = window_h - header_h - tab_h - 24;
 
-    // buttons
-    close_btn = [window_x + window_w - 36,  window_y + 12, 24, 24];
-    min_btn   = [window_x + window_w - 66,  window_y + 12, 24, 24]; // minimize
-    back_btn  = [window_x + 12,             window_y + 40, 64, 24];
+   // buttons
+	// match Draw's btn_size and placement (30x30, centered vertically in header)
+	var btn_size = 30;
+	var btn_y = window_y + (header_h - btn_size) / 2;
+
+	var min_x1   = window_x + window_w - (btn_size * 2) - 8;
+	var min_x2   = min_x1 + btn_size;
+
+	var close_x1 = window_x + window_w - btn_size - 4;
+	var close_x2 = close_x1 + btn_size;
+
+	// store as [x, y, w, h]
+	min_btn   = [min_x1, btn_y, btn_size, btn_size];
+	close_btn = [close_x1, btn_y, btn_size, btn_size];
+
+	back_btn  = [window_x + 12, window_y + 120, 80, 26];
+	
 }
+
 _recalc_email_layout();
 
 // state
 selected_index = -1;      //-1 = inbox view; 0... = full email view
 
 // fonts
-var fTitle = asset_get_index("f_mail_title");
-var fBody  = asset_get_index("f_mail_body");
-font_title = (fTitle != -1) ? fTitle : -1; // -1 = default font
-font_body  = (fBody  != -1) ? fBody  : -1;
+
+font_title = font_emailT;
+font_body  = font_email;
 
 // inbox data
 inbox = [
     {
         id:0,
-        from:"announcementz@rosenwood.hr",
+        from:"announcementz@rosenw00d.hr",
+		to: "Vanessa Myers <vmyers@rosenwood.com>",
         subject:"You have been selected for a bonus opportunity!",
-        body:"Congratulations! Thanks to your outstanding performance, we have an amazing notice to share. Please click here to redeem your certificate of recognition. Thank you for your hard work!",
-        read:false, is_suspicious:true, is_corrupted:false
+        body:"Congratulations! \n\n\n\nThanks to your outstanding performance, we have an amazing notice to share. Please click here to redeem your certificate of recognition. Thank you for your hard work!",
+        read:false, is_suspicious:true, is_corrupted:false, show_in_inbox:true
     },
     {
-        id:1,
-        from:"IT Support",
-        subject:"Action Required: Password Reset",
-        body:"Your password expires today. Click the in-app link to reset.",
-        read:false, is_suspicious:false, is_corrupted:false
+        id:10,
+        from:"Elizabeth Newman <enewman@rosenwood.com>",
+		to: "Vanessa Myers <vmyers@rosenwood.com>",
+        subject:"Anomaly in Global Account",
+        body:"Hi Vanessa, \n\n\n\nI noticed an inconsistency in the Rosenwood Global ledger, line 47 doesn't match the adjustment note. \n\nI can try to fix it, but you're much better with these. Would you mind taking a look when you can? \n\n\n\nThanks,  \n\n\n\nElizabeth Newman  \n\nJunior Financial Analyst  \n\nRosenwood Corps",
+        read:false, is_suspicious:false, is_corrupted:false, show_in_inbox:true
     },
     {
-        id:2,
-        from:"Unknown",
-        subject:"[URGENT] Outstanding invoice (open immediately)",
-        body:"This message contains your invoice.",
-        read:false, is_suspicious:false, is_corrupted:false
+        id:20,
+        from:"Rosenwood Corps HR <hr@rosenwood.com>",
+		to: "Vanessa Myers <vmyers@rosenwood.com>",
+        subject:"Mandatory Review: Code of Conduct Update",
+        body:"Hello Vanessa, \n\n\n\nRosenwood has updated its Code of Conduct for 2025, effective immediately. \n\nAll department leads are required to review the document and ensure compliance within their teams. \n\nPlease acknowledge receipt by replying to this email. \n\n\n\nHR Department",
+        read:false, is_suspicious:false, is_corrupted:false, show_in_inbox:true
     },
     {
-        id:3,
-        from:"Patrica Conway",
-        subject:"Friday Office Party",
-        body:"Hey! Sharing the office party photos. Don't let the boss see ;)",
-        read:false, is_suspicious:false, is_corrupted:false
-    }
+        id:30,
+        from:"Thomas Wylde <twylde@rosenwood.com>",
+		to: "Vanessa Myers <vmyers@rosenwood.com>",
+        subject:"Log review complete",
+        body:"I've examined the access logs you asked for. Everything aligns with your statement. No further action required on your end. \n\n\n\nGood luck,  \n\n\n\nThomas Wylde  \n\nIT Director  \n\nRosenwood Corps",
+        read:false, is_suspicious:false, is_corrupted:false, show_in_inbox:true
+    },
+	 {
+        id:60,
+		thread_id: 1,
+        from:"Elizabeth Newman <enewman@rosenwood.com>",
+		to: "Corey Lewis <clewis@rosenwood.com>, Vanessa Myers <vmyers@rosenwood.com>",
+        subject:"Corey finish the reconciliations and fix the numbers",
+        body:"Hey, \n\n\n\nI can't finalize the report without your section. Please upload it before lunch. I'm making this a formal email so Vanessa is aware.\n\n\n\nThanks,  \n\n\n\nElizabeth Newman  \n\nJunior Financial Analyst  \n\nRosenwood Corps",
+        read:true, is_suspicious:false, is_corrupted:false, show_in_inbox:true
+    },
+	 {
+        id:59,
+		thread_id: 1,
+        from:"Corey Lewis <clewis@rosenwood.com>",
+		to: "Elizabeth Newman <enewman@rosenwood.com>, Vanessa Myers <vmyers@rosenwood.com>",
+        subject:"RE: Corey finish the reconciliations and fix the numbers",
+        body:"Hello, \n\n\n\ni forgot about it because i went out to eat. should be done now.”.\n\n\n\nSup,  \n\n\n\nCorey Lewis  \n\nSenior Financial Analyst  \n\nRosenwood Corps",
+        read:true, is_suspicious:false, is_corrupted:false, show_in_inbox:true
+    },
+	{
+        id:70,
+        from:"Justin Fleming <jfleming@rosenwood.com>",
+		to: "Vanessa Myers <vmyers@rosenwood.com>",
+        subject:"PLEASE approve marketing expense (tiny one this time)",
+        body:"Dear Vanessa, \n\n\n\nI promise this is small. We need $6K for promotional stands, you can't reject another one of our proposals. \n\nThis will boost conversions by at least 6%. \n\nPlease let a man dream..\n\n\n\nThank you very much,  \n\n\n\nJustin Fleming  \n\nMarketing Director  \n\nRosenwood Corps",
+        read:true, is_suspicious:false, is_corrupted:false, show_in_inbox:true
+    },
+	{
+        id:89,
+		thread_id: 5,
+        from:"Vanessa Myers <vmyers@rosenwood.com>",
+		to: "Helena Rodriguez <hrodriguez@rosenwood.com>",
+        subject:"RE: Status of the Audit Preparation",
+        body:"Hello Helena, \n\n\n\nMy secretary left them printed in your office.\n\n\n\nBest,  \n\n\n\nVanessa Myers  \n\nFinance Director  \n\nRosenwood Corps",
+        read:true, is_suspicious:false, is_corrupted:false, show_in_inbox:false
+    },
+	{
+        id:90,
+		thread_id: 5,
+        from:"Helena Rodriguez <hrodriguez@rosenwood.com>",
+		to: "Vanessa Myers <vmyers@rosenwood.com>",
+        subject:"Status of the Audit Preparation",
+        body:"Hello Vanessa, \n\n\n\nplease send me the finalized Q3 package by end of day. The board is requesting preliminary numbers earlier than expected. Let me know if anything delays your delivery.\n\n\n\nExpecting the best,  \n\n\n\nHelena Rodriguez  \n\nChief Financial Officer  \n\nRosenwood Corps",
+        read:true, is_suspicious:false, is_corrupted:false, show_in_inbox:true
+    },
+	{
+        id:100,
+        from:"Facilities Manager <facilities@rosenwood.com>",
+		to: "Vanessa Myers <vmyers@rosenwood.com>",
+        subject:"Maintenance Notice: Elevator Inspection",
+        body:"Please note that Elevator B will be unavailable from 1 PM to 3 PM on Tuesday for mandatory inspection. We apologize for the inconvenience.",
+        read:true, is_suspicious:false, is_corrupted:false, show_in_inbox:true
+    },
+	 {
+        id:110,
+        from:"Thomas Wylde <twylde@rosenwood.com>",
+		to: "Vanessa Myers <vmyers@rosenwood.com>",
+        subject:"Tonight's Update Cycle",
+        body:"Hi Vanessa, \n\n\n\nWe will be running system updates tonight at 22:30. If you need anything preserved or delayed, notify me directly — not the team. I assume you understand why. \n\n\n\nGood luck,  \n\n\n\nThomas Wylde  \n\nIT Director  \n\nRosenwood Corps",
+        read:true, is_suspicious:false, is_corrupted:false, show_in_inbox:true
+    },
+	{
+        id:120,
+        from:"Richard Fowler <rfowler@rosenwood.com>",
+		to: "Vanessa Myers <vmyers@rosenwood.com>",
+        subject:"Equipment being moved without my approval",
+        body:"Hey. \n\n\n\nNot sure who authorized changes in the Finance office layout, but someone unplugged one of the server pass-through cables again. This keeps happening. \n\nTell your team to contact IT before touching anything. Also, tell Sofia to come to my office for some training.\n\n\n\nAlways unmatched,  \n\n\n\nRichard Fowler \n\nSenior IT officer  \n\nRosenwood Corps",
+        read:true, is_suspicious:false, is_corrupted:false, show_in_inbox:true
+    },
+	 {
+        id:130,
+        from:"Rosenwood Corps HR <hr@rosenwood.com>",
+		to: "Vanessa Myers <vmyers@rosenwood.com>",
+        subject:"Upcoming Performance Review Deadlines",
+        body:"Hello Vanessa, \n\nPlease submit completed performance evaluations for your direct reports by the 28th. All documentation must be uploaded through the internal portal.",
+        read:true, is_suspicious:false, is_corrupted:false, show_in_inbox:true
+    },
+	 {
+        id:148,
+		thread_id: 10,
+        from:"Vanessa Myers <vmyers@rosenwood.com>",
+		to: "Sofia Dove <sdove@rosenwood.com>",
+        subject:"Follow Up - Case #2193",
+        body:"Hi, \n\n\n\nI’m reaching out regarding the report filed by Sofia Dove, an employee under the Financial Department, about Richard Fowler. She mentioned that she had contacted HR earlier but had yet to receive any follow-up. \n\n\n\nCould someone please provide an update on the status? \n\n\n\nShe needs clarity.  \n\n\n\nThanks in advance,\n\n\n\nVanessa Myers  \n\nFinance Director  \n\nRosenwood Corps",
+        read:true, is_suspicious:false, is_corrupted:false, show_in_inbox:true
+    },
+	 {
+        id:149,
+		thread_id: 10,
+        from:"Vanessa Myers <vmyers@rosenwood.com>",
+		to: "Sofia Dove <sdove@rosenwood.com>",
+        subject:"RE:Concern about Richard Fowler",
+        body:"Hi Sofia, \n\n\n\nWill do right now, I'm sending them an email.\n\n\n\nLet me know if you want to move into my office for the time being.\n\n\n\nSincerely,\n\n\n\nVanessa Myers  \n\nFinance Director  \n\nRosenwood Corps",
+        read:true, is_suspicious:false, is_corrupted:false, show_in_inbox:false
+    },
+	 {
+        id:150,
+		thread_id: 10,
+        from:"Sofia Dove <sdove@rosenwood.com>",
+		to: "Vanessa Myers <vmyers@rosenwood.com>",
+        subject:"Concern about Richard Fowler",
+        body:"Hi Vanessa, \n\n\n\nThank you for listening earlier.\n\n\n\nI sent a formal email to HR last Friday about the situation I told you on Slack. I haven’t heard anything back yet.\n\n\n\nI know you’re busy, but… could you check if reports like that take often that long? \n\nI’m just really scared he’ll find out I said anything. \n\n\n\nThanks again for caring. \n\nIt means a lot. \n\n\n\nSincerely,\n\n\n\nSofia Dove  \n\nJunior Financial Analyst  \n\nRosenwood Corps",
+        read:true, is_suspicious:false, is_corrupted:false, show_in_inbox:true
+    },
+	
 ];
 
 /// --- Email Puzzle / Corrupted mail ---
@@ -92,6 +218,7 @@ var _len = array_length(inbox);
 inbox[_len] = {
     id           : 4,
     from         : "System",
+	to			 : "Vanessa Myers <vmyers@rosenwood.com>",
     subject      : "[CORRUPTED] \u2588\u2592\u2591\u2592\u2588",
     body         : "This email is corrupted. Recover it to reveal your first key.",
     read         : false,

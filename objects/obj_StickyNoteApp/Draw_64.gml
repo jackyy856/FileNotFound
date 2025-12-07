@@ -11,10 +11,17 @@ var bar_col = make_color_rgb(28,32,38);
 draw_set_color(bar_col);
 draw_roundrect(x1, y1, x2, y1 + bar_h, false);
 
-// title
-draw_set_color(c_white);
-draw_set_font(font_title);
-draw_text(x1 + 12, y1 + 10, title);
+
+// draw PNG instead of text
+var spr = spr_notes;        // your PNG sprite
+var sw  = sprite_get_width(spr);
+var sh  = sprite_get_height(spr);
+
+// position centered vertically on the bar (adjust as needed)
+var px = x1 + 12;               // left padding like before
+var py = y1 + (bar_h - sh) * 0.5;
+
+draw_sprite(spr, 0, px, py);
 
 // window buttons
 var bx_close_x1 = x2 - btn_pad - btn_w;
@@ -26,13 +33,13 @@ var bx_min_y1   = bx_close_y1;
 draw_set_color(make_color_rgb(215,215,215));
 draw_roundrect(bx_min_x1, bx_min_y1, bx_min_x1+btn_w, bx_min_y1+btn_h, false);
 draw_set_color(c_black);
-draw_text(bx_min_x1+7, bx_min_y1+3, "_");
+draw_text(bx_min_x1+4, bx_min_y1+3, "_");
 
 // close
 draw_set_color(make_color_rgb(230,70,70));
 draw_roundrect(bx_close_x1, bx_close_y1, bx_close_x1+btn_w, bx_close_y1+btn_h, false);
 draw_set_color(c_white);
-draw_text(bx_close_x1+7, bx_close_y1+3, "x");
+draw_text(bx_close_x1+4, bx_close_y1+3, "x");
 
 // body shell
 if (is_minimized) exit;

@@ -107,7 +107,7 @@
     "124":{"character":124,"h":62,"offset":4,"shift":15,"w":7,"x":257,"y":66,},
     "125":{"character":125,"h":62,"offset":1,"shift":21,"w":18,"x":237,"y":66,},
     "126":{"character":126,"h":62,"offset":1,"shift":31,"w":29,"x":110,"y":322,},
-    "9647":{"character":9647,"h":62,"offset":10,"shift":51,"w":31,"x":141,"y":322,},
+    "9647":{"character":9647,"h":62,"offset":8,"shift":32,"w":16,"x":141,"y":322,},
   },
   "hinting":0,
   "includeTTF":false,
@@ -249,7 +249,10 @@
   "sdfSpread":8,
   "size":40.0,
   "styleName":"Bold",
-  "textureGroupId":null,
+  "textureGroupId":{
+    "name":"Default",
+    "path":"texturegroups/Default",
+  },
   "TTFName":"",
   "usesSDF":false,
 }
