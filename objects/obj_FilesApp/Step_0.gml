@@ -61,7 +61,7 @@ if (window_dragging) {
             home_entries[he].ry += dy;
         }
 
-        // move firewall tiles (including their stored home/start/target)
+        // move firewall tiles
         for (var tt = 0; tt < array_length(fw_tiles); tt++) {
             var tile_d = fw_tiles[tt];
             tile_d.x        += dx;
@@ -75,7 +75,7 @@ if (window_dragging) {
             fw_tiles[tt]     = tile_d;
         }
 
-        // move key rect (log view)
+        // move key rect
         fw_key_rect[0] += dx;
         fw_key_rect[1] += dy;
 
@@ -107,30 +107,22 @@ if (view_mode == 0) {
                 my >= e.ry && my <= e.ry + e.rh) {
 
                 if (e.kind == "firewall") {
-                    // firewall app
                     if (video_active) {
                         video_close();
                         video_active = false;
                     }
                     view_mode = 1;
                 } else {
-                    // generic folders (OPEN ME / HR / Images)
                     current_folder = e.label;
                     view_mode      = 3;
 
-                    // OPEN ME: start video immediately
                     if (current_folder == "OPEN ME") {
                         if (video_active) {
                             video_close();
                             video_active = false;
                         }
-
-                        video_open("open_me_rickroll.mp4");
-                        video_set_volume(1.0);
-                        video_enable_loop(false); // play once
-                        video_active = true;
+                        open_me_stage = 0; // show bait file
                     } else {
-                        // other folders: ensure no video running
                         if (video_active) {
                             video_close();
                             video_active = false;
@@ -150,7 +142,6 @@ if (view_mode == 0) {
 // =======================================================================
 if (view_mode == 1) {
 
-    // back button (disabled during popup/animation/hold)
     var back_btn_x = window_x + window_w - 120;
     var back_btn_y = window_y + 60;
     var back_btn_w = 80;
@@ -161,7 +152,6 @@ if (view_mode == 1) {
             if (mx >= back_btn_x && mx <= back_btn_x + back_btn_w &&
                 my >= back_btn_y && my <= back_btn_y + back_btn_h) {
 
-                // reset tiles when backing out
                 for (var rb = 0; rb < array_length(fw_tiles); rb++) {
                     var tb = fw_tiles[rb];
                     tb.side     = -1;
@@ -182,10 +172,9 @@ if (view_mode == 1) {
         }
     }
 
-    // ----------------- HOLD AFTER ANIMATION (extra couple seconds) -----------------
     if (fw_anim_hold) {
         fw_anim_hold_time += 1;
-        if (fw_anim_hold_time >= room_speed * 2) { // ~2 seconds
+        if (fw_anim_hold_time >= room_speed * 2) {
             fw_anim_hold      = false;
             fw_anim_hold_time = 0;
             view_mode         = 2;
@@ -193,9 +182,7 @@ if (view_mode == 1) {
         exit;
     }
 
-    // ----------------- ANIMATION: slide everything to Admit -----------------
     if (fw_animating) {
-        // slower animation so player can read movement
         fw_anim_t += 0.03;
         var t = clamp(fw_anim_t, 0, 1);
 
@@ -212,7 +199,6 @@ if (view_mode == 1) {
             fw_anim_hold      = true;
             fw_anim_hold_time = 0;
 
-            // snap to final positions
             for (var aj = 0; aj < array_length(fw_tiles); aj++) {
                 var f = fw_tiles[aj];
                 f.x = f.target_x;
@@ -224,7 +210,6 @@ if (view_mode == 1) {
         exit;
     }
 
-    // ----------------- CONFIRM POPUP HANDLING -----------------
     if (fw_confirm_open) {
         if (mouse_check_button_pressed(mb_left)) {
             var mw  = 420;
@@ -246,13 +231,12 @@ if (view_mode == 1) {
                                my >= btn_y   && my <= btn_y   + btn_h);
 
             if (over_ok) {
-                // set up animation to move all tiles into Admit
                 fw_confirm_open = false;
                 fw_animating    = true;
                 fw_anim_t       = 0;
 
                 var n      = array_length(fw_tiles);
-                var sy     = 12; // vertical spacing
+                var sy     = 12;
                 var base_x = fw_admit.x + (fw_admit.w - fw_tile_max_w) * 0.5;
                 var base_y = fw_admit.y + 60;
 
@@ -267,13 +251,12 @@ if (view_mode == 1) {
                     tile_ok.start_y  = tile_ok.y;
                     tile_ok.target_x = tx;
                     tile_ok.target_y = ty;
-                    tile_ok.side     = 1; // everything ends in Admit
+                    tile_ok.side     = 1;
 
                     fw_tiles[iok] = tile_ok;
                 }
 
             } else if (over_cancel) {
-                // Cancel: close popup and reset all tiles back to home positions
                 fw_confirm_open = false;
 
                 for (var ic = 0; ic < array_length(fw_tiles); ic++) {
@@ -290,7 +273,7 @@ if (view_mode == 1) {
         exit;
     }
 
-    // ----------------- DRAG START -----------------
+    // drag start
     if (mouse_check_button_pressed(mb_left)) {
         for (var i2 = array_length(fw_tiles) - 1; i2 >= 0; i2--) {
             var t2 = fw_tiles[i2];
@@ -306,7 +289,7 @@ if (view_mode == 1) {
         }
     }
 
-    // ----------------- DRAG MOVE -----------------
+    // drag move
     if (mouse_check_button(mb_left)) {
         for (var j = 0; j < array_length(fw_tiles); j++) {
             if (fw_tiles[j].dragging) {
@@ -316,14 +299,13 @@ if (view_mode == 1) {
         }
     }
 
-    // ----------------- DRAG RELEASE -----------------
+    // drag release
     if (mouse_check_button_released(mb_left)) {
         for (var k = 0; k < array_length(fw_tiles); k++) {
             if (fw_tiles[k].dragging) {
                 var tt2 = fw_tiles[k];
                 tt2.dragging = false;
 
-                // check deny / admit zones
                 var in_deny  = (mx >= fw_deny.x && mx <= fw_deny.x + fw_deny.w &&
                                 my >= fw_deny.y && my <= fw_deny.y + fw_deny.h);
                 var in_admit = (mx >= fw_admit.x && mx <= fw_admit.x + fw_admit.w &&
@@ -340,7 +322,6 @@ if (view_mode == 1) {
                     tt2.y = clamp(tt2.y, fw_admit.y + 8, fw_admit.y + fw_admit.h - tt2.h - 8);
                 }
                 else {
-                    // return to home row
                     tt2.side = -1;
                     tt2.x = tt2.home_x;
                     tt2.y = tt2.home_y;
@@ -350,7 +331,6 @@ if (view_mode == 1) {
             }
         }
 
-        // if all tiles are placed (side != -1), open confirm
         var all_placed = true;
         for (var p = 0; p < array_length(fw_tiles); p++) {
             if (fw_tiles[p].side == -1) {
@@ -371,20 +351,17 @@ if (view_mode == 1) {
 // =======================================================================
 if (view_mode == 2) {
 
-    // back button near top-right of Files window
     var back_btn_x2 = window_x + window_w - 120;
     var back_btn_y2 = window_y + 60;
     var back_btn_w2 = 80;
     var back_btn_h2 = 24;
 
     if (mouse_check_button_pressed(mb_left)) {
-        // back to home
         if (mx >= back_btn_x2 && mx <= back_btn_x2 + back_btn_w2 &&
             my >= back_btn_y2 && my <= back_btn_y2 + back_btn_h2) {
 
             view_mode = 0;
         } else {
-            // gold key click
             var kx = fw_key_rect[0];
             var ky = fw_key_rect[1];
             var kw = fw_key_rect[2];
@@ -399,7 +376,6 @@ if (view_mode == 2) {
                     global.key_collected = array_create(3, false);
                 }
 
-                // 2 = golden key slot
                 global.key_collected[2] = true;
             }
         }
@@ -419,17 +395,55 @@ if (view_mode == 3) {
     var back_btn_h3 = 24;
 
     if (mouse_check_button_pressed(mb_left)) {
+
         if (mx >= back_btn_x3 && mx <= back_btn_x3 + back_btn_w3 &&
             my >= back_btn_y3 && my <= back_btn_y3 + back_btn_h3) {
 
-            // leaving folder view
-            if (current_folder == "OPEN ME" && video_active) {
-                video_close();
-                video_active = false;
+            // BACK button behaviour depends on OPEN ME stage
+            if (current_folder == "OPEN ME") {
+
+                if (open_me_stage == 1) {
+                    // video → go back to bait file
+                    if (video_active) {
+                        video_close();
+                        video_active = false;
+                    }
+                    open_me_stage = 0;
+
+                } else {
+                    // from bait file, go back Home
+                    view_mode      = 0;
+                    current_folder = "";
+                    open_me_stage  = 0;
+                }
+
+            } else {
+                // normal folder: just go Home
+                view_mode      = 0;
+                current_folder = "";
             }
 
-            view_mode      = 0;
-            current_folder = "";
+        } else if (current_folder == "OPEN ME" && open_me_stage == 0) {
+            // click on inner bait folder
+            var card_wi = 160;
+            var card_hi = 140;
+            var fx = window_x + (window_w - card_wi) * 0.5;
+            var fy = window_y + header_h + 120;
+
+            if (mx >= fx && mx <= fx + card_wi &&
+                my >= fy && my <= fy + card_hi) {
+
+                if (video_active) {
+                    video_close();
+                    video_active = false;
+                }
+
+                video_open("open_me_rickroll.mp4");
+                video_set_volume(1.0);
+                video_enable_loop(false);
+                video_active  = true;
+                open_me_stage = 1;
+            }
         }
     }
 

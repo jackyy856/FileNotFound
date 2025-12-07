@@ -33,6 +33,10 @@ spawn_click_cooldown = round(room_speed * 0.15); // ~0.15s
 view_mode       = 0;
 current_folder  = "";
 
+// special state for OPEN ME inner folder:
+// 0 = show inner folder, 1 = playing video
+open_me_stage = 0;
+
 // ------------------------------------
 // HOME ENTRIES (OPEN ME / HR / Images / Firewall.exe)
 // ------------------------------------
