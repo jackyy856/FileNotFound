@@ -2,11 +2,6 @@
 taskbar_height = 60;
 taskbar_y = 1080 - taskbar_height;
 
-// Search button
-search_btn_x = 50;
-search_btn_y = taskbar_y + 9;
-search_btn_size = 45;
-
 // App buttons
 max_visible_apps = 8;
 app_btn_width = 120;
@@ -14,8 +9,8 @@ app_btn_height = 45;
 opened_apps = [];
 
 // System icons
-wifi_btn_x = 1750;
-date_btn_x = 1820;
+wifi_btn_x = 1740;
+date_btn_x = 1810;
 system_btn_size = 25;
 wifi_btn_y = taskbar_y + 25;
 
@@ -35,10 +30,17 @@ networks = ["Myers0923", "FORMS-@1774", "Nite", "FredrickWifi"];
 selected_network = -1;
 network_buttons = [];
 
+// ===== ADD THESE VARIABLES =====
+// Connection status
+connected_network = -1; // -1 = none, 0+ = connected network index
+connection_success = false;
+connection_message_timer = 0;
+// ===============================
+
 // Password options for Myers0923
 password_options = ["password01", "password02"];
 selected_passwords = [false, false];
-password_dropdown_visible = false;
+password_dropdown_visible = true;
 
 // Input field
 input_field_visible = false;
@@ -86,7 +88,7 @@ update_time_date = function() {
     }
     if (hours == 0) hours = 12;
     
-    display_time = string(hours) + ":" + string_format(minutes, 2, 0) + " " + am_pm;
+    display_time = string(hours) + ":" + (minutes < 10 ? "0" : "") + string(minutes) + " " + am_pm;
     display_date = string(date_get_month(datetime)) + "/" + string(date_get_day(datetime)) + "/" + string(date_get_year(datetime));
 }
 
@@ -94,10 +96,11 @@ update_time_date = function() {
 handle_network_click = function(network_index) {
     selected_network = network_index;
     input_field_visible = true;
-    input_field_has_focus = true; // ADD THIS
+    input_field_has_focus = true; 
     input_text = "";
     incorrect_timer = 0;
-    password_dropdown_visible = false;
+    password_dropdown_visible = true;
+    connection_message_timer = 0; // Reset any success message
     
     // Reset password selection when switching networks
     selected_passwords = [false, false];
@@ -115,18 +118,55 @@ handle_password_submission = function() {
     show_debug_message("Input text: " + input_text);
     
     if (network_name == "Myers0923") {
+        // Special handling for Myers0923 - two password options
+        if (selected_passwords[0] && selected_passwords[1]) {
+            // Both passwords selected - trigger hacker sequence
+            trigger_hacker_sequence();
+            return;
+        }
+        
+        // Check correct password for Myers0923
         if (input_text == "collateral85") {
-            show_debug_message("*** CORRECT PASSWORD FOR MYERS0923! ACCESS GRANTED ***");
+            show_debug_message("*** CORRECT PASSWORD FOR MYERS0923!");
+            
+            // ===== ADD THIS: Set connection success =====
+            connection_success = true;
+            connected_network = selected_network;
+            connection_message_timer = 180; // Show message for 3 seconds at 60fps
+            // ============================================
+            
+            // Clear input
+            input_text = "";
+            input_field_visible = false;
+            input_field_has_focus = false;
+            password_dropdown_visible = false;
+            selected_passwords = [false, false];
+            
         } else {
             incorrect_timer = incorrect_duration;
             show_debug_message("Incorrect password for Myers0923");
         }
     } else {
-        incorrect_timer = incorrect_duration;
-        show_debug_message("Always incorrect for network: " + network_name);
+        // For other networks, only accept "password123"
+        if (input_text == "password123") {
+            show_debug_message("*** CORRECT PASSWORD! ACCESS GRANTED ***");
+            
+           
+            connection_success = true;
+            connected_network = selected_network;
+            connection_message_timer = 180;
+            // ============================================
+            
+            // Clear input
+            input_text = "";
+            input_field_visible = false;
+            input_field_has_focus = false;
+            
+        } else {
+            incorrect_timer = incorrect_duration;
+            show_debug_message("Incorrect password");
+        }
     }
-    
-    input_text = "";
 }
 
 // Trigger hacker sequence
