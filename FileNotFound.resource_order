@@ -64,8 +64,6 @@
     {"name":"Obj_text","order":2,"path":"objects/Obj_text/Obj_text.yy",},
     {"name":"obj_UIClickGate","order":6,"path":"objects/obj_UIClickGate/obj_UIClickGate.yy",},
     {"name":"Login","order":1,"path":"rooms/Login/Login.yy",},
-    {"name":"room_Black1","order":2,"path":"rooms/room_Black1/room_Black1.yy",},
-    {"name":"room_Black2","order":3,"path":"rooms/room_Black2/room_Black2.yy",},
     {"name":"room_ClickFiles","order":5,"path":"rooms/room_ClickFiles/room_ClickFiles.yy",},
     {"name":"room_Desk_View","order":4,"path":"rooms/room_Desk_View/room_Desk_View.yy",},
     {"name":"room_Menu","order":1,"path":"rooms/room_Menu/room_Menu.yy",},
