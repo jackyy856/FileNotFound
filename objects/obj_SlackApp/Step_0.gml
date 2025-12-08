@@ -5,7 +5,6 @@ var my = device_mouse_y_to_gui(0);
 
 var is_down  = mouse_check_button(mb_left);
 var pressed  = mouse_check_button_pressed(mb_left);
-var released = mouse_check_button_released(mb_left);
 
 if (!variable_global_exists("_ui_click_consumed")) {
     global._ui_click_consumed = false;
@@ -15,7 +14,7 @@ if (open_cooldown > 0) {
     open_cooldown -= 1;
 }
 
-// ---------------- Minimized state ----------------
+// If we are minimized, only care about restoring from tab
 if (is_minimized) {
     var gui_h = display_get_gui_height();
     var tab_x = min_tab_margin;
@@ -30,9 +29,9 @@ if (is_minimized) {
     exit;
 }
 
-// stop dragging as soon as button is released
-if (released) {
-    is_dragging = false;
+// ---------------- Dragging & focus rectangle ----------------
+if (pressed && !_rect_contains(mx, my, window_x, window_y, window_w, window_h)) {
+    window_focus = false;
 }
 
 // ---------------- Header buttons & start dragging ----------------
@@ -63,52 +62,52 @@ if (pressed && !global._ui_click_consumed) {
 }
 
 // Apply dragging
-if (is_dragging && is_down) {
-    window_x = mx - drag_dx;
-    window_y = my - drag_dy;
-    _recalc_layout();
-}
-
-if (!is_down) {
-    is_dragging = false;
+if (is_dragging) {
+    if (is_down) {
+        window_x = mx - drag_dx;
+        window_y = my - drag_dy;
+        _recalc_layout();
+    } else {
+        is_dragging = false;
+    }
 }
 
 // ---------------- Sidebar selection (channels / DMs) ----------------
+var sidebar_w = 260;
 if (pressed && !global._ui_click_consumed) {
     if (_rect_contains(mx, my, sidebar_x1, content_y1, sidebar_w, content_y2 - content_y1)) {
+        global._ui_click_consumed = true;
 
-        var ch_title_y = content_y1 + 4;
-        var ch_list_y1 = ch_title_y + 20;
-
-        var ch_count   = array_length(channels);
-        var ch_list_h  = ch_count * row_h;
-
-        var dm_title_y = ch_list_y1 + ch_list_h + 18;
-        var dm_list_y1 = dm_title_y + 20;
+        var list_y = content_y1 + 24;
+        var row_h  = 20;
 
         // channels
+        var ch_count = array_length(channels);
+        var ch_list_y1 = list_y;
+        var ch_list_h  = ch_count * row_h;
+
         if (my >= ch_list_y1 && my < ch_list_y1 + ch_list_h) {
             var idx = (my - ch_list_y1) div row_h;
             if (idx >= 0 && idx < ch_count) {
                 selected_channel = idx;
                 selected_dm = -1;
-                chat_scroll = 0;
-                global._ui_click_consumed = true;
+                chat_scroll = 100000; // snap to bottom for channel view too
             }
         }
 
-        // DMs
+        // move list_y down to DM section
+        list_y = ch_list_y1 + ch_list_h + 14 + 22;
+
         var dm_count  = array_length(dm_names);
+        var dm_list_y1 = list_y;
         var dm_list_h = dm_count * row_h;
 
-        if (!global._ui_click_consumed) {
-            if (my >= dm_list_y1 && my < dm_list_y1 + dm_list_h) {
-                var d_idx = (my - dm_list_y1) div row_h;
-                if (d_idx >= 0 && d_idx < dm_count) {
-                    selected_dm = d_idx;
-                    selected_channel = -1;
-                    chat_scroll = 0;
-                }
+        if (my >= dm_list_y1 && my < dm_list_y1 + dm_list_h) {
+            var d_idx = (my - dm_list_y1) div row_h;
+            if (d_idx >= 0 && d_idx < dm_count) {
+                selected_dm = d_idx;
+                selected_channel = -1;
+                chat_scroll = 100000; // start at bottom of that DM
             }
         }
     }
@@ -116,12 +115,17 @@ if (pressed && !global._ui_click_consumed) {
 
 // ---------------- Chat scroll with mouse wheel ----------------
 var scroll_delta = 0;
-if (mouse_wheel_up())   scroll_delta -= 30;
-if (mouse_wheel_down()) scroll_delta += 30;
+
+// Normal chat behavior: wheel UP -> older (scroll up), wheel DOWN -> newer (scroll down)
+if (mouse_wheel_up())   scroll_delta -= 30;  // move toward bottom (newer)
+if (mouse_wheel_down()) scroll_delta += 30;  // move toward top (older)
+
 
 if (scroll_delta != 0) {
-    if (_rect_contains(mx, my, chat_x1, content_y1, chat_x2 - chat_x1, content_y2 - content_y1)) {
+    var chat_w = (chat_x2 - chat_x1);
+    var chat_h = (content_y2 - content_y1);
+    if (_rect_contains(mx, my, chat_x1, content_y1, chat_w, chat_h)) {
         chat_scroll += scroll_delta;
-        if (chat_scroll < 0) chat_scroll = 0;
+        // clamped in Draw GUI when we know convo height
     }
 }

@@ -106,7 +106,11 @@ if (view_mode == 0) {
             if (mx >= e.rx && mx <= e.rx + e.rw &&
                 my >= e.ry && my <= e.ry + e.rh) {
 
-                if (e.kind == "firewall") {
+                if (e.kind == "file_minigame") {
+                    // Launch the Click-the-File mini-game
+                    room_goto(room_ClickFiles);
+                }
+                else if (e.kind == "firewall") {
                     if (video_active) {
                         video_close();
                         video_active = false;
@@ -136,6 +140,7 @@ if (view_mode == 0) {
 
     exit;
 }
+
 
 // =======================================================================
 //                          FIREWALL PUZZLE VIEW

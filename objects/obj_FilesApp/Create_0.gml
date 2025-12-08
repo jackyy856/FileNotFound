@@ -38,10 +38,8 @@ current_folder  = "";
 open_me_stage = 0;
 
 // ------------------------------------
-// HOME ENTRIES (OPEN ME / HR / Images / Firewall.exe)
+// HOME ENTRIES (OPEN ME / HR / FileNotFound / Firewall.exe)
 // ------------------------------------
-home_entries = [];
-
 var card_w   = 120;
 var card_h   = 120;
 var margin_x = 40;
@@ -51,7 +49,7 @@ var base_y   = window_y + header_h + 40;
 var labels = [
     "OPEN ME",
     "HR",
-    "Images",
+    "FileNotFound",
     "Firewall.exe"
 ];
 
@@ -60,6 +58,7 @@ for (var i = 0; i < array_length(labels); i++) {
     var cy = base_y;
 	
     var kind = "folder";
+    if (i == 2) kind = "file_minigame";  // <-- our Click-The-File game
     if (i == 3) kind = "firewall";
 
     home_entries[i] = {
@@ -71,6 +70,7 @@ for (var i = 0; i < array_length(labels); i++) {
         rh    : card_h
     };
 }
+
 
 // ------------------------------------
 // FIREWALL PUZZLE GEOMETRY
