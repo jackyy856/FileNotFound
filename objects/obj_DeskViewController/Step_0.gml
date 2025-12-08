@@ -1,4 +1,4 @@
-/// obj_DeskViewController – Step
+
 /// Handles editor hotkeys, capture flow, save/load, and gameplay clicks.
 
 /// --- Monitor edit (F1): Arrows move, Shift+W/A/S/D resize

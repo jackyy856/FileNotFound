@@ -72,6 +72,48 @@ if (is_minimized) {
     exit;
 }
 
+// locked wifi state – show simple modal and skip normal content
+if (email_locked) {
+    // body area
+    var x1 = window_x;
+    var y1 = window_y + header_h;
+    var x2 = window_x + window_w;
+    var y2 = window_y + window_h;
+
+    // optional: light dim over body (you already drew white frame)
+    draw_set_color(c_white);
+    draw_rectangle(x1, y1, x2, y2, false);
+
+    // centered modal box
+    var box_w = 360;
+    var box_h = 120;
+    var cx    = (x1 + x2) * 0.5;
+    var cy    = (y1 + y2) * 0.5;
+
+    var bx1 = cx - box_w * 0.5;
+    var by1 = cy - box_h * 0.5;
+    var bx2 = cx + box_w * 0.5;
+    var by2 = cy + box_h * 0.5;
+
+    draw_set_color(c_white);
+    draw_roundrect(bx1, by1, bx2, by2, false);
+
+    draw_set_color(c_black);
+    draw_set_halign(fa_center);
+    draw_set_valign(fa_middle);
+    draw_set_font(font_body);
+
+    draw_text(cx, cy, email_locked_msg);
+
+    // reset state and exit, so no inbox/puzzle is drawn
+    draw_set_halign(fa_left);
+    draw_set_valign(fa_top);
+    draw_set_font(-1);
+    draw_set_color(c_white);
+    draw_set_alpha(1);
+    exit;
+}
+
 // content
 draw_set_font(font_body);
 draw_set_color(c_black);
@@ -220,8 +262,8 @@ else {
 	    // Special layout for recovered corrupted email
 	    if (selected_index == corrupted_index && puzzle_solved) {
 	        // Line 1 + line 2
-	        var line1 = "It does.";
-	        var line2 = "Here's your key, sucker.";
+	        var line1 = "it sure does.";
+	        var line2 = "here's your key, sucker. click it to claim it :P";
 
 	        // First line
 	        draw_text(tx, ty, line1);
@@ -626,7 +668,7 @@ else {
         draw_rectangle(pax, pay, pax + paw, pay + pah, true);
 
         // Instruction
-        var itext = "Arrange the words (left→right).";
+        var itext = "Arrange the words (left > right).";
         draw_set_font(font_body);
         draw_set_halign(fa_left);
         draw_set_valign(fa_top);

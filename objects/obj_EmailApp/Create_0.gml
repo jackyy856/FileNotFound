@@ -274,14 +274,14 @@ inbox[_len] = {
 corrupted_index = _len;
 
 // Target sentence & word list
-puzzle_target = ["Rosenwood", "Corps", "sucks"];
+puzzle_target = ["Rosenwood", "Corporation", "sucks"];
 
 puzzle_words  = [
     "Rosenwood",
     "Lilywood",
     "family",
     "Recover",
-    "Corps",
+    "Corporation",
     "amazing",
     "is",
     "dogs",
@@ -419,6 +419,16 @@ email_key1_rect      = [0,0,0,0]; // x,y,w,h
 if (!variable_global_exists("_ui_click_consumed")) global._ui_click_consumed = false;
 __ui_click_inside = false;
 __ui_first_frame_block = 1; // avoid opener click passing through
-
+ 
 // small delay to stop icon click from also selecting an email row
 open_cooldown = 2;
+
+// start with email locked behind wifi
+// start locked behind wifi, UNLESS wifi has already been solved earlier
+if (variable_global_exists("wifi_ever_connected") && global.wifi_ever_connected) {
+    email_locked = false;
+} else {
+    email_locked = true;
+}
+
+email_locked_msg = "Cannot access Email.\nPlease connect to Wifi.";

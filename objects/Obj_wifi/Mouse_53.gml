@@ -7,6 +7,28 @@ if(point_in_rectangle(mx, my, 40, taskbar_y, 600 + system_btn_size, taskbar_y +s
 	room_goto(room_Menu);
 }
 
+//!!!!!!!!!!!!!!!vvvvvvvvvvvvvvvv REMOVE vvvvvvvvvvvvvvvv!!!!!!!!!!!!!!!!
+// Check WiFi button click (hitbox moved up)
+var wifi_hit_y = wifi_btn_y - wifi_hit_offset_y;
+if (point_in_rectangle(mx, my,
+    wifi_btn_x, wifi_hit_y,
+    wifi_btn_x + system_btn_size, wifi_hit_y + system_btn_size))
+{
+    wifi_flyout_visible = !wifi_flyout_visible;
+    show_debug_message("WiFi flyout toggled: " + string(wifi_flyout_visible));
+    
+    // Reset when opening flyout
+    if (wifi_flyout_visible) {
+        selected_network = -1;
+        input_field_visible = false;
+        password_dropdown_visible = false;
+        selected_passwords = [false, false];
+        hacker_sequence_triggered = false;
+    }
+}
+//!!!!!!!!!!!!!!!^^^^^^^^^^^^^^^^ REMOVE ^^^^^^^^^^^^^^^^^^!!!!!!!!!!!!!!!!
+
+/*!!!!!!!!!!!!!!!vvvvvvvvvvvvvvvv ADD BACK vvvvvvvvvvvvvvvv!!!!!!!!!!!!!!!!
 // Check WiFi button click
 if (point_in_rectangle(mx, my, wifi_btn_x, wifi_btn_y, wifi_btn_x + system_btn_size, wifi_btn_y + system_btn_size)) {
     wifi_flyout_visible = !wifi_flyout_visible;
@@ -22,6 +44,7 @@ if (point_in_rectangle(mx, my, wifi_btn_x, wifi_btn_y, wifi_btn_x + system_btn_s
     }
 }
 
+*///!!!!!!!!!!!!!!!^^^^^^^^^^^^^^^^ ADD BACK ^^^^^^^^^^^^^^^^^^!!!!!!!!!!!!!!!!
 // Handle clicks in WiFi flyout
 if (wifi_flyout_visible) {
     // Check network clicks
@@ -70,7 +93,26 @@ if (wifi_flyout_visible) {
             }
         }
     }
-    
+   //!!!!!!!!!!!!!!!vvvvvvvvvvvvvvvvv REMOVE vvvvvvvvvvvvvvvvvvvvvvvvvvv!!!!!!!!!!!!!!!!
+	// Close flyout if clicking outside
+var wifi_hit_y = wifi_btn_y - wifi_hit_offset_y;
+if (!point_in_rectangle(mx, my,
+        wifi_flyout_x, wifi_flyout_y,
+        wifi_flyout_x + wifi_flyout_width, wifi_flyout_y + wifi_flyout_height) &&
+    !point_in_rectangle(mx, my,
+        wifi_btn_x, wifi_hit_y,
+        wifi_btn_x + system_btn_size, wifi_hit_y + system_btn_size))
+{
+    wifi_flyout_visible = false;
+    input_field_visible = false;
+    selected_network = -1;
+    password_dropdown_visible = false;
+    selected_passwords = [false, false];
+    hacker_sequence_triggered = false;
+}
+//!!!!!!!!!!!!!!!^^^^^^^^^^^^^^^^ REMOVE ^^^^^^^^^^^^^^^^^^!!!!!!!!!!!!!!!!
+
+/*//!!!!!!!!!!!!!!!vvvvvvvvvvvvvvvvvvv ADD BACK vvvvvvvvvvvvvvvvvvvvvvvv!!!!!!!!!!!!!!!!
     // Close flyout if clicking outside
     if (!point_in_rectangle(mx, my, wifi_flyout_x, wifi_flyout_y, wifi_flyout_x + wifi_flyout_width, wifi_flyout_y + wifi_flyout_height) &&
         !point_in_rectangle(mx, my, wifi_btn_x, wifi_btn_y, wifi_btn_x + system_btn_size, wifi_btn_y + system_btn_size)) {
@@ -81,4 +123,5 @@ if (wifi_flyout_visible) {
         selected_passwords = [false, false];
         hacker_sequence_triggered = false;
     }
+	*///!!!!!!!!!!!!!!!^^^^^^^^^^^^^^^^ ADD BACK ^^^^^^^^^^^^^^^^^^!!!!!!!!!!!!!!!!
 }

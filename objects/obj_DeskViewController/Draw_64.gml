@@ -1,4 +1,4 @@
-/// obj_DeskViewController – Draw GUI
+
 /// Renders current background art and (optionally) debug overlays + prompt bar.
 
 // Current background
