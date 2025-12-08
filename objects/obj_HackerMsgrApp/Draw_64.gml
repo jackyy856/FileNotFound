@@ -48,30 +48,31 @@ draw_set_color(c_white);
 draw_text_transformed(x1 + 12, y1, "???????",1.8,1.8,0);
 
 // ---------------- messages ----------------
+// ---------------- messages ----------------
 if (!minimized)
 {
     var content_x1 = x1;
-	var content_x2 = x2;
-	var content_y1 = header_bottom;
-	var content_y2 = footer_top_full;
+    var content_x2 = x2;
+    var content_y1 = header_bottom;
+    var content_y2 = footer_top_full;
 
-	// reserve space for dropdown choices above the footer
-	var opt_margin_bottom = 10;
-	var opt_height        = 40;
-	var opt_gap           = 4;
+    // reserve space for dropdown choices above the footer (generic)
+    var opt_margin_bottom = 10;
+    var opt_height        = 40;
+    var opt_gap           = 4;
 
-	if (choice1_active)
-	{
-	    // 3 buttons: height*3 + gap*2
-	    var opt_total_h = opt_margin_bottom + opt_height * 3 + opt_gap * 2;
-	    content_y2 -= opt_total_h;
-	}
-	else if (choice2_active)
-	{
-	    // 2 buttons: height*2 + gap
-	    var opt_total_h = opt_margin_bottom + opt_height * 2 + opt_gap;
-	    content_y2 -= opt_total_h;
-	}
+    if (choice_active)
+    {
+        var opt_count = array_length(choice_options);
+        if (opt_count > 0)
+        {
+            var opt_total_h = opt_margin_bottom
+                            + opt_height * opt_count
+                            + opt_gap * max(0, opt_count - 1);
+            content_y2 -= opt_total_h;
+        }
+    }
+
 
 
 
@@ -171,7 +172,7 @@ if (!minimized)
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);
 
-    //  "beginning of conversation" before  first message arrives
+    // "beginning of conversation" before first message arrives
     if (!has_any_message)
     {
         draw_set_alpha(0.5);
@@ -184,13 +185,20 @@ if (!minimized)
     if (typing)
     {
         draw_set_color(c_white);
-        draw_text(label_x, line2_y, "Hacker is typing...");
+        draw_text(label_x, line2_y, "UrHacker is typing...");
+    }
+
+    // offline indicator once conversation is over
+    if (!typing && hacker_offline)
+    {
+        draw_set_color(c_white);
+        draw_text(label_x, line2_y, "UrHacker is offline.");
     }
 }
 
 
-// dropdown choices above footer
-if (choice1_active)
+// dropdown choices above footer (generic)
+if (choice_active)
 {
     var opt_margin_side   = 16;
     var opt_margin_bottom = 10;
@@ -198,60 +206,36 @@ if (choice1_active)
     var opt_gap           = 4;
 
     var opt_width = (x2 - x1) - opt_margin_side * 2;
+    var opt_x1    = x1 + opt_margin_side;
+    var opt_x2    = opt_x1 + opt_width;
 
-    // 3-button layout (top, middle, bottom)
-    var opt3_y2 = footer_top_full - opt_margin_bottom;
-    var opt3_y1 = opt3_y2 - opt_height;
+    var opt_count = array_length(choice_options);
+    if (opt_count > 0)
+    {
+        var opt_total_h = opt_height * opt_count
+                        + opt_gap * max(0, opt_count - 1)
+                        + opt_margin_bottom;
 
-    var opt2_y2 = opt3_y1 - opt_gap;
-    var opt2_y1 = opt2_y2 - opt_height;
+        var first_y1 = footer_top_full - opt_total_h;
 
-    var opt1_y2 = opt2_y1 - opt_gap;
-    var opt1_y1 = opt1_y2 - opt_height;
+        draw_set_color(c_white);
 
-    var opt_x1 = x1 + opt_margin_side;
-    var opt_x2 = opt_x1 + opt_width;
+        for (var i = 0; i < opt_count; i++)
+        {
+            var opt_y1 = first_y1 + i * (opt_height + opt_gap);
+            var opt_y2 = opt_y1 + opt_height;
 
-    draw_set_color(c_white);
-    draw_roundrect(opt_x1, opt1_y1, opt_x2, opt1_y2, false);
-    draw_roundrect(opt_x1, opt2_y1, opt_x2, opt2_y2, false);
-    draw_roundrect(opt_x1, opt3_y1, opt_x2, opt3_y2, false);
+            draw_roundrect(opt_x1, opt_y1, opt_x2, opt_y2, false);
 
-    draw_set_color(c_black);
-    draw_text(opt_x1 + 10, opt1_y1 + 10, choice1_opt1_text);
-    draw_text(opt_x1 + 10, opt2_y1 + 10, choice1_opt2_text);
-    draw_text(opt_x1 + 10, opt3_y1 + 10, choice1_opt3_text);
-}
-else if (choice2_active)
-{
-    var opt_margin_side   = 16;
-    var opt_margin_bottom = 10;
-    var opt_height        = 40;
-    var opt_gap           = 4;
+            draw_set_color(c_black);
+            draw_text(opt_x1 + 10, opt_y1 + 10, choice_options[i]);
 
-    var opt_width = (x2 - x1) - opt_margin_side * 2;
-
-    // 2-button layout (top, bottom)
-    var opt2_y2 = footer_top_full - opt_margin_bottom;
-    var opt2_y1 = opt2_y2 - opt_height;
-
-    var opt1_y2 = opt2_y1 - opt_gap;
-    var opt1_y1 = opt1_y2 - opt_height;
-
-    var opt_x1 = x1 + opt_margin_side;
-    var opt_x2 = opt_x1 + opt_width;
-
-    draw_set_color(c_white);
-    draw_roundrect(opt_x1, opt1_y1, opt_x2, opt1_y2, false);
-    draw_roundrect(opt_x1, opt2_y1, opt_x2, opt2_y2, false);
-
-    draw_set_color(c_black);
-    draw_text(opt_x1 + 10, opt1_y1 + 10, choice2_opt1_text);
-    draw_text(opt_x1 + 10, opt2_y1 + 10, choice2_opt2_text);
+            draw_set_color(c_white);
+        }
+    }
 }
 
 
-	
     // ----------------
     // scrollbar (mousewhehl)
     // ----------------

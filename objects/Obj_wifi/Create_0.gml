@@ -14,6 +14,11 @@ date_btn_x = 1810;
 system_btn_size = 25;
 wifi_btn_y = taskbar_y + 25;
 
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!REMOVE LATER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// Click hitbox offset (move clickable area up, visuals stay)
+wifi_hit_offset_y = 40;
+
+
 // Time and date
 display_time = "";
 display_date = "";
@@ -30,12 +35,15 @@ networks = ["Myers0923", "FORMS-@1774", "Nite", "FredrickWifi"];
 selected_network = -1;
 network_buttons = [];
 
-// ===== ADD THESE VARIABLES =====
 // Connection status
 connected_network = -1; // -1 = none, 0+ = connected network index
 connection_success = false;
 connection_message_timer = 0;
-// ===============================
+
+// persistent "ever connected" flag
+if (!variable_global_exists("wifi_ever_connected")) {
+    global.wifi_ever_connected = false;
+}
 
 // Password options for Myers0923
 password_options = ["password01", "password02"];
@@ -64,6 +72,18 @@ dropdown_button_bounds = [0, 0, 0, 0];
 password_option_bounds = [];
 connect_btn_bounds = [0, 0, 0, 0];
 cancel_btn_bounds = [0, 0, 0, 0];
+
+// Track if each fake password has been submitted w Enter
+tried_pw01 = false;
+tried_pw02 = false;
+
+// Make sure we only fire this once
+hacker_wifi_hint_fired = false;
+
+// Global flag so the hacker app knows to inject extra lines
+if (!variable_global_exists("hacker_wifi_hint_pending")) {
+    global.hacker_wifi_hint_pending = false;
+}
 
 // Initialize network buttons array
 for (var i = 0; i < array_length(networks); i++) {
@@ -99,7 +119,7 @@ handle_network_click = function(network_index) {
     input_field_has_focus = true; 
     input_text = "";
     incorrect_timer = 0;
-    password_dropdown_visible = true;
+    password_dropdown_visible = false;
     connection_message_timer = 0; // Reset any success message
     
     // Reset password selection when switching networks
@@ -125,15 +145,23 @@ handle_password_submission = function() {
             return;
         }
         
+		   // Record which fake password was actually submitted w Enter
+	    if (input_text == password_options[0]) {
+	        tried_pw01 = true;
+	    } else if (input_text == password_options[1]) {
+	        tried_pw02 = true;
+	    }
+
         // Check correct password for Myers0923
-        if (input_text == "collateral85") {
+        if (input_text == "collateral") {
             show_debug_message("*** CORRECT PASSWORD FOR MYERS0923!");
             
-            // ===== ADD THIS: Set connection success =====
             connection_success = true;
             connected_network = selected_network;
             connection_message_timer = 180; // Show message for 3 seconds at 60fps
-            // ============================================
+			
+			// mark wifi as permanently solved for the whole game
+			global.wifi_ever_connected = true;
             
             // Clear input
             input_text = "";
@@ -148,14 +176,14 @@ handle_password_submission = function() {
         }
     } else {
         // For other networks, only accept "password123"
-        if (input_text == "password123") {
+        if (input_text == "passwordimpossible") {
             show_debug_message("*** CORRECT PASSWORD! ACCESS GRANTED ***");
             
            
             connection_success = true;
             connected_network = selected_network;
             connection_message_timer = 180;
-            // ============================================
+            // ==================================== ========
             
             // Clear input
             input_text = "";
@@ -167,6 +195,20 @@ handle_password_submission = function() {
             show_debug_message("Incorrect password");
         }
     }
+	// After handling submission, check if BOTH fake passwords were tried (any order)
+	// and fire the hacker hint only once
+	if (!hacker_wifi_hint_fired && tried_pw01 && tried_pw02) {
+	    hacker_wifi_hint_fired = true;
+
+	    // Flaghacker messenger as having new unread content
+	    if (variable_global_exists("hacker_unread")) {
+	        global.hacker_unread = true;
+	    }
+
+	    // Tell  hacker app to enqueue  extra wifi messages
+	    global.hacker_wifi_hint_pending = true;
+}
+
 }
 
 // Trigger hacker sequence

@@ -29,7 +29,7 @@ function point_in_rect(px, py, rx, ry, rw, rh) {
     return (px >= rx) && (py >= ry) && (px < rx + rw) && (py < ry + rh);
 }
 
-// ---------- Fonts (safe fallbacks) ----------
+//Fonts
 font_title = -1;  // default font
 font_body  = -1;
 
@@ -58,7 +58,7 @@ notes = [
 
     // Special wifi puzzle note
     { id:5, title:"dont open me >-<", locked:false, password:"", read:false, tag:"wifi",
-      body:"wifi? hehe, where u can see a reflection\n\npassword...? try one of this >u<\n- greedy\n- mean\n- controlling\n- liar\n- sadistic\n- fake\n- bossy" }
+      body:"password01 and password02? ur so predictable, Myers...\n\nwifi...? this one's simple. most of these describe u already so just try the one that doesn't >u<\n- greedy\n- mean\n- controlling\n- liar\n- collateral\n- sadistic\n- fake\n- bossy" }
 ];
 
 selected_index = -1; // -1 = list view
