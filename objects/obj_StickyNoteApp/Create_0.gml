@@ -1,5 +1,3 @@
-// Self-contained sticky-notes window. No parents, no globals, no dependencies.
-
 // ---------- Window/layout ----------
 x1 = 260; y1 = 120;  w = 820; h = 560;  bar_h = 40;
 x2 = x1 + w; y2 = y1 + h;
@@ -11,7 +9,7 @@ is_minimized = false;
 
 btn_w = 24; btn_h = 20; btn_pad = 8;
 
-pad = 12;
+pad = 30;
 content_x1 = x1 + pad;
 content_y1 = y1 + bar_h + pad;
 content_x2 = x2 - pad;
@@ -30,8 +28,8 @@ function point_in_rect(px, py, rx, ry, rw, rh) {
 }
 
 // ---------- Fonts (safe fallbacks) ----------
-font_title = -1;  // default font
-font_body  = -1;
+font_title = fnt_gen;  // default font
+font_body  = fnt_gen;
 
 // ---------- Data model ----------
 /*
@@ -41,24 +39,24 @@ font_body  = -1;
 notes = [
     // Most notes: normal life / work clutter
     { id:0, title:"Groceries", locked:false, password:"", read:false, tag:"list",
-      body:"milk\ncoffee\nfrozen meals\nsticky notes (again)\nreminder: do NOT leave the fridge empty." },
+      body:"milk\n\ncoffee\n\nfrozen meals\n\nsticky notes (again)\n\nreminder: do NOT leave the fridge empty." },
 
     { id:1, title:"Meeting - Q4 sync", locked:false, password:"", read:false, tag:"meeting",
-      body:"Q4 sync with Helena\n\nAgenda:\n- targets and stretch goals\n- budget fire drill\n- headcount rightsizing\n\nremember: update Q4 sheets before Helena gets on my ass" },
+      body:"Q4 sync with Helena\n\n\nAgenda:\n\n- targets and stretch goals\n\n- budget fire drill\n\n- headcount rightsizing\n\nremember: update Q4 sheets before Helena gets on my ass" },
 
     { id:2, title:"Phrases to sound important", locked:false, password:"", read:false, tag:"jargon",
-      body:"corporate phrases to overuse:\n- circle back on that\n- low-hanging fruit\n- action items\n- driving alignment across stakeholders\n- parking lot this for later" },
-
-    // Locked notes: not meant to open yet
-    { id:3, title:"1 out of 5", locked:true, password:"", read:false, tag:"locked",
-      body:"[locked]\nthis one isnt ready yet." },
+      body:"corporate phrases to overuse:\n\n- circle back on that\n\n- low-hanging fruit\n\n- action items\n\n- driving alignment across stakeholders\n\n- parking lot this for later" },
+	  
+    // Locked notes: not meant to open yet - the one underneath im taking off bc no reason to have it anymore. 
+    //{ id:3, title:"1 out of 5", locked:true, password:"", read:false, tag:"locked",
+     // body:"[locked]\nthis one isnt ready yet." },
 
     { id:4, title:"doves case.", locked:true, password:"", read:false, tag:"locked",
-      body:"[locked]\nseriously, stop trying to open this.\nnot for you. (yet)" },
+      body: "\n\nThere's an issue with Richard and HR. Or maybe more than just him.\n\n\n\nI tried to reach out to HR multiple times, including the head of it, when we met at  \n\na corporate dinner. But she seemed to avoid my view.  \n\n \n\nIt feels more than just negligence.\n\nIt feels. . . like he has some sort of guardian angel.\n\n\nBut nobody is willing to talk about him. Or they hate him too much to know, or \n\nthey are terrified of the consequences...\n\n \n\nI think he has an intern under his wing.\n\n \n\nMaybe that guy knows Richard's weakness; maybe I can take care of Richard \n\nthrough him.\n\n\n\nI should befriend Leonn." },
 
     // Special wifi puzzle note
     { id:5, title:"dont open me >-<", locked:false, password:"", read:false, tag:"wifi",
-      body:"wifi? hehe, where u can see a reflection\n\npassword...? try one of this >u<\n- greedy\n- mean\n- controlling\n- liar\n- sadistic\n- fake\n- bossy" }
+      body:"wifi? hehe, i choose one about you! so check ur reflection hehe.try one of this >u<\n\n\n- greedy77\n\n- mean28\n\n- controlling45\n\n- liar93\n\n- collateral85\n\n- sadistic82\n\n- fake62\n\n- bossy" }
 ];
 
 selected_index = -1; // -1 = list view
