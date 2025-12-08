@@ -57,18 +57,35 @@ cy_text = gui_h * 0.5;
 function _hit(r, mx, my){ return (mx>=r.x)&&(my>=r.y)&&(mx<r.x+r.w)&&(my<r.y+r.h); }
 
 // Advance the active narration; destination depends on which narration state we’re in.
+// Now also supports an optional global._queued_narr_return_room override.
 function _advance(){
     if (!done_line){
+        // Finish current line instantly on first click/press
         visible_chars = string_length(lines[line_index]);
         done_line = true;
     } else {
+        // Move to next line or finish narration
         line_index++;
         if (line_index >= array_length(lines)) {
-            if (state == "narr1") {
-                room_goto(room_Desk_View);  // After Narration 1
-            } else if (state == "narr2") {
-                room_goto(Login);           // After Narration 2
+
+            // ---- NEW: optional custom return room for queued narrations ----
+            if (variable_global_exists("_queued_narr_return_room")
+                && !is_undefined(global._queued_narr_return_room)) {
+
+                var target_room = global._queued_narr_return_room;
+                // clear it so it doesn't leak into later narrations
+                global._queued_narr_return_room = undefined;
+                room_goto(target_room);
+
+            } else {
+                // Original behaviour: fixed destinations by narration state
+                if (state == "narr1") {
+                    room_goto(room_Desk_View);  // After Narration 1
+                } else if (state == "narr2") {
+                    room_goto(Login);           // After Narration 2
+                }
             }
+
         } else {
             visible_chars = 0; 
             done_line = false;
@@ -81,9 +98,11 @@ function _advance(){
 if (variable_global_exists("_queued_narr_lines") && variable_global_exists("_queued_narr_state")) {
     lines = global._queued_narr_lines;
     line_index = 0; visible_chars = 0; done_line = false;
-    state = global._queued_narr_state;    // "narr1" or "narr2"
+    state = global._queued_narr_state;    // "narr1" or "narr2" or any other narration tag you use
 
     // "Remove" by nulling; check with is_undefined later if needed.
     global._queued_narr_lines = undefined;
     global._queued_narr_state = undefined;
+
+    // if some room set _queued_narr_return_room, we leave it for _advance() to consume.
 }

@@ -32,8 +32,8 @@
   "resourceVersion":"2.0",
   "solid":false,
   "spriteId":{
-    "name":"spr_FilesIcon",
-    "path":"sprites/spr_FilesIcon/spr_FilesIcon.yy",
+    "name":"spr_FilesTextIcon",
+    "path":"sprites/spr_FilesTextIcon/spr_FilesTextIcon.yy",
   },
   "spriteMaskId":null,
   "visible":true,

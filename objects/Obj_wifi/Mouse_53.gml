@@ -1,6 +1,12 @@
 var mx = device_mouse_x_to_gui(0);
 var my = device_mouse_y_to_gui(0);
 
+//Back to Menu
+if(point_in_rectangle(mx, my, 40, taskbar_y, 600 + system_btn_size, taskbar_y +system_btn_size ))
+{
+	room_goto(room_Menu);
+}
+
 // Check WiFi button click
 if (point_in_rectangle(mx, my, wifi_btn_x, wifi_btn_y, wifi_btn_x + system_btn_size, wifi_btn_y + system_btn_size)) {
     wifi_flyout_visible = !wifi_flyout_visible;
@@ -42,29 +48,27 @@ if (wifi_flyout_visible) {
                         password_option_bounds[j][0], password_option_bounds[j][1], 
                         password_option_bounds[j][2], password_option_bounds[j][3])) {
                         
-                        // Toggle selection
+                        // Toggle selection AND auto-fill text field
                         selected_passwords[j] = !selected_passwords[j];
+                        if (selected_passwords[j]) {
+                            input_text = password_options[j];
+                        } else {
+                            input_text = ""; 
+                        }
+                        
+                        // Deselect other option
+                        for (var k = 0; k < array_length(password_options); k++) {
+                            if (k != j) {
+                                selected_passwords[k] = false;
+                            }
+                        }
+                        
                         show_debug_message("Password option " + password_options[j] + " selected: " + string(selected_passwords[j]));
                         break;
                     }
                 }
             }
         }
-    }
-    
-    // Check Connect button click
-    if (point_in_rectangle(mx, my, connect_btn_bounds[0], connect_btn_bounds[1], connect_btn_bounds[2], connect_btn_bounds[3])) {
-        handle_password_submission();
-    }
-    
-    // Check Cancel button click
-    if (point_in_rectangle(mx, my, cancel_btn_bounds[0], cancel_btn_bounds[1], cancel_btn_bounds[2], cancel_btn_bounds[3])) {
-        input_field_visible = false;
-        selected_network = -1;
-        password_dropdown_visible = false;
-        selected_passwords = [false, false];
-        hacker_sequence_triggered = false;
-        show_debug_message("Connection cancelled");
     }
     
     // Close flyout if clicking outside

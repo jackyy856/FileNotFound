@@ -1,49 +1,18 @@
 // Draw taskbar background
-draw_set_color(c_black); // was make_color_rgb(40, 40, 40)
+draw_set_color(c_black);
 draw_set_alpha(1);
-draw_rectangle(0, taskbar_y, 1920, 1080, false); // was 'true' (outline) -> 'false' (filled)
+draw_rectangle(0, taskbar_y, 1920, 1080, false); 
 draw_set_alpha(1);
 
-// Draw search button
-draw_set_color(make_color_rgb(80, 80, 80));
-draw_rectangle(search_btn_x, search_btn_y, search_btn_x + search_btn_size, search_btn_y + search_btn_size, true);
-draw_set_color(make_color_rgb(120, 120, 120));
-draw_rectangle(search_btn_x, search_btn_y, search_btn_x + search_btn_size, search_btn_y + search_btn_size, false);
+//draw Back to Menu
+draw_sprite(BacktoMenu, 0, 40, taskbar_y);
 
-// Search icon
-draw_set_color(c_white);
-var center_x = search_btn_x + search_btn_size/2;
-var center_y = search_btn_y + search_btn_size/2;
-draw_circle(center_x - 2, center_y - 2, search_btn_size/3, false);
-var handle_x1 = center_x + 2;
-var handle_y1 = center_y + 2;
-var handle_x2 = center_x + search_btn_size/3;
-var handle_y2 = center_y + search_btn_size/3;
-draw_line(handle_x1, handle_y1, handle_x2, handle_y2);
-
-// Draw opened apps
-var start_x = search_btn_x + search_btn_size + 20;
-for (var i = 0; i < array_length(opened_apps); i++) {
-    if (i >= max_visible_apps) break;
-    
-    var app = opened_apps[i];
-    var app_x = start_x + (i * (app_btn_width + 5));
-    var app_y = taskbar_y + 7;
-    
-    // App button background
-    draw_set_color(make_color_rgb(60, 60, 60));
-    draw_rectangle(app_x, app_y, app_x + app_btn_width, app_y + app_btn_height, true);
-    draw_set_color(make_color_rgb(100, 100, 100));
-    draw_rectangle(app_x, app_y, app_x + app_btn_width, app_y + app_btn_height, false);
-    
-    // App name
-    draw_set_color(c_white);
-    draw_set_font(-1);
-    draw_text(app_x + 8, app_y + 15, app);
+// Draw WiFi icon - Green if connected, white if not
+if (connected_network >= 0) {
+    draw_set_color(make_color_rgb(0, 255, 0)); // Green when connected
+} else {
+    draw_set_color(c_white); // White when disconnected
 }
-
-// Draw WiFi icon
-draw_set_color(c_white);
 var wifi_center_x = wifi_btn_x + system_btn_size/2;
 var wifi_center_y = wifi_btn_y + system_btn_size/2;
 
@@ -70,13 +39,13 @@ draw_circle(wifi_center_x, wifi_center_y, system_btn_size/8, true);
 
 // Draw date/time area
 draw_set_color(make_color_rgb(60, 60, 60));
-draw_rectangle(date_btn_x - 10, taskbar_y + 2, 1920, taskbar_y + taskbar_height - 2, true);
+draw_rectangle(date_btn_x - 5, taskbar_y + 2, 1920, taskbar_y + taskbar_height - 2, true);
 
 // Time and date text
 draw_set_color(c_white);
-draw_set_font(-1);
-draw_text(date_btn_x, taskbar_y + 15, display_time);
-draw_text(date_btn_x, taskbar_y + 35, display_date);
+draw_set_font(Date);
+draw_text(date_btn_x + 13, taskbar_y + 10, display_time);
+draw_text(date_btn_x + 9, taskbar_y + 30, display_date);
 
 // Draw WiFi flyout if visible
 if (wifi_flyout_visible) {
@@ -98,8 +67,15 @@ if (wifi_flyout_visible) {
     draw_set_color(c_white);
     draw_set_font(-1);
     draw_text(wifi_flyout_x + 20, wifi_flyout_y + 20, "Wi-Fi");
-    draw_set_color(make_color_rgb(150, 150, 150));
-    draw_text(wifi_flyout_x + 20, wifi_flyout_y + 40, "Connected, secured");
+    
+    // Status text - Show connection status
+    if (connected_network >= 0) {
+        draw_set_color(make_color_rgb(150, 255, 150)); // Light green
+        draw_text(wifi_flyout_x + 20, wifi_flyout_y + 40, "Connected to: " + networks[connected_network]);
+    } else {
+        draw_set_color(make_color_rgb(150, 150, 150)); // Gray
+        draw_text(wifi_flyout_x + 20, wifi_flyout_y + 40, "Not connected");
+    }
     
     // Available Networks section
     var networks_start_y = wifi_flyout_y + 70;
@@ -134,11 +110,6 @@ if (wifi_flyout_visible) {
     }
 }
 
-// DEBUG: Show click area
-draw_set_color(c_red);
-draw_set_alpha(0.3);
-draw_rectangle(wifi_btn_x, wifi_btn_y, wifi_btn_x + system_btn_size, wifi_btn_y + system_btn_size, true);
-draw_set_alpha(1);
 
 // Helper function for small WiFi icon with 3 curves
 function draw_small_wifi_icon(x, y, size) {
@@ -199,14 +170,14 @@ function draw_network_input_field(network_index, start_y) {
     
     // Input field border
     draw_set_color(c_white);
-    draw_rectangle(left_column_x, input_field_y, left_column_x + input_field_width, input_field_y + 30, false);
+    draw_rectangle(left_column_x, input_field_y, left_column_x + input_field_width, input_field_y + 30, true);
     
     // Input field background (black)
     draw_set_color(c_black);
-    draw_rectangle(left_column_x + 1, input_field_y + 1, left_column_x + input_field_width - 1, input_field_y + 29, true);
+    draw_rectangle(left_column_x + 1, input_field_y + 1, left_column_x + input_field_width - 1, input_field_y + 29, false);
     
     // Input text - Show both the text AND cursor
-    draw_set_color(c_black); 
+    draw_set_color(c_white); 
     
     // Show blinking cursor when active -
     var cursor = "";
@@ -221,12 +192,14 @@ function draw_network_input_field(network_index, start_y) {
     draw_text(left_column_x + 5, input_field_y + 8, input_text + cursor);
     
     // Character counter
+    var counter_x = left_column_x + input_field_width + 5;
     draw_set_color(make_color_rgb(150, 150, 150));
-    draw_text(left_column_x + input_field_width + 5, input_field_y + 8, string(string_length(input_text)) + "/10");
+    draw_text(counter_x, input_field_y + 8, string(string_length(input_text)) + "/20");
     
-    // For Myers0923 ONLY, show password dropdown and Connect button
+    // For Myers0923 ONLY, show password dropdown
     if (current_network_name == "Myers0923") {
-        var dropdown_icon_x = left_column_x + input_field_width + 10;
+       
+        var dropdown_icon_x = counter_x + 50; 
         var dropdown_icon_y = input_field_y;
         var dropdown_icon_size = 30;
         
@@ -234,14 +207,22 @@ function draw_network_input_field(network_index, start_y) {
         dropdown_button_bounds = [dropdown_icon_x, dropdown_icon_y, dropdown_icon_x + dropdown_icon_size, dropdown_icon_y + dropdown_icon_size];
         
         // Dropdown icon background
-        draw_set_color(make_color_rgb(70, 70, 70)); // Gray background
-        draw_rectangle(dropdown_icon_x, dropdown_icon_y, dropdown_icon_x + dropdown_icon_size, dropdown_icon_y + dropdown_icon_size, true);
-        draw_set_color(c_white); // White border
+        draw_set_color(c_black); 
         draw_rectangle(dropdown_icon_x, dropdown_icon_y, dropdown_icon_x + dropdown_icon_size, dropdown_icon_y + dropdown_icon_size, false);
-        
+        draw_set_color(c_white); // White border
+        draw_rectangle(dropdown_icon_x, dropdown_icon_y, dropdown_icon_x + dropdown_icon_size, dropdown_icon_y + dropdown_icon_size, true);
+
         // Dropdown arrow 
-        draw_set_color(c_black);
-        draw_text(dropdown_icon_x + 12, dropdown_icon_y + 8, "▼");
+        draw_set_color(c_white);
+        var center_x = dropdown_icon_x + dropdown_icon_size/2;
+        var center_y = dropdown_icon_y + dropdown_icon_size/2;
+        var arrow_size = 6;
+        draw_triangle(
+            center_x - arrow_size, center_y - arrow_size/2, 
+            center_x + arrow_size, center_y - arrow_size/2,  
+            center_x, center_y + arrow_size/2,              
+            true 
+        );
        
         // DROPDOWN OPTIONS WHEN OPEN
         if (password_dropdown_visible) {
@@ -251,9 +232,9 @@ function draw_network_input_field(network_index, start_y) {
             
             // Dropdown background - Dark background with white border
             draw_set_color(make_color_rgb(40, 40, 40)); // Dark background
-            draw_rectangle(options_start_x, options_start_y, options_start_x + option_width, options_start_y + 85, true);
-            draw_set_color(c_white); // White border
             draw_rectangle(options_start_x, options_start_y, options_start_x + option_width, options_start_y + 85, false);
+            draw_set_color(c_white); // White border
+            draw_rectangle(options_start_x, options_start_y, options_start_x + option_width, options_start_y + 85, true);
             
             // Draw each password option - White text on dark background
             for (var i = 0; i < array_length(password_options); i++) {
@@ -276,59 +257,62 @@ function draw_network_input_field(network_index, start_y) {
                 var checkbox_y = option_y + 12;
                 draw_rectangle(checkbox_x, checkbox_y, checkbox_x + 15, checkbox_y + 15, false);
                 
-                // Checkmark if selected - White checkmark
+                // Draw X mark if selected (easier than checkmark)
                 if (selected_passwords[i]) {
-                    draw_set_color(c_white);
-                    draw_text(checkbox_x + 3, checkbox_y - 1, "✓");
+                    draw_set_color(c_black);
+                    draw_line_width(checkbox_x + 3, checkbox_y + 3,   
+                        checkbox_x + 12, checkbox_y + 12,
+                        2);
+                    draw_line_width(checkbox_x + 12, checkbox_y + 3, 
+                        checkbox_x + 3, checkbox_y + 12,
+                        2);
                 }
                 
-                // Password option text - White text
-                draw_set_color(c_black);
+                // Password option text
+                draw_set_color(c_white);
                 draw_text(options_start_x + 40, option_y + 10, password_options[i]);
             }
         }
         
-        // Connect/Cancel buttons 
-        var connect_btn_y = base_y + 100;
+        // Instructions for Myers0923 (same as other networks)
+        var instructions_y = base_y + 100;
         if (password_dropdown_visible) {
-            connect_btn_y = base_y + 180;
+            instructions_y = base_y + 180;
         }
         
-        // Store button positions
-        connect_btn_bounds = [wifi_flyout_x + 60, connect_btn_y, wifi_flyout_x + 150, connect_btn_y + 35];
-        cancel_btn_bounds = [wifi_flyout_x + 170, connect_btn_y, wifi_flyout_x + 260, connect_btn_y + 35];
+        // Instructions for Myers0923
+        draw_set_color(make_color_rgb(150, 150, 150));
+        draw_text(left_column_x, instructions_y, "Press Enter to check password");
         
-        // Connect button
-        draw_set_color(make_color_rgb(0, 120, 215));
-        draw_rectangle(connect_btn_bounds[0], connect_btn_bounds[1], connect_btn_bounds[2], connect_btn_bounds[3], true);
-        draw_set_color(c_white);
-        draw_text(wifi_flyout_x + 84, connect_btn_y + 10, "Connect");
-        
-        // Cancel button
-        draw_set_color(make_color_rgb(80, 80, 80));
-        draw_rectangle(cancel_btn_bounds[0], cancel_btn_bounds[1], cancel_btn_bounds[2], cancel_btn_bounds[3], true);
-        draw_set_color(c_white);
-        draw_text(wifi_flyout_x + 195, connect_btn_y + 10, "Cancel");
-        
+        // Show incorrect password message OR success message
+        if (incorrect_timer > 0) {
+            draw_set_color(c_red);
+            draw_text(left_column_x, instructions_y + 30, "Incorrect password");
+        } else if (connection_success && connection_message_timer > 0 && selected_network == array_find(networks, "Myers0923")) {
+            draw_set_color(make_color_rgb(0, 255, 0)); // Green color
+            draw_text(left_column_x, instructions_y + 30, "Connect Successfully");
+        }
+       
         // Show "click connect" message when both passwords are selected
         if (selected_passwords[0] && selected_passwords[1]) {
             draw_set_color(make_color_rgb(0, 255, 0));
-            draw_text(left_column_x -10, connect_btn_y + 50, "✓ Both passwords analyzed \n  Click Connect");
+            draw_text(left_column_x, instructions_y + 60, "You are tricked");
         }
-        
-        
-		} else {
-        // FOR OTHER NETWORKS: No Connect button, only Enter key instructions
+    } else {
+        // FOR OTHER NETWORKS: No dropdown, only Enter key instructions
         var instructions_y = base_y + 100;
         
         // Instructions for other networks
         draw_set_color(make_color_rgb(150, 150, 150));
         draw_text(left_column_x, instructions_y, "Press Enter to check password");
         
-        // Show incorrect password message for other networks
+        // Show incorrect password message OR success message for other networks
         if (incorrect_timer > 0) {
             draw_set_color(c_red);
             draw_text(left_column_x, instructions_y + 30, "Incorrect password");
+        } else if (connection_success && connection_message_timer > 0 && selected_network >= 0) {
+            draw_set_color(make_color_rgb(0, 255, 0)); // Green color
+            draw_text(left_column_x, instructions_y + 30, "Connect Successfully");
         }
     }
 }

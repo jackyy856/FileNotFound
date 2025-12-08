@@ -17,5 +17,8 @@ if (!instance_exists(app_obj))
 }
 else 
 {
-    with (app_obj) window_focus = true; // focus behavior
+    with (app_obj) {
+        is_minimized = false;  // restore if minimized
+        window_focus = true;
+    }
 }

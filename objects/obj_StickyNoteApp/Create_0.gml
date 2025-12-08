@@ -39,17 +39,26 @@ font_body  = -1;
   { id, title, body, locked, password, read, tag }
 */
 notes = [
-    { id:0, title:"Daily Plan (Mon)", locked:false, password:"", read:false, tag:"work",
-      body:"9:00 standup\n11:30 vendor call\n3:00 budget sync\nReminder: gallery photos have timestamps." },
+    // Most notes: normal life / work clutter
+    { id:0, title:"Groceries", locked:false, password:"", read:false, tag:"list",
+      body:"milk\ncoffee\nfrozen meals\nsticky notes (again)\nreminder: do NOT leave the fridge empty." },
 
-    { id:1, title:"Manager’s Initials", locked:false, password:"", read:false, tag:"policy",
-      body:"Password hints must be work-related. Start with your manager’s initials." },
+    { id:1, title:"Meeting - Q4 sync", locked:false, password:"", read:false, tag:"meeting",
+      body:"Q4 sync with Helena\n\nAgenda:\n- targets and stretch goals\n- budget fire drill\n- headcount rightsizing\n\nremember: update Q4 sheets before Helena gets on my ass" },
 
-    { id:2, title:"Conf Room Notes (Locked)", locked:true, password:"0729", read:false, tag:"clue",
-      body:"Meeting write-up from late July. Key is last two digits of month+day." },
+    { id:2, title:"Phrases to sound important", locked:false, password:"", read:false, tag:"jargon",
+      body:"corporate phrases to overuse:\n- circle back on that\n- low-hanging fruit\n- action items\n- driving alignment across stakeholders\n- parking lot this for later" },
 
-    { id:3, title:"Next Step (Hint)", locked:false, password:"", read:false, tag:"hint",
-      body:"After Notes, check the next app (fill this in later)."}
+    // Locked notes: not meant to open yet
+    { id:3, title:"1 out of 5", locked:true, password:"", read:false, tag:"locked",
+      body:"[locked]\nthis one isnt ready yet." },
+
+    { id:4, title:"doves case.", locked:true, password:"", read:false, tag:"locked",
+      body:"[locked]\nseriously, stop trying to open this.\nnot for you. (yet)" },
+
+    // Special wifi puzzle note
+    { id:5, title:"dont open me >-<", locked:false, password:"", read:false, tag:"wifi",
+      body:"wifi? hehe, where u can see a reflection\n\npassword...? try one of this >u<\n- greedy\n- mean\n- controlling\n- liar\n- sadistic\n- fake\n- bossy" }
 ];
 
 selected_index = -1; // -1 = list view
