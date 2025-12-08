@@ -18,16 +18,34 @@ footer_h = round(win_h_full / 12);
 // state
 minimized = false;
 
-// dialogue choice state
-choice1_active     = false; // first menu
-choice2_active     = false; // second menu
+// dialogue choice state 
+choice_active   = false;  // any menu visible?
+choice_menu_id  = 0;      // 0 = none, 1/2/3/... = which menu
+choice_options  = [];     // arr of strs
 
+// text constants for specific menus
+// menu 1
 choice1_opt1_text  = "What are you talking about?";
 choice1_opt2_text  = "Who are you?";
 choice1_opt3_text  = "...";
 
+// menu 2
 choice2_opt1_text  = "I’m calling the police.";
 choice2_opt2_text  = "What secret?";
+
+// menu 3
+choice3_opt1_text  = "Don’t leave yet.";
+choice3_opt2_text  = "Answer my questions first.";
+choice3_opt3_text  = "Why are you doing this?";
+
+// conversation phase:
+// 0 = intro part 1,
+// 1 = post-choice1 lines,
+// 2 = post-choice2 replies,
+// 3 = final farewell lines
+conversation_phase = 0;
+
+
 
 // conversation phase: 0 = intro part 1, 1 = post-choice1 lines, 2 = post-choice2 replies
 conversation_phase = 0;
@@ -76,7 +94,14 @@ function add_message(_user, _text, _is_hacker)
     {
         col_name = make_color_rgb(0, 220, 180);
         col_pfp  = make_color_rgb(255, 90, 90);
-        spr_pfp  = spr_pfp_hacker;   
+        spr_pfp  = spr_pfp_hacker;
+
+        // only flag unread if window
+        // is not currently open in front of player
+        if (minimized || !visible)
+        {
+            global.hacker_unread = true;
+        }
     }
     else
     {
@@ -108,22 +133,21 @@ function recalc_scroll_bounds()
     var content_y1 = win_y + header_h - 20;
     var content_y2 = win_y + win_h_full - footer_h;
 
-    // reserve space for dropdown choices above the footer
+    // reserve space for dropdown choices above the footer (generic)
     var opt_margin_bottom = 10;
     var opt_height        = 40;
     var opt_gap           = 4;
 
-    if (choice1_active)
+    if (choice_active)
     {
-        // 3 buttons
-        var opt_total_h = opt_margin_bottom + opt_height * 3 + opt_gap * 2;
-        content_y2 -= opt_total_h;
-    }
-    else if (choice2_active)
-    {
-        // 2 buttons
-        var opt_total_h = opt_margin_bottom + opt_height * 2 + opt_gap;
-        content_y2 -= opt_total_h;
+        var opt_count = array_length(choice_options);
+        if (opt_count > 0)
+        {
+            var opt_total_h = opt_margin_bottom
+                            + opt_height * opt_count
+                            + opt_gap * max(0, opt_count - 1);
+            content_y2 -= opt_total_h;
+        }
     }
 
     // small extra padding so last line never sits right on the menu edge
@@ -138,6 +162,10 @@ function recalc_scroll_bounds()
         scroll     = 0;
         return;
     }
+
+    // *** keep the rest of your existing recalc_scroll_bounds code here ***
+    // (pfp_radius, line_sep, loop over messages to compute content_h, etc.)
+
 
     // same geometry as Draw_64 for messages
     var pfp_radius   = 28;
@@ -187,8 +215,8 @@ function recalc_scroll_bounds()
 
 // phase 0: first 3 hacker lines
 intro_messages = [
-    { sender: "UrHacker", text: "took you long enough to open this. I was starting to think you’d just ignore my message.", is_hacker: true },
-    { sender: "UrHacker", text: "But now that we’re here… I'll get to the point.", is_hacker: true },
+    { sender: "UrHacker", text: "took you long enough to open this. i was starting to think u'd just ignore my message.", is_hacker: true },
+    { sender: "UrHacker", text: "but now that we're here… i'll get to the point.", is_hacker: true },
     { sender: "UrHacker", text: "i know ur hiding something in this machine. i’m going to find it.", is_hacker: true }
 ];
 
@@ -197,3 +225,4 @@ intro_active     = true;
 typing           = true;
 intro_timer_ms   = 3500;   // 3.5s per line
 has_any_message  = false;
+hacker_offline = false;

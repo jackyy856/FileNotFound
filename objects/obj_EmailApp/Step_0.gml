@@ -61,19 +61,42 @@ if (window_dragging) {
     if (!mouse_check_button(mb_left)) window_dragging = false;
 }
 
-// ------------------ CLOSE / MINIMIZE ------------------
+// ------------------ CLOSE / MINIMIZE / BACK ------------------
 if (mouse_check_button_pressed(mb_left)) {
-    // close (X)
-    if (over_close) {
-        instance_destroy();
-        exit;
+    // Check if in puzzle mode for back button (only if we have valid selection)
+    if (selected_index >= 0 && selected_index < array_length(inbox)) {
+        var em_check = inbox[selected_index];
+        var _em_cor = variable_struct_exists(em_check, "is_corrupted") && em_check.is_corrupted;
+        
+        if (_em_cor && puzzle_active && !puzzle_solved) {
+            // Puzzle view back button (in header)
+            var puzzle_back_btn_x = window_x + window_w - (30 * 4) - 20;
+            var puzzle_back_btn_y = window_y + (header_h - 26) / 2;
+            var puzzle_back_btn_w = 70;
+            var puzzle_back_btn_h = 26;
+            
+            if (mx >= puzzle_back_btn_x && mx < puzzle_back_btn_x + puzzle_back_btn_w &&
+                my >= puzzle_back_btn_y && my < puzzle_back_btn_y + puzzle_back_btn_h) {
+                selected_index = -1;
+                puzzle_active = false;
+                puzzle_hint_timer = 0;
+                puzzle_show_hint = false;
+                exit;
+            }
+        }
     }
-    // minimize (-)
-    if (over_min) {
-        is_minimized = !is_minimized;
-        exit;
-    }
-}
+            
+            // close (X)
+            if (over_close) {
+                instance_destroy();
+                exit;
+            }
+            // minimize (-)
+            if (over_min) {
+                is_minimized = !is_minimized;
+                exit;
+            }
+        }
 
 // If minimized: do not process content UI below
 if (is_minimized) {
@@ -86,6 +109,18 @@ if (is_minimized) {
     exit;
 }
 
+// if email is locked: window works, but no content
+if (email_locked) {
+    // check if wifi puzzle has been solved while this window is open
+    if (variable_global_exists("wifi_ever_connected") && global.wifi_ever_connected) {
+        email_locked = false;
+    } else {
+        // still locked, bail out
+        exit;
+    }
+}
+
+
 // ------------------ INBOX / MESSAGE NAV ------------------
 if (selected_index == -1) {
     if (open_cooldown <= 0 &&
@@ -95,18 +130,34 @@ if (selected_index == -1) {
     {
         var idx = floor((my - list_top) / row_h);
         var len = array_length(inbox);
-        if (idx >= 0 && idx < len) {
-            selected_index = idx;
-            inbox[idx].read = true;
+        
+        // Find actual email index (accounting for filtered emails)
+        var visible_count = 0;
+        var actual_idx = -1;
+        for (var i = 0; i < len; i++) {
+            var show_in_inbox = variable_struct_exists(inbox[i], "show_in_inbox") ? inbox[i].show_in_inbox : true;
+            if (show_in_inbox) {
+                if (visible_count == idx) {
+                    actual_idx = i;
+                    break;
+                }
+                visible_count++;
+            }
+        }
+        
+        if (actual_idx >= 0 && actual_idx < len) {
+            selected_index = actual_idx;
+            inbox[actual_idx].read = true;
+            thread_scroll = 0; // Reset scroll when opening new email
 
             // unlock messenger if suspicious
-            if (inbox[idx].is_suspicious) {
+            if (inbox[actual_idx].is_suspicious) {
                 if (!is_undefined(global.apps_unlocked) && is_struct(global.apps_unlocked)) {
                     global.apps_unlocked.Messenger = true;
                 }
             }
 
-            if (idx == corrupted_index) {
+            if (actual_idx == corrupted_index) {
                 puzzle_active     = puzzle_gate && !puzzle_solved;
                 puzzle_hint_timer = 0;
                 puzzle_show_hint  = false;
@@ -118,12 +169,87 @@ if (selected_index == -1) {
         }
     }
 } else {
+    // Thread view scrollbar
+    var em = inbox[selected_index];
+    var is_thread = variable_struct_exists(em, "thread_id") && em.thread_id != undefined;
+    
+    // Handle scrollbar for both single emails and threads
+    var tab_h = 48;
+    var back_btn_bottom = back_btn[1] + back_btn[3];
+    var safe_start_y = max(back_btn_bottom + 15, window_y + header_h + tab_h + 15);
+    var tx = window_x + 20;
+    var ty = safe_start_y;
+    var body_w = window_w - 40;
+    
+    var is_thread = variable_struct_exists(em, "thread_id") && em.thread_id != undefined;
+    var total_h = 0;
+    
+    if (is_thread) {
+        // Calculate thread height
+        var thread = (variable_struct_exists(em, "thread_id") ? em.thread_id : em.id);
+        var chain = [];
+        for (var i = 0; i < array_length(inbox); i++) {
+            if (variable_struct_exists(inbox[i], "thread_id")) {
+                if (inbox[i].thread_id == thread) {
+                    array_push(chain, inbox[i]);
+                }
+            }
+        }
+        
+        if (array_length(chain) > 1) {
+            // Calculate with tentative body_w first
+            var tentative_body_w = window_w - 40;
+            for (var m = 0; m < array_length(chain); m++) {
+                total_h += 26 + 26 + 26 + 34; // subject + from + to + sent spacing
+                total_h += string_height_ext(chain[m].body, 12, tentative_body_w) + 22;
+                if (m < array_length(chain) - 1) total_h += 24; // divider
+            }
+            // Adjust body_w if scrollbar needed
+            var visible_h = window_y + window_h - 40 - ty;
+            if (total_h > visible_h) {
+                body_w = window_w - 40 - 12 - 8 - 20; // Account for scrollbar
+                // Recalculate with adjusted width
+                total_h = 0;
+                for (var m2 = 0; m2 < array_length(chain); m2++) {
+                    total_h += 26 + 26 + 26 + 34;
+                    total_h += string_height_ext(chain[m2].body, 12, body_w) + 22;
+                    if (m2 < array_length(chain) - 1) total_h += 24;
+                }
+            }
+        }
+    } else {
+        // Single email - calculate height (already handled in Draw, but need for scrollbar)
+        total_h += 30; // subject
+        total_h += 30; // from
+        var has_to = variable_struct_exists(em, "to") && em.to != "";
+        if (has_to) total_h += 30; // to
+        total_h += 60; // spacing
+        total_h += string_height_ext(em.body, 12, body_w); // body
+    }
+    
+    if (total_h > 0) {
+        var visible_h = window_y + window_h - 40 - ty;
+        var scroll_max = max(0, total_h - visible_h);
+        
+        // Mouse wheel scrolling for both single emails and threads
+        var scroll_delta = 0;
+        if (mouse_wheel_up())   scroll_delta -= 30;
+        if (mouse_wheel_down()) scroll_delta += 30;
+        
+        if (scroll_delta != 0 && mx >= window_x && mx < window_x + window_w && 
+            my >= window_y + header_h && my < window_y + window_h) {
+            thread_scroll += scroll_delta;
+            thread_scroll = clamp(thread_scroll, 0, scroll_max);
+        }
+    }
+    
     if (mouse_check_button_pressed(mb_left)) {
         if (over_back) {
             selected_index    = -1;
             puzzle_active     = false;
             puzzle_hint_timer = 0;
             puzzle_show_hint  = false;
+            thread_scroll     = 0; // Reset scroll when going back
         }
     }
 }
@@ -151,14 +277,16 @@ if (selected_index != -1) {
     }
 
     if (_em_cor && puzzle_active) {
-        // START DRAG
+        // START DRAG - allow dragging even if placed (so player can rearrange)
         if (mouse_check_button_pressed(mb_left)) {
             for (var i = array_length(word_btns)-1; i >= 0; i--) {
                 var b = word_btns[i];
+                // Check if mouse is over button (whether placed or not)
                 if (in_local(mx_local, my_local, b.x, b.y, b.w, b.h)) {
                     b.dragging  = true;
                     b.dx        = mx_local - b.x;
                     b.dy        = my_local - b.y;
+                    // Clear placement when starting to drag
                     b.placed    = false;
                     b.slot_index= -1;
                     word_btns[i]= b;
@@ -269,8 +397,6 @@ if (selected_index != -1) {
             }
 
             if (ok) {
-                // (shape compatibility is still in data but visually removed – we can ignore it now)
-
                 puzzle_solved  = true;
                 puzzle_active  = false;
 
@@ -282,6 +408,13 @@ if (selected_index != -1) {
                 inbox[corrupted_index].subject = title_text;
                 inbox[corrupted_index].body =
                     "It does.\n\nHere's your first key sucker.";
+                // Add missing fields that Draw expects
+                if (!variable_struct_exists(inbox[corrupted_index], "to")) {
+                    inbox[corrupted_index].to = "";
+                }
+                if (!variable_struct_exists(inbox[corrupted_index], "from")) {
+                    inbox[corrupted_index].from = "System";
+                }
 
                 inbox[corrupted_index].is_corrupted = false;
 

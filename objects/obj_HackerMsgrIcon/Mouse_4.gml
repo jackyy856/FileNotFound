@@ -95,9 +95,19 @@ if (!instance_exists(app_obj))
 else 
 {
     with (app_obj) {
+        // if previously "closed", make it visible again
+        if (!visible) {
+            visible   = true;
+            minimized = false;
+            win_h     = win_h_full;
+        }
+
         if (!variable_global_exists("window_z_next")) global.window_z_next = depth;
         global.window_z_next -= 1;
-        depth = global.window_z_next;
+        depth        = global.window_z_next;
         window_focus = true; // focus behavior
     }
 }
+
+// play click sound for hacker icon (unread or not)
+audio_play_sound(sfx_meow1, 1, 0.20);

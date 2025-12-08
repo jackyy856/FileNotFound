@@ -23,13 +23,22 @@ window_dragging = false;
 window_drag_dx  = 0;
 window_drag_dy  = 0;
 
+// small delay to ignore the click that opened this app
+spawn_click_cooldown = round(room_speed * 0.15); // ~0.15s
+
 // ------------------------------------
 // STATE
 // ------------------------------------
-view_mode = 0; // 0 = home, 1 = firewall puzzle, 2 = firewall log/preview
+// 0 = home, 1 = firewall puzzle, 2 = firewall log, 3 = generic folder (OPEN ME/HR/Images)
+view_mode       = 0;
+current_folder  = "";
+
+// special state for OPEN ME inner folder:
+// 0 = show inner folder, 1 = playing video
+open_me_stage = 0;
 
 // ------------------------------------
-// HOME ENTRIES (Projects / HR / FileNotFound / Firewall.exe)
+// HOME ENTRIES (OPEN ME / HR / FileNotFound / Firewall.exe)
 // ------------------------------------
 var card_w   = 120;
 var card_h   = 120;
@@ -38,7 +47,7 @@ var base_x   = window_x + 40;
 var base_y   = window_y + header_h + 40;
 
 var labels = [
-    "Projects",
+    "OPEN ME",
     "HR",
     "FileNotFound",
     "Firewall.exe"
@@ -47,7 +56,7 @@ var labels = [
 for (var i = 0; i < array_length(labels); i++) {
     var cx = base_x + i * (card_w + margin_x);
     var cy = base_y;
-
+	
     var kind = "folder";
     if (i == 2) kind = "file_minigame";  // <-- our Click-The-File game
     if (i == 3) kind = "firewall";
@@ -233,3 +242,8 @@ if (!variable_global_exists("_ui_click_consumed")) {
 }
 __ui_click_inside      = false;
 __ui_first_frame_block = 1;
+
+// ------------------------------------
+// VIDEO (OPEN ME folder)
+// ------------------------------------
+video_active = false;
