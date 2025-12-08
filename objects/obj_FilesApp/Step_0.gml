@@ -99,7 +99,6 @@ if (is_minimized) {
 //                               HOME VIEW
 // =======================================================================
 if (view_mode == 0) {
-
     if (mouse_check_button_pressed(mb_left)) {
         for (var i = 0; i < array_length(home_entries); i++) {
             var e = home_entries[i];
@@ -115,8 +114,10 @@ if (view_mode == 0) {
                         video_close();
                         video_active = false;
                     }
-                    view_mode = 1;
-                } else {
+                    view_mode = 1; // go to firewall puzzle
+                }
+                else {
+                    // Regular folder (OPEN ME, HR, etc.)
                     current_folder = e.label;
                     view_mode      = 3;
 
