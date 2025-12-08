@@ -1,21 +1,18 @@
 /// obj_DeskViewController – Create
 /// Purpose:
-///   Drives the “Desk View → Email List → Email Open” flow using 1920×1080 PNGs,
+///   Drives the "Desk View → Email List → Email Open" flow using 1920×1080 PNGs,
 ///   with transparent hotspot rectangles overlaid on the art.
-/// Key hotkeys:
-///   D  = toggle debug overlay (blue monitor + green hotspots)
+/// Key hotkeys (dev only):
 ///   F1 = edit monitor viewport (blue) with Arrows (move) + Shift+W/A/S/D (resize)
-///   F2 = edit currently selected hotspot (green) with Arrows + Shift+W/A/S/D
 ///   1..5 = capture a single hotspot by clicking TL then BR
-///   F3 = guided capture (runs Email Icon → Subject → Link → Back → X)
-///   F5/F6/F7 = save / load / reset hotspots to INI
+///   F6/F7 = load / reset hotspots to INI
 
 // ---------------------------- State machine ----------------------------
 enum DeskState { DESK, EMAIL_LIST, EMAIL_OPEN }
 state = DeskState.DESK;
 
-// GUI matches room pixels (and the 1920×1080 images)
-display_set_gui_size(room_width, room_height);
+// GUI fixed to 1920×1080 to match sprite resolution (ensures consistent hitboxes across devices)
+display_set_gui_size(1920, 1080);
 
 // ---------------------------- Art references ----------------------------
 sprDesk      = spr_desk_bg;      // DeskView.png (monitor bezel + desktop)
@@ -80,7 +77,6 @@ _recalc_layout();
 
 // ---------------------------- UX helpers ----------------------------
 edit_monitor = false; // F1
-show_dev     = false; // D
 
 // Minimal prompt (bottom bar). Keep it unobtrusive.
 dialog_text  = "";
@@ -115,39 +111,6 @@ function _rect_from_points(p1, p2) {
     var x2 = max(p1[0], p2[0]);
     var y2 = max(p1[1], p2[1]);
     return [ x1, y1, x2 - x1, y2 - y1 ];
-}
-
-// ---------------------------- Hotspot edit (F2) ----------------------------
-edit_hotspot     = false;
-selected_hotspot = 1; // 1..5
-
-function _get_rect(id) {
-    switch (id) {
-        case 1: return BTN_EMAIL_ICON;
-        case 2: return BTN_BACK;        // (used only on EMAIL_OPEN)
-        case 3: return BTN_CLOSEX;
-        case 4: return BTN_PHISH_SUBJ;
-        case 5: return BTN_PHISH_LINK;
-    }
-    return [0,0,0,0];
-}
-
-function _set_rect(id, r) {
-    switch (id) {
-        case 1: BTN_EMAIL_ICON = r; break;
-        case 2: BTN_BACK       = r; break;
-        case 3: BTN_CLOSEX     = r; break;
-        case 4: BTN_PHISH_SUBJ = r; break;
-        case 5: BTN_PHISH_LINK = r; break;
-    }
-}
-
-function _clamp_rect(r) {
-    r[2] = max(1, r[2]);
-    r[3] = max(1, r[3]);
-    r[0] = clamp(r[0], 0, 1920 - r[2]);
-    r[1] = clamp(r[1], 0, 1080 - r[3]);
-    return r;
 }
 
 // ---------------------------- Persist (INI) ----------------------------
