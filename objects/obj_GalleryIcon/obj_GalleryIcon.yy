@@ -32,8 +32,8 @@
   "resourceVersion":"2.0",
   "solid":false,
   "spriteId":{
-    "name":"spr_GalleryIcon",
-    "path":"sprites/spr_GalleryIcon/spr_GalleryIcon.yy",
+    "name":"spr_Hacked_GalleryIcon",
+    "path":"sprites/spr_Hacked_GalleryIcon/spr_Hacked_GalleryIcon.yy",
   },
   "spriteMaskId":null,
   "visible":true,

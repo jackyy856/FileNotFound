@@ -32,8 +32,8 @@
   "resourceVersion":"2.0",
   "solid":false,
   "spriteId":{
-    "name":"spr_RecycleBinIcon",
-    "path":"sprites/spr_RecycleBinIcon/spr_RecycleBinIcon.yy",
+    "name":"spr_Hacked_RecycleBinIcon",
+    "path":"sprites/spr_Hacked_RecycleBinIcon/spr_Hacked_RecycleBinIcon.yy",
   },
   "spriteMaskId":null,
   "visible":true,
