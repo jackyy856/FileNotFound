@@ -12,9 +12,7 @@ draw_set_color(bar_col);
 draw_roundrect(x1, y1, x2, y1 + bar_h, false);
 
 // title
-draw_set_color(c_white);
-draw_set_font(font_title);
-draw_text(x1 + 12, y1 + 10, title);
+draw_sprite(spr_title_notes, 0, x1 + 12, y1 + 10);
 
 // window buttons
 var bx_close_x1 = x2 - btn_pad - btn_w;
@@ -26,13 +24,13 @@ var bx_min_y1   = bx_close_y1;
 draw_set_color(make_color_rgb(215,215,215));
 draw_roundrect(bx_min_x1, bx_min_y1, bx_min_x1+btn_w, bx_min_y1+btn_h, false);
 draw_set_color(c_black);
-draw_text(bx_min_x1+7, bx_min_y1+3, "_");
+draw_text(bx_min_x1+7, bx_min_y1, "_");
 
 // close
 draw_set_color(make_color_rgb(230,70,70));
 draw_roundrect(bx_close_x1, bx_close_y1, bx_close_x1+btn_w, bx_close_y1+btn_h, false);
 draw_set_color(c_white);
-draw_text(bx_close_x1+7, bx_close_y1+3, "x");
+draw_text(bx_close_x1+7, bx_close_y1, "x");
 
 // body shell
 if (is_minimized) exit;
@@ -51,7 +49,7 @@ draw_set_color(c_black);
 if (selected_index == -1) {
 
     draw_set_alpha(0.7);
-    draw_text(content_x1, content_y1 - 28, "All Notes");
+    draw_text(content_x1, content_y1 - 26, "All Notes");
     draw_set_alpha(1);
 
     var area_w = (content_x2 - content_x1);
@@ -150,8 +148,8 @@ if (pw_modal_open) {
     // input box
     var ibx = mx1 + 16;
     var iby = my1 + 54;
-    var ibw = mw - 32;
-    var ibh = 28;
+    var ibw = mw - 34;
+    var ibh = 30;
 
     draw_set_color(make_color_rgb(240,240,240));
     draw_roundrect(ibx, iby, ibx+ibw, iby+ibh, false);
@@ -175,10 +173,10 @@ if (pw_modal_open) {
     draw_set_color(make_color_rgb(230,230,230));
     draw_roundrect(cancel_x, cancel_y, cancel_x+btnW, cancel_y+btnH, false);
     draw_set_color(c_black);
-    draw_text(cancel_x + 20, cancel_y + 5, "Cancel");
+    draw_text(cancel_x + 20, cancel_y, "Cancel");
 
     draw_set_color(make_color_rgb(40,160,80));
     draw_roundrect(ok_x, ok_y, ok_x+btnW, ok_y+btnH, false);
     draw_set_color(c_white);
-    draw_text(ok_x + 34, ok_y + 5, "OK");
+    draw_text(ok_x + 34, ok_y, "OK");
 }
