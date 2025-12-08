@@ -1,4 +1,4 @@
-/// obj_DeskViewController – Create
+
 /// Purpose:
 ///   Drives the “Desk View → Email List → Email Open” flow using 1920×1080 PNGs,
 ///   with transparent hotspot rectangles overlaid on the art.

@@ -109,6 +109,18 @@ if (is_minimized) {
     exit;
 }
 
+// if email is locked: window works, but no content
+if (email_locked) {
+    // check if wifi puzzle has been solved while this window is open
+    if (variable_global_exists("wifi_ever_connected") && global.wifi_ever_connected) {
+        email_locked = false;
+    } else {
+        // still locked, bail out
+        exit;
+    }
+}
+
+
 // ------------------ INBOX / MESSAGE NAV ------------------
 if (selected_index == -1) {
     if (open_cooldown <= 0 &&
@@ -385,8 +397,6 @@ if (selected_index != -1) {
             }
 
             if (ok) {
-                // (shape compatibility is still in data but visually removed – we can ignore it now)
-
                 puzzle_solved  = true;
                 puzzle_active  = false;
 
