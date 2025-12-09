@@ -178,8 +178,9 @@ if (selected_index == -1) {
         draw_rectangle(list_left, rowY, list_left + list_w, rowY + row_h, false);
         draw_set_alpha(1);
 
-        // Unread bullet
+        // Unread marker: dot for unread (restored)
         if (!inbox[i].read) {
+            draw_set_color(c_black);
             draw_circle(list_left + 10, rowY + row_h*0.5, 4, false);
         }
 
@@ -194,11 +195,19 @@ if (selected_index == -1) {
             : from_full;
 
         // Draw text
+        var txt_col = c_black;
+        var font_use = font_body;
+        if (variable_struct_exists(inbox[i], "is_corrupted") && inbox[i].is_corrupted) {
+            // Bold red for corrupted/puzzle email
+            txt_col  = c_red;
+            font_use = font_title;
+        }
 
-
+        draw_set_color(txt_col);
+        draw_set_font(font_use);
         draw_set_halign(fa_left);
         draw_set_valign(fa_top);
-        draw_text(list_left + 24, rowY + 6, sender_name + " — " + subj);
+        draw_text(list_left + 24, rowY + 6, sender_name + " | " + subj);
 
         rowY += row_h;
         if (rowY > list_top + list_h) break;
@@ -224,7 +233,7 @@ else {
 	
 
     // == Normal mail / solved ==
-	if (!_em_cor || puzzle_solved) {
+    if (!_em_cor || puzzle_solved) {
 	    var tx = window_x + 20;
 	    // Start below back button and tab bar to prevent overlap
 	    var tab_h = 48;
@@ -234,11 +243,14 @@ else {
 		
 		var is_thread = variable_struct_exists(em, "thread_id");
 
-		if (!is_thread) {
-		    // Subject
-		    draw_set_color(c_black);
-		    draw_set_font(font_title);
-		    draw_text(tx, ty, em.subject);
+        if (!is_thread) {
+            // Subject
+            var subj_col = c_black;
+            var subj_font = font_title;
+            if (_em_cor) { subj_col = c_red; subj_font = font_title; } // bold red when corrupted, even after solved
+            draw_set_color(subj_col);
+            draw_set_font(subj_font);
+            draw_text(tx, ty, em.subject);
 		    ty += 30;
 
 		    // From
@@ -407,11 +419,21 @@ else {
 		        draw_y += 30; // Extra spacing
 		        
 		        // Body - only draw if any part is visible
-		        var body_h = string_height_ext(em.body, 12, body_w);
-		        if (draw_y < content_bottom && draw_y + body_h > ty) {
-		            draw_text_ext(tx, draw_y, em.body, 12, body_w);
-		        }
-		        return;
+                var body_h = string_height_ext(em.body, 12, body_w);
+                if (draw_y < content_bottom && draw_y + body_h > ty) {
+                    draw_text_ext(tx, draw_y, em.body, 12, body_w);
+                }
+
+                // Add green link under the bonus announcement email (id 0)
+                if (em.id == 0) {
+                    var link_y = draw_y + body_h + 14;
+                    if (link_y >= ty && link_y <= content_bottom) {
+                        draw_set_color(c_green);
+                        draw_set_font(font_body);
+                        draw_text(tx, link_y, "redeemithere.zet");
+                    }
+                }
+                return;
 		    }
 
 		    // Sort chain oldest → newest by id

@@ -430,6 +430,7 @@ if (selected_index != -1) {
     }
 }
 
+
 // ------------------ HINT TIMER (20s on corrupted puzzle) ------------------
 if (selected_index == corrupted_index && puzzle_active && !puzzle_solved) {
     puzzle_hint_timer += 1;
