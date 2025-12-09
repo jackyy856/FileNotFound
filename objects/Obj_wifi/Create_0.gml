@@ -178,3 +178,56 @@ trigger_hacker_sequence = function() {
 
 // Update time immediately
 update_time_date();
+
+function _save_state_blob() {
+    return {
+        wifi_flyout_visible: wifi_flyout_visible,
+        wifi_flyout_x: wifi_flyout_x,
+        wifi_flyout_y: wifi_flyout_y,
+        selected_network: selected_network,
+        connected_network: connected_network,
+        connection_success: connection_success,
+        connection_message_timer: connection_message_timer,
+        selected_passwords: selected_passwords,
+        password_dropdown_visible: password_dropdown_visible,
+        input_field_visible: input_field_visible,
+        input_field_has_focus: input_field_has_focus,
+        input_text: input_text,
+        opened_apps: opened_apps,
+        hacker_sequence_triggered: hacker_sequence_triggered,
+        wifi_flyout_width: wifi_flyout_width,
+        wifi_flyout_height: wifi_flyout_height,
+        wifi_btn_x: wifi_btn_x,
+        wifi_btn_y: wifi_btn_y
+    };
+}
+
+function _apply_state_blob(blob) {
+    if (!is_struct(blob)) return;
+    if (!is_undefined(blob.wifi_flyout_visible)) wifi_flyout_visible = blob.wifi_flyout_visible;
+    if (!is_undefined(blob.wifi_flyout_x)) wifi_flyout_x = blob.wifi_flyout_x;
+    if (!is_undefined(blob.wifi_flyout_y)) wifi_flyout_y = blob.wifi_flyout_y;
+    if (!is_undefined(blob.selected_network)) selected_network = blob.selected_network;
+    if (!is_undefined(blob.connected_network)) connected_network = blob.connected_network;
+    if (!is_undefined(blob.connection_success)) connection_success = blob.connection_success;
+    if (!is_undefined(blob.connection_message_timer)) connection_message_timer = blob.connection_message_timer;
+    if (!is_undefined(blob.selected_passwords)) selected_passwords = blob.selected_passwords;
+    if (!is_undefined(blob.password_dropdown_visible)) password_dropdown_visible = blob.password_dropdown_visible;
+    if (!is_undefined(blob.input_field_visible)) input_field_visible = blob.input_field_visible;
+    if (!is_undefined(blob.input_field_has_focus)) input_field_has_focus = blob.input_field_has_focus;
+    if (!is_undefined(blob.input_text)) input_text = blob.input_text;
+    if (!is_undefined(blob.opened_apps)) opened_apps = blob.opened_apps;
+    if (!is_undefined(blob.hacker_sequence_triggered)) hacker_sequence_triggered = blob.hacker_sequence_triggered;
+    if (!is_undefined(blob.wifi_flyout_width)) wifi_flyout_width = blob.wifi_flyout_width;
+    if (!is_undefined(blob.wifi_flyout_height)) wifi_flyout_height = blob.wifi_flyout_height;
+    if (!is_undefined(blob.wifi_btn_x)) wifi_btn_x = blob.wifi_btn_x;
+    if (!is_undefined(blob.wifi_btn_y)) wifi_btn_y = blob.wifi_btn_y;
+}
+
+if (variable_global_exists("_pending_save_chunks") && is_struct(global._pending_save_chunks)) {
+    if (variable_struct_exists(global._pending_save_chunks, "wifi_state")
+    && !is_undefined(global._pending_save_chunks.wifi_state)) {
+        _apply_state_blob(global._pending_save_chunks.wifi_state);
+        global._pending_save_chunks.wifi_state = undefined;
+    }
+}

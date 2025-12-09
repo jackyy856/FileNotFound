@@ -267,3 +267,66 @@ function _guided_advance() {
         show_prompt("Guided done. Press F5 to save.");
     }
 }
+
+function _save_state_blob() {
+    var blob = {
+        state: state,
+        dialog_text: dialog_text,
+        dialog_timer: dialog_timer,
+        capture_mode: capture_mode,
+        capture_target: capture_target,
+        capture_completed: capture_completed,
+        guided_mode: guided_mode,
+        guided_idx: guided_idx,
+        guided_ids: guided_ids,
+        edit_monitor: edit_monitor,
+        edit_hotspot: edit_hotspot,
+        selected_hotspot: selected_hotspot,
+        show_dev: show_dev,
+        edit_state: {
+            MON_X: MON_X,
+            MON_Y: MON_Y,
+            MON_W: MON_W,
+            MON_H: MON_H
+        }
+    };
+    if (!is_undefined(capture_first)) blob.capture_first = capture_first;
+    return blob;
+}
+
+function _apply_state_blob(blob) {
+    if (!is_struct(blob)) return;
+    if (!is_undefined(blob.state)) state = blob.state;
+    if (!is_undefined(blob.dialog_text)) dialog_text = blob.dialog_text;
+    else dialog_text = "";
+    if (!is_undefined(blob.dialog_timer)) dialog_timer = blob.dialog_timer;
+    else dialog_timer = 0;
+    if (!is_undefined(blob.capture_mode)) capture_mode = blob.capture_mode;
+    if (!is_undefined(blob.capture_target)) capture_target = blob.capture_target;
+    if (variable_struct_exists(blob, "capture_first")) capture_first = blob.capture_first; else capture_first = undefined;
+    if (!is_undefined(blob.capture_completed)) capture_completed = blob.capture_completed;
+    if (!is_undefined(blob.guided_mode)) guided_mode = blob.guided_mode;
+    if (!is_undefined(blob.guided_idx)) guided_idx = blob.guided_idx;
+    if (!is_undefined(blob.guided_ids)) guided_ids = blob.guided_ids;
+    if (!is_undefined(blob.edit_monitor)) edit_monitor = blob.edit_monitor;
+    if (!is_undefined(blob.edit_hotspot)) edit_hotspot = blob.edit_hotspot;
+    if (!is_undefined(blob.selected_hotspot)) selected_hotspot = blob.selected_hotspot;
+    if (!is_undefined(blob.show_dev)) show_dev = blob.show_dev;
+
+    if (variable_struct_exists(blob, "edit_state")) {
+        var es = blob.edit_state;
+        if (!is_undefined(es.MON_X)) MON_X = es.MON_X;
+        if (!is_undefined(es.MON_Y)) MON_Y = es.MON_Y;
+        if (!is_undefined(es.MON_W)) MON_W = es.MON_W;
+        if (!is_undefined(es.MON_H)) MON_H = es.MON_H;
+        _recalc_layout();
+    }
+}
+
+if (variable_global_exists("_pending_save_chunks") && is_struct(global._pending_save_chunks)) {
+    if (variable_struct_exists(global._pending_save_chunks, "desk_state")
+    && !is_undefined(global._pending_save_chunks.desk_state)) {
+        _apply_state_blob(global._pending_save_chunks.desk_state);
+        global._pending_save_chunks.desk_state = undefined;
+    }
+}

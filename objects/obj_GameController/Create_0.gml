@@ -1,15 +1,17 @@
 /// Global app unlocks and shared globals ONLY.
 /// No auto-opening of any apps.
 
-global.apps_unlocked = {
-    Email      : true,
-    HackerMsgr : true,
-    Files      : true,
-    Gallery    : true,
-    RecycleBin : true,
-    Notes      : true,
-    Slack      : true   // Slack behaves like any other app now
-};
+if (!variable_global_exists("apps_unlocked")) {
+    global.apps_unlocked = {
+        Email      : true,
+        HackerMsgr : true,
+        Files      : true,
+        Gallery    : true,
+        RecycleBin : true,
+        Notes      : true,
+        Slack      : true   // Slack behaves like any other app now
+    };
+}
 
 // Story progression keys for the desktop key slots
 // [ key1_from_email, key2_future, key3_future ]

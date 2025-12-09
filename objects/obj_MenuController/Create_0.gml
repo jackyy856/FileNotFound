@@ -109,3 +109,39 @@ if (variable_global_exists("_queued_narr_lines")
 
     // if some room set _queued_narr_return_room, we leave it for _advance() to consume.
 }
+
+toast_txt = "";
+toast_timer = 0;
+
+function _has_save_api_ready() {
+    return (variable_global_exists("save_api") && is_struct(global.save_api)
+        && variable_struct_exists(global.save_api, "save_load") && is_callable(global.save_api.save_load)
+        && variable_struct_exists(global.save_api, "slot_meta") && is_callable(global.save_api.slot_meta));
+}
+
+function _ensure_save_api_ready() {
+    if (_has_save_api_ready()) return true;
+
+    if (!instance_exists(obj_EscapeMenu)) {
+        var lyr = layer_exists("Instances") ? "Instances" : layer_get_name(layer_get_id(0));
+        var inst = instance_create_layer(menu_x + menu_w * 0.5, menu_y + menu_h * 0.5, lyr, obj_EscapeMenu);
+        if (inst != noone) inst.active = false;
+    }
+
+    return _has_save_api_ready();
+}
+
+function _slot_meta_data(idx) {
+    if (_ensure_save_api_ready()) {
+        var meta = global.save_api.slot_meta(idx);
+        if (is_struct(meta)) return meta;
+    }
+    return {exists:false, title:"Empty Save Slot"};
+}
+
+function _menu_toast(txt) {
+    toast_txt = txt;
+    toast_timer = room_speed * 2;
+}
+
+_ensure_save_api_ready();
