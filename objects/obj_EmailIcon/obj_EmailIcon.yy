@@ -32,8 +32,8 @@
   "resourceVersion":"2.0",
   "solid":false,
   "spriteId":{
-    "name":"spr_Hacked_EmailIcon",
-    "path":"sprites/spr_Hacked_EmailIcon/spr_Hacked_EmailIcon.yy",
+    "name":"spr_EmailIcon",
+    "path":"sprites/spr_EmailIcon/spr_EmailIcon.yy",
   },
   "spriteMaskId":null,
   "visible":true,

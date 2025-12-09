@@ -5,5 +5,5 @@ app_obj = obj_SlackApp;  // app window object for this icon
 
 // Safety: if you forgot to assign a sprite in the editor, reuse Files icon art
 if (sprite_index == -1) {
-    sprite_index = spr_Hacked_iWorkIcon;
+    sprite_index = spr_iWorkIcon;
 }

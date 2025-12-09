@@ -28,8 +28,8 @@
   "resourceVersion":"2.0",
   "solid":false,
   "spriteId":{
-    "name":"spr_Hacked_CalendarIcon",
-    "path":"sprites/spr_Hacked_CalendarIcon/spr_Hacked_CalendarIcon.yy",
+    "name":"spr_CalendarIcon",
+    "path":"sprites/spr_CalendarIcon/spr_CalendarIcon.yy",
   },
   "spriteMaskId":null,
   "visible":true,
