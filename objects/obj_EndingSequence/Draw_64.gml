@@ -23,14 +23,38 @@ if (phase == 0) {
     var cx = gui_w * 0.5;
     var cy = gui_h * 0.5;
 
-    // Falling file-icons behind the text
+    // Falling confetti behind the text
+    // WIN: file icons
+    // LOSS: 0s and 1s "binary rain"
     if (confetti_started) {
-        for (var i = 0; i < confetti_count; i++) {
-            var p = confetti[i];
+        if (is_win) {
+            // Original file-icon confetti
+            for (var i = 0; i < confetti_count; i++) {
+                var p = confetti[i];
 
-            draw_set_alpha(p.a);
-            draw_sprite_ext(p.spr, 0, p.x, p.y, p.sc, p.sc, 0, c_white, 1);
+                draw_set_alpha(p.a);
+                draw_sprite_ext(p.spr, 0, p.x, p.y, p.sc, p.sc, 0, c_white, 1);
+            }
+        } else {
+            // YOU LOSE: draw 0/1 characters instead of sprites
+            draw_set_halign(fa_center);
+            draw_set_valign(fa_middle);
+
+            for (var i = 0; i < confetti_count; i++) {
+                var p = confetti[i];
+
+                draw_set_alpha(p.a);
+                draw_set_color(c_lime); // nice hacker-green
+
+                var bit_str = string(p.bit);
+                // make them bigger than the sprite scale so they read clearly
+                var s = 2.0 + p.sc * 3.0;
+                draw_text_transformed(p.x, p.y, bit_str, s, s, 0);
+            }
+
+            draw_set_color(c_white);
         }
+
         draw_set_alpha(1);
     }
 

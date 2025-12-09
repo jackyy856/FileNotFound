@@ -23,7 +23,6 @@ if (!variable_global_exists("window_z_next")) {
     global.window_z_next = -10;
 }
 
-
 global.hacker_unread = true;
 
 

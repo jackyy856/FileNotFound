@@ -165,6 +165,7 @@
     {"id":{"name":"spr_iWorkIcon","path":"sprites/spr_iWorkIcon/spr_iWorkIcon.yy",},},
     {"id":{"name":"spr_mail_principal","path":"sprites/spr_mail_principal/spr_mail_principal.yy",},},
     {"id":{"name":"spr_mail_title","path":"sprites/spr_mail_title/spr_mail_title.yy",},},
+    {"id":{"name":"spr_menu_BG","path":"sprites/spr_menu_BG/spr_menu_BG.yy",},},
     {"id":{"name":"spr_notes","path":"sprites/spr_notes/spr_notes.yy",},},
     {"id":{"name":"spr_pfp_hacker","path":"sprites/spr_pfp_hacker/spr_pfp_hacker.yy",},},
     {"id":{"name":"spr_pfp_player","path":"sprites/spr_pfp_player/spr_pfp_player.yy",},},

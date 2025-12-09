@@ -4,15 +4,23 @@ if (!active) exit;
 var GW = display_get_gui_width();
 var GH = display_get_gui_height();
 
-// Dim the world
-draw_set_alpha(0.62);
-draw_set_color(c_black);
-draw_rectangle(0,0,GW,GH,false);
-draw_set_alpha(1);
+if (sprite_exists(spr_menu_BG)) {
+    draw_set_alpha(1);
+    draw_sprite_stretched(spr_menu_BG, 0, 0, 0, GW, GH);
+    draw_set_alpha(0.35); draw_set_color(c_black);
+    draw_rectangle(0, 0, GW, GH, false);
+    draw_set_alpha(1);
+} else {
+    // Dim the world
+    draw_set_alpha(0.62);
+    draw_set_color(c_black);
+    draw_rectangle(0,0,GW,GH,false);
+    draw_set_alpha(1);
 
-// Foreground panel frame (full-screen card)
-draw_set_color(make_color_rgb(28,32,38));
-draw_roundrect(0, 0, GW, GH, false);
+    // Foreground panel frame (full-screen card)
+    draw_set_color(make_color_rgb(28,32,38));
+    draw_roundrect(0, 0, GW, GH, false);
+}
 
 // Headline
 draw_set_color(c_white);
