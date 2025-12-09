@@ -544,11 +544,6 @@ else {
 		        }
 		        block_y += 26;
 
-		        if (block_y >= content_top && block_y <= content_bottom) {
-		            draw_text(tx, block_y, "Sent: (time redacted)");
-		        }
-		        block_y += 34;
-
 		        // Draw body only if any part is visible AND starts below content_top
 		        // Use draw_text_ext to properly wrap long lines and prevent word overlap
 		        var body_h = string_height_ext(msg.body, 12, body_w);

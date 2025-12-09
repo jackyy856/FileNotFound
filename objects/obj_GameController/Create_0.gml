@@ -6,7 +6,7 @@ global.apps_unlocked = {
     HackerMsgr : true,
 	Calendar   : false,
     Files      : false,
-    Gallery    : false,
+    Gallery    : true,
     RecycleBin : false,
     Notes      : true,
     Slack      : false   
@@ -33,6 +33,11 @@ if (!variable_global_exists("hacker_key1_delay")) {
 //hacker hint state for key1
 if (!variable_global_exists("hacker_key1_hint_pending")) {
     global.hacker_key1_hint_pending = false;
+}
+
+// hacker hint state for key2 (after red key from Gallery)
+if (!variable_global_exists("hacker_key2_hint_pending")) {
+    global.hacker_key2_hint_pending = false;
 }
 
 // one-time desktop notification meow ---

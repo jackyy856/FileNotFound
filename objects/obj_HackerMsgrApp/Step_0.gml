@@ -535,3 +535,36 @@ if (global.hacker_key1_hint_pending
     global.hacker_unread = true;
 }
 
+// --- KEY #2 HINT: after red key is collected in Gallery ---
+if (global.hacker_key2_hint_pending
+    && !intro_active
+    && !choice_active
+    && !typing)
+{
+    global.hacker_key2_hint_pending = false;
+
+    hacker_offline = false;
+
+    // key #2 branch phase (new)
+    conversation_phase = 30;
+
+    intro_messages = [
+        { sender: "UrHacker", text: "oh look, you found another key.", is_hacker: true },
+        { sender: "UrHacker", text: "i've unlocked the Files app for you.", is_hacker: true },
+        { sender: "UrHacker", text: "go solve the firewall puzzle there… you might snag the last key.", is_hacker: true },
+        { sender: "UrHacker", text: "better hurry, 'FileNotFound' isn’t going to stay hidden forever.", is_hacker: true }
+    ];
+
+    intro_index    = 0;
+    intro_active   = true;
+    typing         = true;
+    intro_timer_ms = 3000; // 3s "is typing..."
+
+    global.hacker_unread = true;
+
+    // Optional: ensure Files app appears unlocked in case it was gated elsewhere
+    if (variable_global_exists("apps_unlocked") && is_struct(global.apps_unlocked)) {
+        global.apps_unlocked.Files = true;
+    }
+}
+

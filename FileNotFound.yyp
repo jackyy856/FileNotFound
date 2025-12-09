@@ -119,6 +119,7 @@
     {"id":{"name":"Obj_wifi","path":"objects/Obj_wifi/Obj_wifi.yy",},},
     {"id":{"name":"Login","path":"rooms/Login/Login.yy",},},
     {"id":{"name":"room_ClickFiles","path":"rooms/room_ClickFiles/room_ClickFiles.yy",},},
+    {"id":{"name":"room_Credits","path":"rooms/room_Credits/room_Credits.yy",},},
     {"id":{"name":"room_Desk_View","path":"rooms/room_Desk_View/room_Desk_View.yy",},},
     {"id":{"name":"room_Desktop","path":"rooms/room_Desktop/room_Desktop.yy",},},
     {"id":{"name":"room_Menu","path":"rooms/room_Menu/room_Menu.yy",},},
@@ -187,6 +188,7 @@
     {"roomId":{"name":"room_Desk_View","path":"rooms/room_Desk_View/room_Desk_View.yy",},},
     {"roomId":{"name":"room_Settings","path":"rooms/room_Settings/room_Settings.yy",},},
     {"roomId":{"name":"room_ClickFiles","path":"rooms/room_ClickFiles/room_ClickFiles.yy",},},
+    {"roomId":{"name":"room_Credits","path":"rooms/room_Credits/room_Credits.yy",},},
   ],
   "templateType":"game",
   "TextureGroups":[
