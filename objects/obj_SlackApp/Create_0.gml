@@ -54,15 +54,20 @@ _wrap_text = function(str, max_w) {
         if (line == "") candidate = w;
         else            candidate = line + " " + w;
 
-        if (string_width(candidate) <= max_w) {
-            line = candidate;
-        } else {
-            if (line != "") array_push(lines, line);
+        // measure candidate
+        if (string_width(candidate) > max_w) {
+            // push current line, start new
+            array_push(lines, line);
             line = w;
+        } else {
+            line = candidate;
         }
     }
 
-    if (line != "") array_push(lines, line);
+    if (line != "") {
+        array_push(lines, line);
+    }
+
     return lines;
 };
 
@@ -84,8 +89,8 @@ min_tab_margin = 8;
 
 // Dragging
 is_dragging = false;
-drag_dx = 0;
-drag_dy = 0;
+drag_dx     = 0;
+drag_dy     = 0;
 
 window_focus   = true;
 open_cooldown  = 0;
@@ -126,7 +131,15 @@ var elizabeth_msgs = [
 
 var thomas_msgs = [
     { text: "Security wants a summary of the incident from last week.",  who: "them", time: "2:18 PM" },
-    { text: "I’ll draft something high-level and send it to you for review.", who: "me", time: "2:22 PM" }
+    { text: "I’ll draft something high-level and send it to you for review.", who: "me", time: "2:22 PM" },
+
+    // ---- Your added escalation ----
+    { text: "I know what you did.",                                     who: "them", time: "4:10 PM" },
+    { text: "Let’s meet tomorrow at C-306. 6PM.",                        who: "them", time: "4:12 PM" },
+
+    // hours later
+    { text: "I voice-recorded the meeting.",                             who: "me",   time: "9:03 PM" },
+    { text: "Made sure to eliminate it. And also, kept the bank statements in a safe place.", who: "them", time: "9:05 PM" }
 ];
 
 // =======================
@@ -158,20 +171,132 @@ var leonn_msgs = [
       time: "11:24 AM" },
 
     { kind: "msg", who: "them",
-      text: "Everyone in my office went out for lunch but me. I saw you from afar.",
-      time: "11:26 AM" },
+      text: "you looked really stressed.",
+      time: "11:25 AM" },
 
     { kind: "msg", who: "me",
-      text: "??",
-      time: "11:27 AM" },
+      text: "Comes with the job.",
+      time: "11:26 AM" },
+
+    { kind: "msg", who: "them",
+      text: "I can help if you like. ive been studying our logs.",
+      time: "11:30 AM" },
+
+    { kind: "msg", who: "me",
+      text: "You’re an intern.",
+      time: "11:32 AM" },
+
+    { kind: "msg", who: "them",
+      text: "yeah but im good at this! I already flagged 3 weird access patterns. im not supposed to touch them though.",
+      time: "11:34 AM" },
+
+    { kind: "msg", who: "me",
+      text: "Send me what you have.",
+      time: "11:36 AM" },
 
 
-    // ---- Later (different day) ----
+    // ---- Day 3 ----
+    { kind: "day", label: "Feb 16" },
+
+    { kind: "msg", who: "them",
+      text: "sent you an email with my notes btw.",
+      time: "9:02 AM" },
+
+    { kind: "msg", who: "me",
+      text: "I saw it.",
+      time: "9:05 AM" },
+
+    { kind: "msg", who: "them",
+      text: "mr fowler doesnt listen when i talk about these things. he says “stay in your lane”.",
+      time: "9:07 AM" },
+
+    { kind: "msg", who: "me",
+      text: "He’s old-school.",
+      time: "9:09 AM" },
+
+    { kind: "msg", who: "them",
+      text: "but YOU listened. :)",
+      time: "9:10 AM" },
+
+    { kind: "msg", who: "me",
+      text: "I listened because the numbers matter.",
+      time: "9:11 AM" },
+
+    { kind: "msg", who: "them",
+      text: "numbers and people… maybe?",
+      time: "9:12 AM" },
+
+
+    // ---- Day 4 ----
     { kind: "day", label: "Feb 18" },
 
     { kind: "msg", who: "them",
-      text: "Im heading to your office to check on the router! And also bringing some donuts?",
-      time: "2:02 PM" },
+      text: "I think someone’s trying to cover their tracks now. the logs look scrubbed.",
+      time: "3:01 PM" },
+
+    { kind: "msg", who: "me",
+      text: "Whose tracks.",
+      time: "3:03 PM" },
+
+    { kind: "msg", who: "them",
+      text: "not sure yet. but the IP range lines up with an office on C-floor.",
+      time: "3:04 PM" },
+
+    { kind: "msg", who: "me",
+      text: "Forward me everything. Do not mention this to anyone else.",
+      time: "3:06 PM" },
+
+    { kind: "msg", who: "them",
+      text: "ok. promise.",
+      time: "3:07 PM" },
+
+
+    // ---- later that day ----
+    { kind: "msg", who: "them",
+      text: "c-floor is where the execs sit right?",
+      time: "4:01 PM" },
+
+    { kind: "msg", who: "me",
+      text: "Focus on the data, Leonn.",
+      time: "4:03 PM" },
+
+    { kind: "msg", who: "them",
+      text: "sorry ms myers. data only. got it.",
+      time: "4:05 PM" },
+
+
+    // ---- Day 5 ----
+    { kind: "day", label: "Feb 20" },
+
+    { kind: "msg", who: "them",
+      text: "I ran another pass on the logs… it’s definitely someone with elevated access.",
+      time: "1:12 PM" },
+
+    { kind: "msg", who: "me",
+      text: "Leave it with me.",
+      time: "1:14 PM" },
+
+    { kind: "msg", who: "them",
+      text: "ok. be careful though.",
+      time: "1:15 PM" },
+
+    { kind: "msg", who: "me",
+      text: "I know what I’m doing.",
+      time: "1:16 PM" },
+
+
+    // ---- Later, softer ----
+    { kind: "msg", who: "them",
+      text: "you always sound so sure. its kinda cool.",
+      time: "2:01 PM" },
+
+    { kind: "msg", who: "me",
+      text: "Confidence is a tool.",
+      time: "2:03 PM" },
+
+    { kind: "msg", who: "them",
+      text: "you’re good at using it.",
+      time: "2:04 PM" },
 
     { kind: "msg", who: "me",
       text: "You should not use my DMs for this.",
@@ -210,7 +335,7 @@ var leonn_msgs = [
       time: "4:04 PM" },
 
     { kind: "msg", who: "them",
-      text: "yes! he thinks he truly is the best but well, he is a senior but thats all for connections- he is close to the CTO. BC u know otherwise he wouldnt be there… his code isnt even THAT good, i can do better than that as an intern.",
+      text: "yes! he thinks he truly is the best but well, he is...e isnt even THAT good, i can do better than that as an intern.",
       time: "4:08 PM" },
 
     { kind: "msg", who: "me",
