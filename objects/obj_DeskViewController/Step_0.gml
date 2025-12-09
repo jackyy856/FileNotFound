@@ -71,10 +71,13 @@ if (capture_mode && keyboard_check_pressed(vk_escape)) {
 }
 
 /// --- Overlay + timers
-// Recalculate panel if GUI size changed (handles window resize)
+// Ensure panel exists and recalc if GUI size changed (handles window resize)
 var current_gui_w = display_get_gui_width();
 var current_gui_h = display_get_gui_height();
-if (current_gui_w != panel_main.w || current_gui_h != panel_main.h) {
+if (!variable_instance_exists(id, "panel_main")) {
+    _init_panel();
+    _recalc_layout();
+} else if (current_gui_w != panel_main.w || current_gui_h != panel_main.h) {
     _init_panel();
     _recalc_layout();
 }

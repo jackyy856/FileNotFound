@@ -33,11 +33,19 @@ if (state == "narr1" || state == "narr2") {
 
 // full-window panel
 var gw = display_get_gui_width(), gh = display_get_gui_height();
-draw_set_alpha(0.15); draw_set_color(c_black);
-draw_roundrect(8, 8, gw+8, gh+8, false);
-draw_set_alpha(1);
-draw_set_color(make_color_rgb(28,32,38));
-draw_roundrect(0, 0, gw, gh, false);
+if (sprite_exists(spr_menu_BG)) {
+    draw_set_alpha(1);
+    draw_sprite_stretched(spr_menu_BG, 0, 0, 0, gw, gh);
+    draw_set_alpha(0.1); draw_set_color(c_black);
+    draw_rectangle(0, 0, gw, gh, false);
+    draw_set_alpha(1);
+} else {
+    draw_set_alpha(0.15); draw_set_color(c_black);
+    draw_roundrect(8, 8, gw+8, gh+8, false);
+    draw_set_alpha(1);
+    draw_set_color(make_color_rgb(28,32,38));
+    draw_roundrect(0, 0, gw, gh, false);
+}
 draw_set_color(c_white);
 
 switch (state) {
@@ -68,9 +76,12 @@ case "load":
         draw_roundrect(sl.x+22, sl.y+22, sl.x+sl.w-22, sl.y+138, false);
         draw_set_color(c_black);
         draw_text(sl.x + 30, sl.y + 30, "(art)");
-        draw_text(sl.x + 30, sl.y + 154, "Save Slot " + string(sl.idx));
-        draw_set_color(make_color_rgb(120,120,120));
-        draw_text(sl.x + 30, sl.y + 182, "Empty");
+        var meta = _slot_meta_data(sl.idx);
+        draw_text(sl.x + 30, sl.y + 154, meta.title);
+        if (!meta.exists) {
+            draw_set_color(make_color_rgb(120,120,120));
+            draw_text(sl.x + 30, sl.y + 182, "Empty");
+        }
     }
     var b = back_btn;
     draw_set_color(make_color_rgb(230,230,230));
@@ -96,4 +107,18 @@ case "settings":
     draw_set_color(c_black);
     draw_text(bb.x + 18, bb.y + 12, bb.label); // fixed: bb.label, not b.label
 break;
+}
+
+if (toast_timer > 0) {
+    var TW = 520, TH = 64;
+    var TX = (gw - TW) * 0.5;
+    var TY = gh - TH - 48;
+    draw_set_alpha(0.85);
+    draw_set_color(c_black);
+    draw_roundrect(TX, TY, TX+TW, TY+TH, false);
+    draw_set_alpha(1);
+    draw_set_color(c_white);
+    draw_set_halign(fa_center); draw_set_valign(fa_middle);
+    draw_text(TX + TW*0.5, TY + TH*0.5, toast_txt);
+    draw_set_halign(fa_left); draw_set_valign(fa_top);
 }
