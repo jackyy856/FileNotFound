@@ -1,6 +1,8 @@
 var mx = device_mouse_x_to_gui(0);
 var my = device_mouse_y_to_gui(0);
 
+if (toast_timer > 0) toast_timer--;
+
 switch (state) {
 
 case "main":
@@ -29,17 +31,23 @@ break;
 case "load":
     if (mouse_check_button_pressed(mb_left)) {
         if (_hit(back_btn, mx, my)) { state = "main"; break; }
+        var api_ready = _ensure_save_api_ready();
         for (var s = 0; s < array_length(slots); s++) {
             var sl = slots[s];
             if (_hit(sl, mx, my)) {
-                global.save_slot = sl.idx;
-                // Reuse Narration 1 flow, then to room_Desk_View
-                lines = [
-                    "You've just come home from a long day as head of financial management at Rosenwood Corporation.",
-                    "...but the achiever in you is itching to check your inbox for the 76th time today."
-                ];
-                line_index = 0; visible_chars = 0; done_line = false;
-                state = "narr1";
+                if (!api_ready) {
+                    _menu_toast("Save system still initialising");
+                    break;
+                }
+
+                var loaded = global.save_api.save_load(sl.idx);
+                if (!loaded) {
+                    var err = "Save slot empty or corrupt";
+                    if (variable_global_exists("_last_save_error") && string_length(string(global._last_save_error)) > 0) {
+                        err = string(global._last_save_error);
+                    }
+                    _menu_toast(err);
+                }
                 break;
             }
         }
