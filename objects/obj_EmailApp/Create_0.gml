@@ -78,8 +78,25 @@ thread_scroll = 0;        // Scroll position for thread view
 font_title = font_emailT;
 font_body  = font_email;
 
+// (intro-mode support removed; see obj_EmailIntro for intro flow)
+
+function _intro_prompt(txt) {
+    intro_prompt_txt   = txt;
+    intro_prompt_timer = INTRO_PROMPT_TIME;
+}
+
 // inbox data
 inbox = [
+    // Move Vanessa Myers Case #2931 to the top
+    {
+        id:145,
+		thread_id: 11,
+        from:"Vanessa Myers <vmyers@rosenwood.com>",
+		to: "HR Department <hr@rosenwood.com>",
+        subject:"Follow Up - Case #2931",
+        body:"Hi,\n\n\n\nI'm following up again on the case regarding Richard Fowler (Case #2931). The employee involved hasn't received any update or response to her inquiries.\n\n\n\nPlease advise.\n\n\n\nVanessa Myers\n\n\n\nRosenwood Financial Director",
+        read:false, is_suspicious:false, is_corrupted:false, show_in_inbox:true
+    },
     {
         id:0,
         from:"announcementz@rosenw00d.hr",
@@ -88,14 +105,7 @@ inbox = [
         body:"Congratulations! \n\n\n\nThanks to your outstanding performance, we have an amazing notice to share. Please click here to redeem your certificate of recognition. Thank you for your hard work!",
         read:false, is_suspicious:true, is_corrupted:false, show_in_inbox:true
     },
-    {
-        id:10,
-        from:"Elizabeth Newman <enewman@rosenwood.com>",
-		to: "Vanessa Myers <vmyers@rosenwood.com>",
-        subject:"Anomaly in Global Account",
-        body:"Hi Vanessa,\n\n\n\nI noticed an inconsistency in the Rosenwood Global ledger, line 47 doesn't match the adjustment note.\n\n\n\nI can try to fix it, but you're much better with these. Would you mind taking a look when you can?\n\n\n\nThanks,\n\n\n\nElizabeth Newman\n\n\n\nJunior Financial Analyst\n\n\n\nRosenwood Corps",
-        read:false, is_suspicious:false, is_corrupted:false, show_in_inbox:true
-    },
+    // Removed per request: Elizabeth Newman anomaly email
     {
         id:20,
         from:"Rosenwood Corps HR <hr@rosenwood.com>",
@@ -188,16 +198,6 @@ inbox = [
         body:"Hello Vanessa, \n\nPlease submit completed performance evaluations for your direct reports by the 28th. All documentation must be uploaded through the internal portal.",
         read:true, is_suspicious:false, is_corrupted:false, show_in_inbox:true
     },
-	// Thread 11: Follow Up Case #2931 (separate thread)
-	{
-        id:145,
-		thread_id: 11,
-        from:"Vanessa Myers <vmyers@rosenwood.com>",
-		to: "HR Department <hr@rosenwood.com>",
-        subject:"Follow Up - Case #2931",
-        body:"Hi,\n\n\n\nI'm following up again on the case regarding Richard Fowler (Case #2931). The employee involved hasn't received any update or response to her inquiries.\n\n\n\nPlease advise.\n\n\n\nVanessa Myers\n\n\n\nRosenwood Financial Director",
-        read:false, is_suspicious:false, is_corrupted:false, show_in_inbox:true
-    },
 	{
         id:146,
 		thread_id: 11,
@@ -264,6 +264,7 @@ inbox = [
     },
 ];
 
+
 /// --- Email Puzzle / Corrupted mail ---
 
 puzzle_gate = true; // still here if you want to gate later
@@ -273,7 +274,7 @@ var _len = array_length(inbox);
 inbox[_len] = {
     id           : 4,
     from         : "System",
-    subject      : "[CORRUPTED] \u2588\u2592\u2591\u2592\u2588",
+    subject      : "System [CORRUPTED] !!!",
     body         : "This email is corrupted. Recover it to reveal your first key.",
     read         : false,
     is_suspicious: false,
@@ -431,7 +432,6 @@ __ui_first_frame_block = 1; // avoid opener click passing through
 // small delay to stop icon click from also selecting an email row
 open_cooldown = 2;
 
-// start with email locked behind wifi
 // start locked behind wifi, unless wifi has already been solved earlier
 if (variable_global_exists("wifi_ever_connected") && global.wifi_ever_connected) {
     email_locked = false;

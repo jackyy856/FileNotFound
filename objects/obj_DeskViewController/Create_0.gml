@@ -38,8 +38,9 @@ _init_panel();
 
 // ---------------------------- Art references ----------------------------
 sprDesk      = spr_desk_bg;      // DeskView.png (monitor bezel + desktop)
-sprEmailList = spr_email_list;   // EmailList.png (in-monitor email list)
-sprEmailOpen = spr_email_open;   // EmailOpen.png (in-monitor opened email)
+// Unused email list/open art removed
+sprEmailList = -1;
+sprEmailOpen = -1;
 
 // ---------------------------- Monitor viewport (blue) ----------------------------
 // The monitor’s visible “screen” area inside DeskView.png. Adjust once, then save (F5).
