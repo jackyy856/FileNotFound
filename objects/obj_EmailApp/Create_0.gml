@@ -19,7 +19,15 @@ tab_h = sprite_get_height(tab_sprite) + 10;
 window_dragging = false;
 window_drag_dx = 0;
 window_drag_dy = 0;
-is_minimized   = false;   // minimize like Sticky Note
+is_minimized   = false;  
+
+// Email key reward
+email_key1_collected = false;
+email_key1_rect      = [0,0,0,0]; 
+
+// delay before hacker reacts to key #1 
+key1_hacker_delay = -1;
+
 
 
 // drag via border (for 4-way cursor like Files/Gallery)
@@ -424,7 +432,7 @@ __ui_first_frame_block = 1; // avoid opener click passing through
 open_cooldown = 2;
 
 // start with email locked behind wifi
-// start locked behind wifi, UNLESS wifi has already been solved earlier
+// start locked behind wifi, unless wifi has already been solved earlier
 if (variable_global_exists("wifi_ever_connected") && global.wifi_ever_connected) {
     email_locked = false;
 } else {
