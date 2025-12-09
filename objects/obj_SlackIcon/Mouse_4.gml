@@ -2,7 +2,7 @@
 
 // If still locked, ignore click
 if (!global.apps_unlocked.Slack) {
-    // optional later: locked sound / tooltip
+    audio_play_sound(sfx_meow2, 1, .25);
     exit;
 }
 

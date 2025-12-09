@@ -2,7 +2,7 @@
 
 // Block interaction when locked
 if (!global.apps_unlocked.Calendar) {
-    // optional: audio_play_sound(sfx_locked, 1, 0);
+    audio_play_sound(sfx_meow2, 1, .25);
     exit;
 }
 

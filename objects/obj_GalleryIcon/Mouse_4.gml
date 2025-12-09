@@ -1,6 +1,6 @@
 
 if (!global.apps_unlocked.Gallery) {
-    // play a “locked” sound or brief tooltip later
+    audio_play_sound(sfx_meow2, 1, .25);
     exit;
 }
 
