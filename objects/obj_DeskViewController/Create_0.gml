@@ -11,8 +11,12 @@
 enum DeskState { DESK, EMAIL_LIST, EMAIL_OPEN }
 state = DeskState.DESK;
 
-// GUI fixed to 1920×1080 to match sprite resolution (ensures consistent hitboxes across devices)
+// Force GUI to 1920×1080 to match sprite resolution
 display_set_gui_size(1920, 1080);
+
+// Reference dimensions for hitbox calculations (sprite resolution)
+REF_GUI_W = 1920;
+REF_GUI_H = 1080;
 
 // ---------------------------- Art references ----------------------------
 sprDesk      = spr_desk_bg;      // DeskView.png (monitor bezel + desktop)
@@ -88,8 +92,21 @@ function show_prompt(txt) {
     dialog_timer = DIALOG_TIME;
 }
 
+// Scale hitbox coordinates based on actual GUI size vs reference size
+// This handles cases where GameMaker scales the GUI differently on different devices
+function _scale_rect(r) {
+    var gui_w = display_get_gui_width();
+    var gui_h = display_get_gui_height();
+    // Calculate scale factors (should be 1.0 if GUI is exactly 1920×1080)
+    var scale_x = gui_w / REF_GUI_W;
+    var scale_y = gui_h / REF_GUI_H;
+    return [r[0] * scale_x, r[1] * scale_y, r[2] * scale_x, r[3] * scale_y];
+}
+
 function _in_rect(p, r) {
-    return (p[0] >= r[0]) && (p[1] >= r[1]) && (p[0] < r[0] + r[2]) && (p[1] < r[1] + r[3]);
+    // Scale the hitbox to match current GUI size
+    var scaled_r = _scale_rect(r);
+    return (p[0] >= scaled_r[0]) && (p[1] >= scaled_r[1]) && (p[0] < scaled_r[0] + scaled_r[2]) && (p[1] < scaled_r[1] + scaled_r[3]);
 }
 
 // ---------------------------- Manual hotspot capture (1..5) ----------------------------
