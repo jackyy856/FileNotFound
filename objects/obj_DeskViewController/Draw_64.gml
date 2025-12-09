@@ -1,15 +1,14 @@
 
 /// Renders current background art and (optionally) debug overlays + prompt bar.
 
-// Current background - scale to actual GUI size
+// Current background - scale to panel container size
 var spr_id = -1;
 if (state == DeskState.DESK)       spr_id = sprDesk;
 if (state == DeskState.EMAIL_LIST) spr_id = sprEmailList;
 if (state == DeskState.EMAIL_OPEN) spr_id = sprEmailOpen;
 if (spr_id != -1) {
-    var gui_w = display_get_gui_width();
-    var gui_h = display_get_gui_height();
-    draw_sprite_stretched(spr_id, 0, 0, 0, gui_w, gui_h);
+    // Draw sprite to fill the main panel container
+    draw_sprite_stretched(spr_id, 0, panel_main.x, panel_main.y, panel_main.w, panel_main.h);
 }
 
 // Prompt bar (bottom) - scale to actual GUI size
