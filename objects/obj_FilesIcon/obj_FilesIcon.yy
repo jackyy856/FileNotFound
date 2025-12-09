@@ -32,8 +32,8 @@
   "resourceVersion":"2.0",
   "solid":false,
   "spriteId":{
-    "name":"spr_Hacked_FilesIcon",
-    "path":"sprites/spr_Hacked_FilesIcon/spr_Hacked_FilesIcon.yy",
+    "name":"spr_FilesTextIcon",
+    "path":"sprites/spr_FilesTextIcon/spr_FilesTextIcon.yy",
   },
   "spriteMaskId":null,
   "visible":true,

@@ -31,8 +31,6 @@ if (!guided_mode) {
     if (keyboard_check_pressed(ord("5"))) _capture_begin(5);
 }
 
-/// --- Start guided capture (F3)
-if (keyboard_check_pressed(vk_f3)) _guided_begin();
 
 /// --- Capture click handling (consumes mouse; blocks gameplay clicks)
 if (capture_mode && mouse_check_button_pressed(mb_left)) {
@@ -44,7 +42,10 @@ if (capture_mode && mouse_check_button_pressed(mb_left)) {
         show_prompt("Now click BOTTOM-RIGHT");
         exit;
     } else {
-        var rect = _rect_from_points(capture_first, [_mx, _my]);
+        // Get rectangle in GUI coordinates
+        var rect_gui = _rect_from_points(capture_first, [_mx, _my]);
+        // CRITICAL: Convert GUI coordinates to reference space before storing
+        var rect = _gui_rect_to_ref(rect_gui);
         switch (capture_target) {
             case 1: BTN_EMAIL_ICON = rect; break;
             case 2: BTN_BACK       = rect; break;
@@ -70,42 +71,16 @@ if (capture_mode && keyboard_check_pressed(vk_escape)) {
 }
 
 /// --- Overlay + timers
-var p = [ device_mouse_x_to_gui(0), device_mouse_y_to_gui(0) ];
-if (dialog_timer > 0) dialog_timer--;
-if (keyboard_check_pressed(ord("D"))) show_dev = !show_dev;
-
-/// --- Hotspot edit (F2): select 1..5 and nudge/resize
-if (keyboard_check_pressed(vk_f2)) edit_hotspot = !edit_hotspot;
-if (keyboard_check_pressed(ord("1"))) selected_hotspot = 1;
-if (keyboard_check_pressed(ord("2"))) selected_hotspot = 2;
-if (keyboard_check_pressed(ord("3"))) selected_hotspot = 3;
-if (keyboard_check_pressed(ord("4"))) selected_hotspot = 4;
-if (keyboard_check_pressed(ord("5"))) selected_hotspot = 5;
-
-if (edit_hotspot) {
-    var r = _get_rect(selected_hotspot);
-    var moved2 = false;
-
-    var move_step = keyboard_check(vk_shift) ? 5 : 1;
-    if (keyboard_check(vk_left))  { r[0] -= move_step; moved2 = true; }
-    if (keyboard_check(vk_right)) { r[0] += move_step; moved2 = true; }
-    if (keyboard_check(vk_up))    { r[1] -= move_step; moved2 = true; }
-    if (keyboard_check(vk_down))  { r[1] += move_step; moved2 = true; }
-
-    var resize_step = keyboard_check(vk_shift) ? 4 : 2;
-    if (keyboard_check(ord("A"))) { r[2] -= resize_step; moved2 = true; }
-    if (keyboard_check(ord("D"))) { r[2] += resize_step; moved2 = true; }
-    if (keyboard_check(ord("W"))) { r[3] -= resize_step; moved2 = true; }
-    if (keyboard_check(ord("S"))) { r[3] += resize_step; moved2 = true; }
-
-    if (moved2) {
-        r = _clamp_rect(r);
-        _set_rect(selected_hotspot, r);
-    }
+// Recalculate panel if GUI size changed (handles window resize)
+var current_gui_w = display_get_gui_width();
+var current_gui_h = display_get_gui_height();
+if (current_gui_w != panel_main.w || current_gui_h != panel_main.h) {
+    _init_panel();
+    _recalc_layout();
 }
 
-/// --- Save / Load / Reset
-if (keyboard_check_pressed(vk_f5)) _save_layout();
+var p = [ device_mouse_x_to_gui(0), device_mouse_y_to_gui(0) ];
+if (dialog_timer > 0) dialog_timer--;
 if (keyboard_check_pressed(vk_f6)) { if (_load_layout()) show_prompt("Layout loaded"); else show_prompt("No saved layout"); }
 if (keyboard_check_pressed(vk_f7)) { MON_X = 240; MON_Y = 110; MON_W = 1440; MON_H = 810; _recalc_layout(); show_prompt("Layout reset"); }
 
@@ -115,8 +90,8 @@ if (guided_mode && capture_completed && !capture_mode) {
     _guided_advance();
 }
 
-/// --- Gameplay clicks (blocked while capturing/editing/guided)
-if (!capture_mode && !edit_hotspot && !guided_mode && mouse_check_button_pressed(mb_left)) {
+/// --- Gameplay clicks (blocked while capturing/guided)
+if (!capture_mode && !guided_mode && mouse_check_button_pressed(mb_left)) {
     switch (state) {
         case DeskState.DESK: {
             if (_in_rect(p, BTN_EMAIL_ICON)) state = DeskState.EMAIL_LIST;

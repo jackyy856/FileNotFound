@@ -1,21 +1,46 @@
 
 /// Purpose:
-///   Drives the “Desk View → Email List → Email Open” flow using 1920×1080 PNGs,
+///   Drives the "Desk View → Email List → Email Open" flow using 1920×1080 PNGs,
 ///   with transparent hotspot rectangles overlaid on the art.
-/// Key hotkeys:
-///   D  = toggle debug overlay (blue monitor + green hotspots)
+/// Key hotkeys (dev only):
 ///   F1 = edit monitor viewport (blue) with Arrows (move) + Shift+W/A/S/D (resize)
-///   F2 = edit currently selected hotspot (green) with Arrows + Shift+W/A/S/D
 ///   1..5 = capture a single hotspot by clicking TL then BR
-///   F3 = guided capture (runs Email Icon → Subject → Link → Back → X)
-///   F5/F6/F7 = save / load / reset hotspots to INI
+///   F6/F7 = load / reset hotspots to INI
 
 // ---------------------------- State machine ----------------------------
 enum DeskState { DESK, EMAIL_LIST, EMAIL_OPEN }
 state = DeskState.DESK;
 
-// GUI matches room pixels (and the 1920×1080 images)
-display_set_gui_size(room_width, room_height);
+// ---------------------------- Reference Resolution System ----------------------------
+// CRITICAL: Set GUI to base reference resolution (1920×1080) for consistent coordinate space
+// This ensures all devices use the same coordinate system, with GameMaker handling scaling
+display_set_gui_size(1920, 1080);
+
+// Initialize coordinate scaling system
+// All hotspots are stored in REFERENCE SPACE (1920×1080) and converted to GUI at runtime
+function _init_panel() {
+    var gui_w = display_get_gui_width();
+    var gui_h = display_get_gui_height();
+    
+    // Main container (should match GUI size if display_set_gui_size is working)
+    panel_main = {
+        x: 0,
+        y: 0,
+        w: gui_w,
+        h: gui_h
+    };
+    
+    // Reference dimensions (sprite resolution - our "base resolution")
+    REF_W = 1920;
+    REF_H = 1080;
+    
+    // Calculate scale factors: GUI / Reference
+    // If GUI is exactly 1920×1080, these will be 1.0
+    // If GameMaker scales differently, these handle the conversion
+    panel_scale_x = gui_w / REF_W;
+    panel_scale_y = gui_h / REF_H;
+}
+_init_panel();
 
 // ---------------------------- Art references ----------------------------
 sprDesk      = spr_desk_bg;      // DeskView.png (monitor bezel + desktop)
@@ -53,34 +78,37 @@ BACK_OFF   = [  8,  6,  96, 30 ];  // only used on EMAIL_OPEN
 CLOSEX_OFF = [ -26, 6,  20, 20 ];  // -26 => (winRight - 26)
 
 // ---------------------------- Derived rects from monitor ----------------------------
+// All coordinates stored in reference space (1920×1080), converted to GUI at runtime
 function _recalc_layout() {
-    // Email window (inside monitor)
+    // Recalculate panel scale in case GUI size changed
+    _init_panel();
+    
+    // Email window (inside monitor) - stored in reference coordinates
     WIN_X = MON_X + WIN_OFF_X;
     WIN_Y = MON_Y + WIN_OFF_Y;
     WIN_W = (WIN_OFF_W >= 0) ? WIN_OFF_W : (MON_W + WIN_OFF_W);
     WIN_H = (WIN_OFF_H >= 0) ? WIN_OFF_H : (MON_H + WIN_OFF_H);
 
-    // Email icon on the desktop (inside monitor)
+    // Email icon on the desktop (inside monitor) - reference coordinates
     var icon_x = MON_X + ICON_OFF_X;
     var icon_y = MON_Y + ICON_OFF_TOP + (ICON_H + ICON_GAP) * ICON_EMAIL_INDEX;
     BTN_EMAIL_ICON = [ icon_x, icon_y, ICON_W, ICON_H ];
 
-    // Titlebar hotspots
+    // Titlebar hotspots - reference coordinates
     BTN_BACK   = [ WIN_X + BACK_OFF[0],  WIN_Y + BACK_OFF[1],  BACK_OFF[2],  BACK_OFF[3] ];
     BTN_CLOSEX = [ (WIN_X + WIN_W) + CLOSEX_OFF[0], WIN_Y + CLOSEX_OFF[1], CLOSEX_OFF[2], CLOSEX_OFF[3] ];
 
-    // Email list “Congratulations!” subject row
+    // Email list "Congratulations!" subject row - reference coordinates
     var row_top = WIN_Y + ROW_TOP_OFF + ROW_H * PHISH_ROW_INDEX;
     BTN_PHISH_SUBJ = [ WIN_X + 16, row_top, WIN_W - 32, ROW_H ];
 
-    // Email open “phishing link” area
+    // Email open "phishing link" area - reference coordinates
     BTN_PHISH_LINK = [ WIN_X + WIN_W * 0.26, WIN_Y + WIN_H * 0.44, WIN_W * 0.38, 44 ];
 }
 _recalc_layout();
 
 // ---------------------------- UX helpers ----------------------------
 edit_monitor = false; // F1
-show_dev     = false; // D
 
 // Minimal prompt (bottom bar). Keep it unobtrusive.
 dialog_text  = "";
@@ -92,8 +120,68 @@ function show_prompt(txt) {
     dialog_timer = DIALOG_TIME;
 }
 
+// ---------------------------- Flex Panel Coordinate System ----------------------------
+// Convert reference coordinates (1920×1080) to actual GUI coordinates
+function _ref_to_gui_x(ref_x) {
+    return ref_x * panel_scale_x;
+}
+
+function _ref_to_gui_y(ref_y) {
+    return ref_y * panel_scale_y;
+}
+
+function _ref_to_gui_w(ref_w) {
+    return ref_w * panel_scale_x;
+}
+
+function _ref_to_gui_h(ref_h) {
+    return ref_h * panel_scale_y;
+}
+
+// Convert a reference rectangle [x, y, w, h] to GUI coordinates
+function _ref_rect_to_gui(r) {
+    return [
+        _ref_to_gui_x(r[0]),
+        _ref_to_gui_y(r[1]),
+        _ref_to_gui_w(r[2]),
+        _ref_to_gui_h(r[3])
+    ];
+}
+
+// Convert GUI coordinates to reference space (for capture)
+function _gui_to_ref_x(gui_x) {
+    return gui_x / panel_scale_x;
+}
+
+function _gui_to_ref_y(gui_y) {
+    return gui_y / panel_scale_y;
+}
+
+function _gui_to_ref_w(gui_w) {
+    return gui_w / panel_scale_x;
+}
+
+function _gui_to_ref_h(gui_h) {
+    return gui_h / panel_scale_y;
+}
+
+// Convert a GUI rectangle [x, y, w, h] to reference coordinates
+function _gui_rect_to_ref(r) {
+    return [
+        _gui_to_ref_x(r[0]),
+        _gui_to_ref_y(r[1]),
+        _gui_to_ref_w(r[2]),
+        _gui_to_ref_h(r[3])
+    ];
+}
+
+// Check if point is in rectangle (using container-relative coordinates)
 function _in_rect(p, r) {
-    return (p[0] >= r[0]) && (p[1] >= r[1]) && (p[0] < r[0] + r[2]) && (p[1] < r[1] + r[3]);
+    // Convert reference rectangle to GUI coordinates
+    var gui_r = _ref_rect_to_gui(r);
+    // Check if point (already in GUI coords) is within the scaled rectangle
+    return (p[0] >= gui_r[0]) && (p[1] >= gui_r[1]) && 
+           (p[0] < gui_r[0] + gui_r[2]) && (p[1] < gui_r[1] + gui_r[3]);
 }
 
 // ---------------------------- Manual hotspot capture (1..5) ----------------------------
@@ -115,39 +203,6 @@ function _rect_from_points(p1, p2) {
     var x2 = max(p1[0], p2[0]);
     var y2 = max(p1[1], p2[1]);
     return [ x1, y1, x2 - x1, y2 - y1 ];
-}
-
-// ---------------------------- Hotspot edit (F2) ----------------------------
-edit_hotspot     = false;
-selected_hotspot = 1; // 1..5
-
-function _get_rect(id) {
-    switch (id) {
-        case 1: return BTN_EMAIL_ICON;
-        case 2: return BTN_BACK;        // (used only on EMAIL_OPEN)
-        case 3: return BTN_CLOSEX;
-        case 4: return BTN_PHISH_SUBJ;
-        case 5: return BTN_PHISH_LINK;
-    }
-    return [0,0,0,0];
-}
-
-function _set_rect(id, r) {
-    switch (id) {
-        case 1: BTN_EMAIL_ICON = r; break;
-        case 2: BTN_BACK       = r; break;
-        case 3: BTN_CLOSEX     = r; break;
-        case 4: BTN_PHISH_SUBJ = r; break;
-        case 5: BTN_PHISH_LINK = r; break;
-    }
-}
-
-function _clamp_rect(r) {
-    r[2] = max(1, r[2]);
-    r[3] = max(1, r[3]);
-    r[0] = clamp(r[0], 0, 1920 - r[2]);
-    r[1] = clamp(r[1], 0, 1080 - r[3]);
-    return r;
 }
 
 // ---------------------------- Persist (INI) ----------------------------

@@ -46,7 +46,7 @@ var content_vanessa_thomas =
 "Vanessa: Did.\n" +
 "Vanessa: ..\n" +
 "Vanessa: What do you know?\n" +
-"Thomas: Everything. (explains how*).\n" +
+"Thomas: Everything. I found the bank statements while clearing some data.\n" +
 "Thomas: It was a coincidence, though. Figuring that out.\n" +
 "Vanessa: Where are you going with this?\n" +
 "Thomas: Isn’t it obvious? I haven’t reported you nor have I the intention.\n" +
