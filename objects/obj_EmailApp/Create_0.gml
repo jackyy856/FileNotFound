@@ -87,23 +87,14 @@ function _intro_prompt(txt) {
 
 // inbox data
 inbox = [
-    // Move Vanessa Myers Case #2931 to the top
-    {
-        id:145,
-		thread_id: 11,
-        from:"Vanessa Myers <vmyers@rosenwood.com>",
-		to: "HR Department <hr@rosenwood.com>",
-        subject:"Follow Up - Case #2931",
-        body:"Hi,\n\n\n\nI'm following up again on the case regarding Richard Fowler (Case #2931). The employee involved hasn't received any update or response to her inquiries.\n\n\n\nPlease advise.\n\n\n\nVanessa Myers\n\n\n\nRosenwood Financial Director",
-        read:false, is_suspicious:false, is_corrupted:false, show_in_inbox:true
-    },
+ 
     {
         id:0,
         from:"announcementz@rosenw00d.hr",
 		to: "Vanessa Myers <vmyers@rosenwood.com>",
         subject:"You have been selected for a bonus opportunity!",
         body:"Congratulations! \n\n\n\nThanks to your outstanding performance, we have an amazing notice to share. Please click here to redeem your certificate of recognition. Thank you for your hard work!",
-        read:false, is_suspicious:true, is_corrupted:false, show_in_inbox:true
+        read:true, is_suspicious:true, is_corrupted:false, show_in_inbox:true
     },
     // Removed per request: Elizabeth Newman anomaly email
     {
@@ -112,7 +103,7 @@ inbox = [
 		to: "Vanessa Myers <vmyers@rosenwood.com>",
         subject:"Mandatory Review: Code of Conduct Update",
         body:"Hello Vanessa, \n\n\n\nRosenwood has updated its Code of Conduct for 2025, effective immediately. \n\nAll department leads are required to review the document and ensure compliance within their teams. \n\nPlease acknowledge receipt by replying to this email. \n\n\n\nHR Department",
-        read:false, is_suspicious:false, is_corrupted:false, show_in_inbox:true
+        read:true, is_suspicious:false, is_corrupted:false, show_in_inbox:true
     },
     {
         id:30,
@@ -120,7 +111,7 @@ inbox = [
 		to: "Vanessa Myers <vmyers@rosenwood.com>",
         subject:"Log review complete",
         body:"I've examined the access logs you asked for. Everything aligns with your statement. No further action required on your end. \n\n\n\nGood luck,  \n\n\n\nThomas Wylde  \n\nIT Director  \n\nRosenwood Corps",
-        read:false, is_suspicious:false, is_corrupted:false, show_in_inbox:true
+        read:true, is_suspicious:false, is_corrupted:false, show_in_inbox:true
     },
 	 {
         id:60,
@@ -204,8 +195,8 @@ inbox = [
         from:"HR Department <hr@rosenwoodcorp.com>",
 		to: "Vanessa Myers <v.myers@rosenwoodcorp.com>",
         subject:"Re: Follow-up — Case #2931",
-        body:"Hi Vanessa,\n\nThank you for your concern and reaching out. Unfortunately, the investigation is still active and we are unable to disclose information to outside parties. We will contact \n\nMs. Dove if additional information is required.\n\nThank you,\n\nRosenwood HR Team",
-        read:true, is_suspicious:false, is_corrupted:false, show_in_inbox:false
+        body:"\n\nHi Vanessa,\n\nThank you for your concern and reaching out. Unfortunately, the investigation is still active and we are unable to disclose information to outside parties. We will contact \n\nMs. Dove if additional information is required.\n\n\n\nThank you,\n\nRosenwood HR Team",
+        read:false, is_suspicious:false, is_corrupted:false, show_in_inbox:false
     },
 	{
         id:147,
@@ -213,8 +204,8 @@ inbox = [
         from:"HR Automated Inbox <donotreplyhr@rosenwoodcorp.com>",
 		to: "Vanessa Myers <vmyers@rosenwood.com>",
         subject:"Case Received — Please Do Not Reply",
-        body:"Your email has been received.\n\nStatus: Under Review\n\nNo further action is needed.",
-        read:true, is_suspicious:false, is_corrupted:false, show_in_inbox:false
+        body:"\n\nYour email has been received.\n\nStatus: Under Review\n\nNo further action is needed.",
+        read:false, is_suspicious:false, is_corrupted:false, show_in_inbox:false
     },
 	{
         id:148,
@@ -222,27 +213,38 @@ inbox = [
         from:"Vanessa Myers <vmyers@rosenwood.com>",
 		to: "HR Department <hr@rosenwood.com>",
         subject:"Follow Up - Case #2931",
-        body:"Hi,\n\nI'm following up again on the case regarding Richard Fowler (Case #2931). The employee involved hasn't received any update or response to her inquiries.\n\nPlease advise.\n\nVanessa Myers\n\nRosenwood Financial Director",
-        read:true, is_suspicious:false, is_corrupted:false, show_in_inbox:false
+        body:"\n\nHi,\n\nI'm following up again on the case regarding Richard Fowler (Case #2931). The employee involved hasn't received any update or response to her inquiries.\n\nPlease advise.\n\n\n\nVanessa Myers\n\nRosenwood Financial Director",
+        read:false, is_suspicious:false, is_corrupted:false, show_in_inbox:false
     },
+	
+	 {
+        id:145,
+		thread_id: 11,
+        from:"Vanessa Myers <vmyers@rosenwood.com>",
+		to: "HR Department <hr@rosenwood.com>",
+        subject:"Follow Up - Case #2931",
+        body:"Hi,\n\n\n\nI'm following up again on the case regarding Richard Fowler (Case #2931). The employee involved hasn't received any update or response to her inquiries.\n\n\n\nPlease advise.\n\n\n\nVanessa Myers\n\n\n\nRosenwood Financial Director",
+        read:false, is_suspicious:false, is_corrupted:false, show_in_inbox:true
+    },
+	
 	// Thread 10: Concern about Richard Fowler (Sofia's thread)
 	 {
-        id:150,
+        id:149,
 		thread_id: 10,
         from:"Sofia Dove <sdove@rosenwood.com>",
 		to: "Vanessa Myers <vmyers@rosenwood.com>",
         subject:"Concern about Richard Fowler",
-        body:"Hi Vanessa,\n\n\n\nThank you for listening earlier.\n\n\n\nI sent a formal email to HR last Friday about the situation I told you on Slack. I haven't heard anything back yet.\n\n\n\nI know you're busy, but… could you check if reports like that take often that long?\n\n\n\nI'm just really scared he'll find out I said anything.\n\n\n\nThanks again for caring.\n\n\n\nIt means a lot.\n\n\n\nSincerely,\n\n\n\nSofia Dove\n\n\n\nJunior Financial Analyst\n\n\n\nRosenwood Corps",
-        read:true, is_suspicious:false, is_corrupted:false, show_in_inbox:true
+        body:"Hi Vanessa,\n\n\n\nThank you for listening earlier.\n\n\n\nI sent a formal email to HR last Friday about the situation I told you on Slack. I haven't heard anything back yet.\n\n\n\nI know you're busy, but... could you check if reports like that take often that long? I'm just really scared he'll find out I said anything.\n\nThanks again for caring. It means a lot.\n\n\n\nSincerely,\n\nSofia Dove\n\nJunior Financial Analyst\n\nRosenwood Corps",
+        read:false, is_suspicious:false, is_corrupted:false, show_in_inbox:true
     },
 	 {
-        id:149,
+        id:150,
 		thread_id: 10,
         from:"Vanessa Myers <vmyers@rosenwood.com>",
 		to: "Sofia Dove <sdove@rosenwood.com>",
         subject:"RE:Concern about Richard Fowler",
-        body:"Hi Sofia,\n\n\n\nWill do right now, I'm sending them an email.\n\n\n\nLet me know if you want to move into my office for the time being.\n\n\n\nSincerely,\n\n\n\nVanessa Myers\n\n\n\nFinance Director\n\n\n\nRosenwood Corps",
-        read:true, is_suspicious:false, is_corrupted:false, show_in_inbox:false
+        body:"Hi Sofia,\n\n\n\nWill do right now, I'm sending them an email.\n\n\n\nLet me know if you want to move into my office for the time being.\n\n\n\nSincerely,\n\nVanessa Myers\n\nFinance Director\n\nRosenwood Corps",
+        read:false, is_suspicious:false, is_corrupted:false, show_in_inbox:false
     },
 	{
         id:151,
@@ -250,8 +252,8 @@ inbox = [
         from:"Sofia Dove <s.dove@rosenwoodcorp.com>",
 		to: "Vanessa Myers <v.myers@rosenwoodcorp.com>",
         subject:"Re: Concern about My Case",
-        body:"Hi Vanessa,\n\n\n\nI've been trying to reach out to HR about my dispute with Mr. Fowler, but HR has yet to reply. It's been weeks.\n\n\n\nI don't know why they are not responding to my emails.\n\n\n\nI know everyone is swamped with work as we're approaching the end of the quarter, but this situation is affecting my work. I really wish I could move past this, and I'm \n\nsorry to make things awkward, but he's really starting to affect my work. He tried adding me on social media the other day and my name isn't even on it.\n\n\n\nI don't want to make a scene, but I don't feel safe.\n\n\n\nIf it's alright, I'd like to request a few days off just to pass the time away while HR investigates.\n\n\n\nThank you for your understanding.\n\n\n\nSincerely,\n\n\n\nSofia Dove",
-        read:true, is_suspicious:false, is_corrupted:false, show_in_inbox:false
+        body:"Hi Vanessa,\n\n\n\nI've been trying to reach out to HR about my dispute with Mr. Fowler, but HR has yet to reply. It's been weeks.\n\n\n\nI don't know why they are not responding to my emails.\n\n\n\nI know everyone is swamped with work as we're approaching the end of the quarter, but this situation is affecting my work. I really wish I could move past this, and I'm \n\nsorry to make things awkward, but he's really starting to affect my work. He tried adding me on social media the other day and my name isn't even on the handle.\n\n\n\nI don't want to make a scene, but I don't feel safe.\n\n\n\nIf it's alright, I'd like to request a few days off just to pass the time away while HR investigates.\n\n\n\nThank you for your understanding.\n\n\n\nSincerely,\n\nSofia Dove",
+        read:false, is_suspicious:false, is_corrupted:false, show_in_inbox:false
     },
 	 {
         id:152,
@@ -259,8 +261,8 @@ inbox = [
         from:"Vanessa Myers <vmyers@rosenwood.com>",
 		to: "Sofia Dove <sdove@rosenwood.com>",
         subject:"Re: Concern about My Case",
-        body:"Granted.\n\n\n\nTake the days you need. I will take care of distributing your end of the reports.\n\n\n\nI'll escalate this to HR again.\n\n\n\nVanessa Myers\n\n\n\nRosenwood Financial Director",
-        read:true, is_suspicious:false, is_corrupted:false, show_in_inbox:false
+        body:"Granted.\n\n\n\nTake the days you need. I will take care of distributing your end of the reports. I'll escalate this to HR again.\n\n\n\nVanessa Myers\n\nRosenwood Financial Director",
+        read:false, is_suspicious:false, is_corrupted:false, show_in_inbox:false
     },
 ];
 
