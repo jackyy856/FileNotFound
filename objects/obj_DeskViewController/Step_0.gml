@@ -42,7 +42,10 @@ if (capture_mode && mouse_check_button_pressed(mb_left)) {
         show_prompt("Now click BOTTOM-RIGHT");
         exit;
     } else {
-        var rect = _rect_from_points(capture_first, [_mx, _my]);
+        // Get rectangle in GUI coordinates
+        var rect_gui = _rect_from_points(capture_first, [_mx, _my]);
+        // CRITICAL: Convert GUI coordinates to reference space before storing
+        var rect = _gui_rect_to_ref(rect_gui);
         switch (capture_target) {
             case 1: BTN_EMAIL_ICON = rect; break;
             case 2: BTN_BACK       = rect; break;

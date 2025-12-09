@@ -11,16 +11,18 @@
 enum DeskState { DESK, EMAIL_LIST, EMAIL_OPEN }
 state = DeskState.DESK;
 
-// ---------------------------- Flex Panel Container System ----------------------------
-// Use actual display dimensions for proper scaling across devices
+// ---------------------------- Reference Resolution System ----------------------------
+// CRITICAL: Set GUI to base reference resolution (1920×1080) for consistent coordinate space
+// This ensures all devices use the same coordinate system, with GameMaker handling scaling
 display_set_gui_size(1920, 1080);
 
-// Main container panel (fills entire GUI)
+// Initialize coordinate scaling system
+// All hotspots are stored in REFERENCE SPACE (1920×1080) and converted to GUI at runtime
 function _init_panel() {
     var gui_w = display_get_gui_width();
     var gui_h = display_get_gui_height();
     
-    // Main container
+    // Main container (should match GUI size if display_set_gui_size is working)
     panel_main = {
         x: 0,
         y: 0,
@@ -28,11 +30,13 @@ function _init_panel() {
         h: gui_h
     };
     
-    // Store reference dimensions (sprite resolution)
+    // Reference dimensions (sprite resolution - our "base resolution")
     REF_W = 1920;
     REF_H = 1080;
     
-    // Calculate scale factors for converting reference coords to actual GUI coords
+    // Calculate scale factors: GUI / Reference
+    // If GUI is exactly 1920×1080, these will be 1.0
+    // If GameMaker scales differently, these handle the conversion
     panel_scale_x = gui_w / REF_W;
     panel_scale_y = gui_h / REF_H;
 }
@@ -141,6 +145,33 @@ function _ref_rect_to_gui(r) {
         _ref_to_gui_y(r[1]),
         _ref_to_gui_w(r[2]),
         _ref_to_gui_h(r[3])
+    ];
+}
+
+// Convert GUI coordinates to reference space (for capture)
+function _gui_to_ref_x(gui_x) {
+    return gui_x / panel_scale_x;
+}
+
+function _gui_to_ref_y(gui_y) {
+    return gui_y / panel_scale_y;
+}
+
+function _gui_to_ref_w(gui_w) {
+    return gui_w / panel_scale_x;
+}
+
+function _gui_to_ref_h(gui_h) {
+    return gui_h / panel_scale_y;
+}
+
+// Convert a GUI rectangle [x, y, w, h] to reference coordinates
+function _gui_rect_to_ref(r) {
+    return [
+        _gui_to_ref_x(r[0]),
+        _gui_to_ref_y(r[1]),
+        _gui_to_ref_w(r[2]),
+        _gui_to_ref_h(r[3])
     ];
 }
 
