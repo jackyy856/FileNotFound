@@ -87,6 +87,16 @@ if (inbox_mode && gallery_open && !inbox_key_collected) {
             // Set global array (for KeySlots on desktop)
             global.key_collected[1] = true;  // RED key
             show_debug_message("Red key clicked in inbox! inbox_key_collected=" + string(inbox_key_collected) + ", global.key_collected[1]=" + string(global.key_collected[1]));
+
+            // Trigger hacker hint for key #2 (unlock Files / firewall nudge)
+            if (!variable_global_exists("hacker_key2_hint_pending")) {
+                global.hacker_key2_hint_pending = false;
+            }
+            global.hacker_key2_hint_pending = true;
+            // Mark hacker unread so icon pings
+            if (variable_global_exists("hacker_unread")) {
+                global.hacker_unread = true;
+            }
         } else {
             // Debug: show what was clicked
             show_debug_message("Click missed key. mx=" + string(mx) + ", my=" + string(my) + ", rect=[" + string(rx) + "," + string(ry) + "," + string(rw) + "," + string(rh) + "]");
