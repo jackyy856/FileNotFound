@@ -455,19 +455,52 @@ if (selected_index == corrupted_index && puzzle_solved && !email_key1_collected)
             // mark collected
             email_key1_collected = true;
 
-            // ensure global array exists
+            // play key SFX immediately
+            audio_play_sound(sfx_keywow, 1, false);
+
+            // ensure global key array exists
             if (!variable_global_exists("key_collected")) {
                 global.key_collected = array_create(3, false);
             }
+            global.key_collected[0] = true;  // first key obtained
 
-            global.key_collected[0] = true;
+            // unlock Calendar app
+            if (!variable_global_exists("apps_unlocked")) {
+                global.apps_unlocked = {
+                    Email      : true,
+                    HackerMsgr : true,
+                    Calendar   : false,
+                    Files      : false,
+                    Gallery    : false,
+                    RecycleBin : false,
+                    Notes      : true,
+                    Slack      : false
+                };
+            }
+            global.apps_unlocked.Calendar = true;
 
-            // trigger hacker follow-up for key #1
-            global.hacker_key1_hint_pending = true;
-            global.hacker_unread            = true;
+            // start 2.5s delay before hacker reacts
+            key1_hacker_delay = room_speed * 2.5;
         }
     }
 }
+
+// ------------------ DELAYED HACKER NOTIF AFTER KEY #1 ------------------
+if (key1_hacker_delay > 0) {
+    key1_hacker_delay -= 1;
+    if (key1_hacker_delay <= 0) {
+        // safety init
+        if (!variable_global_exists("hacker_key1_hint_pending")) {
+            global.hacker_key1_hint_pending = false;
+        }
+
+        // trigger hacker sequence once
+        if (!global.hacker_key1_hint_pending) {
+            global.hacker_key1_hint_pending = true;
+        }
+    }
+}
+
 
 
 // advance binary rain

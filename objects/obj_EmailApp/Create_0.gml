@@ -19,7 +19,15 @@ tab_h = sprite_get_height(tab_sprite) + 10;
 window_dragging = false;
 window_drag_dx = 0;
 window_drag_dy = 0;
-is_minimized   = false;   // minimize like Sticky Note
+is_minimized   = false;  
+
+// Email key reward
+email_key1_collected = false;
+email_key1_rect      = [0,0,0,0]; 
+
+// delay before hacker reacts to key #1 
+key1_hacker_delay = -1;
+
 
 
 // drag via border (for 4-way cursor like Files/Gallery)
