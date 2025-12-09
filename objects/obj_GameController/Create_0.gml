@@ -26,6 +26,10 @@ if (!variable_global_exists("window_z_next")) {
 
 global.hacker_unread = true;
 
+// --- Hacker key #1 hint timing ---
+if (!variable_global_exists("hacker_key1_delay")) {
+    global.hacker_key1_delay = -1;
+}
 
 //hacker hint state for key1
 if (!variable_global_exists("hacker_key1_hint_pending")) {

@@ -11,10 +11,11 @@ var header_vis_h    = header_bottom - y1;
 var footer_top_full = win_y + win_h_full - footer_h; 
 
 // NEW: as long as the window is open (not minimized), consider messages "read"
-if (!minimized)
+if (!minimized && !intro_active && !choice_active && !typing)
 {
     global.hacker_unread = false;
 }
+
 
 // ----------------
 // buttons
@@ -333,7 +334,7 @@ if (intro_active)
                         break;
 
                     case 1:
-                        // finished "b4 u think..." block -> show second menu
+                        // fini  shed "b4 u think..." block -> show second menu
                         choice_menu_id = 2;
                         choice_options = [ choice2_opt1_text, choice2_opt2_text ];
                         choice_active  = true;
