@@ -40,7 +40,7 @@ gallery_images = [
     { id: 3, sprite: Image4, name: "!!!", date: "2024-02-29", is_puzzle: false },
     { id: 4, sprite: Image5, name: "??????", date: "2024-05-25", is_puzzle: true }, // Puzzle image!
     { id: 5, sprite: Image6, name: "Building", date: "2024-07-06", is_puzzle: false },
-    { id: 6, sprite: Image7, name: "Project", date: "2024-08-25", is_puzzle: false },
+    { id: 6, sprite: Image7, name: "Personal", date: "2024-08-25", is_puzzle: false },
 ];
 
 total_images = array_length(gallery_images);

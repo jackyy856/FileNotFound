@@ -7,7 +7,7 @@ slot_w = 240; slot_h = 240;
 gap = 40;
 
 var start_x = panel_x + (panel_w - (3*slot_w + 2*gap)) * 0.5;
-var row_y   = panel_y + 120; // <-- don't shadow built-in y
+var row_y   = panel_y + 120; 
 
 slots = [
     {x:start_x + 0*(slot_w+gap), y:row_y, w:slot_w, h:slot_h, idx:1, art:false},

@@ -1,11 +1,11 @@
 {
   "$GMObject":"",
-  "%Name":"Obj_exitgame",
+  "%Name":"Obj_endGame",
   "eventList":[
     {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":4,"eventType":6,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
   ],
   "managed":true,
-  "name":"Obj_exitgame",
+  "name":"Obj_endGame",
   "overriddenProperties":[],
   "parent":{
     "name":"Login",

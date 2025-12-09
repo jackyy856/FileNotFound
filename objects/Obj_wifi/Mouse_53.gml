@@ -1,10 +1,35 @@
 var mx = device_mouse_x_to_gui(0);
 var my = device_mouse_y_to_gui(0);
 
-//Back to Menu
-if(point_in_rectangle(mx, my, 40, taskbar_y, 600 + system_btn_size, taskbar_y +system_btn_size ))
+if (mouse_check_button_pressed(mb_left)) 
 {
-	room_goto(room_Menu);
+    var sprite_w = sprite_get_width(BacktoMenu);
+    var sprite_h = sprite_get_height(BacktoMenu);
+    
+    if (point_in_rectangle(mx, my, 40, taskbar_y, 40 + sprite_w, taskbar_y + sprite_h))
+    {
+        show_debug_message("Going back to menu...");
+        
+        // Reset the menu controller BEFORE changing rooms
+        with (obj_MenuController)
+        {
+            // Force show main menu
+            state = "main";
+            exit_state = "none";
+            pre_exit_state = "main";
+            
+            // Clear any narration
+            lines = [];
+            line_index = 0;
+            visible_chars = 0;
+            done_line = false;
+            
+            show_debug_message("Menu state reset for return");
+        }
+        
+        // Go to menu room
+        room_goto(room_Menu);
+    }
 }
 
 // Check WiFi button click
