@@ -21,11 +21,11 @@ if (dialog_timer > 0 && dialog_text != "") {
 
     draw_set_alpha(0.92);
     draw_set_color(make_color_rgb(48,18,82));
-    draw_roundrect(m, y1, 1920-m, y2, false);
+    draw_roundrect(m, y1, gui_w-m, y2, false);
     draw_set_alpha(1);
 
     draw_set_color(make_color_rgb(156,90,255));
-    draw_rectangle(m, y1, 1920-m, y1+3, false);
+    draw_rectangle(m, y1, gui_w-m, y1+3, false);
 
     draw_set_color(c_white);
     draw_set_halign(fa_left);
