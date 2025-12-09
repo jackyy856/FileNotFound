@@ -87,6 +87,7 @@
     {"name":"Image7","order":6,"path":"sprites/Image7/Image7.yy",},
     {"name":"loginbg","order":1,"path":"sprites/loginbg/loginbg.yy",},
     {"name":"spr_CalendarIcon","order":7,"path":"sprites/spr_CalendarIcon/spr_CalendarIcon.yy",},
+    {"name":"spr_CalendarMonth","order":3,"path":"sprites/spr_CalendarMonth/spr_CalendarMonth.yy",},
     {"name":"spr_coworkerPFP2","order":1,"path":"sprites/spr_coworkerPFP2/spr_coworkerPFP2.yy",},
     {"name":"spr_coworkerPFP3","order":2,"path":"sprites/spr_coworkerPFP3/spr_coworkerPFP3.yy",},
     {"name":"spr_coworkerPFP4","order":3,"path":"sprites/spr_coworkerPFP4/spr_coworkerPFP4.yy",},

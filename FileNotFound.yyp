@@ -139,6 +139,7 @@
     {"id":{"name":"loginbg","path":"sprites/loginbg/loginbg.yy",},},
     {"id":{"name":"loginpic","path":"sprites/loginpic/loginpic.yy",},},
     {"id":{"name":"spr_CalendarIcon","path":"sprites/spr_CalendarIcon/spr_CalendarIcon.yy",},},
+    {"id":{"name":"spr_CalendarMonth","path":"sprites/spr_CalendarMonth/spr_CalendarMonth.yy",},},
     {"id":{"name":"spr_coworkerPFP1","path":"sprites/spr_coworkerPFP1/spr_coworkerPFP1.yy",},},
     {"id":{"name":"spr_coworkerPFP2","path":"sprites/spr_coworkerPFP2/spr_coworkerPFP2.yy",},},
     {"id":{"name":"spr_coworkerPFP3","path":"sprites/spr_coworkerPFP3/spr_coworkerPFP3.yy",},},

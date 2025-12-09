@@ -480,14 +480,26 @@ if (selected_index == corrupted_index && puzzle_solved && !email_key1_collected)
             global.apps_unlocked.Calendar = true;
 
             // start 2.5s delay before hacker reacts
-            key1_hacker_delay = room_speed * 2.5;
+			global.hacker_key1_delay = room_speed * 2.5;
+
         }
     }
 }
 
 // ------------------ DELAYED HACKER NOTIF AFTER KEY #1 ------------------
 if (key1_hacker_delay > 0) {
-    key1_hacker_delay -= 1;
+    // Email key reward
+	email_key1_collected = false;
+	email_key1_rect      = [0,0,0,0];
+
+	// global timer for hacker reaction (initialized in GameController)
+	if (!variable_global_exists("hacker_key1_delay")) {
+	    global.hacker_key1_delay = -1;
+	}
+	if (!variable_global_exists("hacker_key1_hint_pending")) {
+	    global.hacker_key1_hint_pending = false;
+	}
+
     if (key1_hacker_delay <= 0) {
         // safety init
         if (!variable_global_exists("hacker_key1_hint_pending")) {
