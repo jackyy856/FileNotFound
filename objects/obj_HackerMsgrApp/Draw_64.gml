@@ -1,4 +1,3 @@
-
 var x1 = win_x;
 var y1 = win_y;
 var x2 = win_x + win_w;
@@ -52,12 +51,34 @@ draw_text_transformed(x1 + 12, y1, "???????",1.8,1.8,0);
 if (!minimized)
 {
     var content_x1 = x1;
-    var content_x2 = x2;
-    var content_y1 = header_bottom;
-    var content_y2 = footer_top_full;
+	var content_x2 = x2;
+	var content_y1 = header_bottom;
+	var content_y2 = footer_top_full;
+
+	// reserve space for dropdown choices above the footer
+	var opt_margin_bottom = 10;
+	var opt_height        = 40;
+	var opt_gap           = 4;
+
+	if (choice1_active)
+	{
+	    // 3 buttons: height*3 + gap*2
+	    var opt_total_h = opt_margin_bottom + opt_height * 3 + opt_gap * 2;
+	    content_y2 -= opt_total_h;
+	}
+	else if (choice2_active)
+	{
+	    // 2 buttons: height*2 + gap
+	    var opt_total_h = opt_margin_bottom + opt_height * 2 + opt_gap;
+	    content_y2 -= opt_total_h;
+	}
+
+
+
 
     var msg_total_h = msg_row_h + msg_spacing;
-        var count = array_length(messages);
+    var count = array_length(messages);
+
 
     // GUI -> display scaling for scissor
     var disp_w = display_get_width();
@@ -115,14 +136,18 @@ if (!minimized)
         draw_text(name_x, name_y, msg.user);
 
         // ---------------- wrapped message text ----------------
-        draw_set_color(make_color_rgb(40, 40, 40));
-        var text_x = name_x;
-        var text_y = name_y + 20;
+		draw_set_color(make_color_rgb(40, 40, 40));
+		draw_set_halign(fa_left);
+		draw_set_valign(fa_top);
 
-        var right_limit = content_x2 - right_margin;
-        var wrap_width  = max(10, right_limit - text_x);
+		var text_x = name_x;
+		var text_y = name_y + 20;
 
-        draw_text_ext(text_x, text_y, msg.text, line_sep, wrap_width);
+		var right_limit = content_x2 - right_margin;
+		var wrap_width  = max(10, right_limit - text_x);
+
+		draw_text_ext(text_x, text_y, msg.text, line_sep, wrap_width);
+
 
         // ---------------- row height for next message ----------------
         var text_h      = string_height_ext(msg.text, line_sep, wrap_width);
@@ -137,9 +162,98 @@ if (!minimized)
 
     gpu_set_scissor(old_scissor);
 
+// intro labels above footer
+{
+    var label_x = x1 + 20;
+    var line1_y = footer_top_full - 40;
+    var line2_y = footer_top_full - 22; 
 
+    draw_set_halign(fa_left);
+    draw_set_valign(fa_top);
+
+    //  "beginning of conversation" before  first message arrives
+    if (!has_any_message)
+    {
+        draw_set_alpha(0.5);
+        draw_set_color(c_white);
+        draw_text(label_x, line1_y, "This is the beginning of your conversation with ;3");
+        draw_set_alpha(1);
+    }
+
+    // typing indicator, when active
+    if (typing)
+    {
+        draw_set_color(c_white);
+        draw_text(label_x, line2_y, "Hacker is typing...");
+    }
+}
+
+
+// dropdown choices above footer
+if (choice1_active)
+{
+    var opt_margin_side   = 16;
+    var opt_margin_bottom = 10;
+    var opt_height        = 40;
+    var opt_gap           = 4;
+
+    var opt_width = (x2 - x1) - opt_margin_side * 2;
+
+    // 3-button layout (top, middle, bottom)
+    var opt3_y2 = footer_top_full - opt_margin_bottom;
+    var opt3_y1 = opt3_y2 - opt_height;
+
+    var opt2_y2 = opt3_y1 - opt_gap;
+    var opt2_y1 = opt2_y2 - opt_height;
+
+    var opt1_y2 = opt2_y1 - opt_gap;
+    var opt1_y1 = opt1_y2 - opt_height;
+
+    var opt_x1 = x1 + opt_margin_side;
+    var opt_x2 = opt_x1 + opt_width;
+
+    draw_set_color(c_white);
+    draw_roundrect(opt_x1, opt1_y1, opt_x2, opt1_y2, false);
+    draw_roundrect(opt_x1, opt2_y1, opt_x2, opt2_y2, false);
+    draw_roundrect(opt_x1, opt3_y1, opt_x2, opt3_y2, false);
+
+    draw_set_color(c_black);
+    draw_text(opt_x1 + 10, opt1_y1 + 10, choice1_opt1_text);
+    draw_text(opt_x1 + 10, opt2_y1 + 10, choice1_opt2_text);
+    draw_text(opt_x1 + 10, opt3_y1 + 10, choice1_opt3_text);
+}
+else if (choice2_active)
+{
+    var opt_margin_side   = 16;
+    var opt_margin_bottom = 10;
+    var opt_height        = 40;
+    var opt_gap           = 4;
+
+    var opt_width = (x2 - x1) - opt_margin_side * 2;
+
+    // 2-button layout (top, bottom)
+    var opt2_y2 = footer_top_full - opt_margin_bottom;
+    var opt2_y1 = opt2_y2 - opt_height;
+
+    var opt1_y2 = opt2_y1 - opt_gap;
+    var opt1_y1 = opt1_y2 - opt_height;
+
+    var opt_x1 = x1 + opt_margin_side;
+    var opt_x2 = opt_x1 + opt_width;
+
+    draw_set_color(c_white);
+    draw_roundrect(opt_x1, opt1_y1, opt_x2, opt1_y2, false);
+    draw_roundrect(opt_x1, opt2_y1, opt_x2, opt2_y2, false);
+
+    draw_set_color(c_black);
+    draw_text(opt_x1 + 10, opt1_y1 + 10, choice2_opt1_text);
+    draw_text(opt_x1 + 10, opt2_y1 + 10, choice2_opt2_text);
+}
+
+
+	
     // ----------------
-    // scrollbar (visual only, !!!!!!!!!ADD FUNCTIONALITY LATER!!!!!!!)
+    // scrollbar (mousewhehl)
     // ----------------
 
     var view_height    = content_y2 - content_y1;
@@ -186,138 +300,3 @@ draw_set_color(make_color_rgb(230, 230, 230));
 draw_roundrect(btn_min_x1, btn_min_y1, btn_min_x2, btn_min_y2, false);
 draw_set_color(c_black);
 draw_text(btn_min_x1 + 6, btn_min_y1 + 2, "_");
-
-
-
-
-/*
-
-
-
-var x1 = win_x;
-var y1 = win_y;
-var x2 = win_x + win_w;
-var y2 = win_y + win_h;
-
-var header_bottom = y1 + header_h;
-var footer_top_full = win_y + win_h_full - footer_h;
-
-// colors 
-
-var col_border  = make_color_rgb(25, 28, 33);
-var col_body    = make_color_rgb(131, 10, 72); 
-var col_header  = make_color_rgb(106, 98, 229);
-var col_footer  = make_color_rgb(255, 49, 255);
-var col_sep     = make_color_rgb(74, 5, 28);
-
-draw_set_alpha(1);
-
-// outer border
-draw_set_color(col_border);
-draw_roundrect(x1 - 2, y1 - 2, x2 + 2, y2 + 2, false);
-
-// inner background
-draw_set_color(col_body);
-draw_roundrect(x1, y1, x2, y2, false);
-
-// header bar
-draw_set_color(col_header);
-draw_rectangle(x1, y1, x2, header_bottom, false);
-
-// Body + footer only when not minimized
-if (!minimized)
-{
-    // Body area
-    draw_set_color(col_body);
-    draw_rectangle(x1, header_bottom, x2, footer_top_full, false);
-
-    // Footer strip (input area)
-    draw_set_color(col_footer);
-    draw_rectangle(x1, footer_top_full, x2, win_y + win_h_full, false);
-
-    // Footer separator line
-    draw_set_color(col_sep);
-    draw_line(x1, footer_top_full, x2, footer_top_full);
-}
-
-// header separator line
-draw_set_color(col_sep);
-draw_line(x1, header_bottom, x2, header_bottom);
-
-// title 
-draw_set_color(c_white);
-draw_text(x1 + 12, y1 + 6, "Hacker");
-
-// ----------------
-// messages 
-// ----------------
-if (!minimized)
-{
-    var content_x1 = x1;
-    var content_x2 = x2;
-    var content_y1 = header_bottom;
-    var content_y2 = footer_top_full;
-
-    var msg_total_h = msg_row_h + msg_spacing;
-    var count       = array_length(messages);
-
-    // clip drawing to message area
-    var old_scissor = gpu_get_scissor();
-    gpu_set_scissor(content_x1, content_y1,
-                    content_x2 - content_x1,
-                    content_y2 - content_y1);
-
-    for (var i = 0; i < count; i++)
-    {
-        // messages stored oldest->newest, top aligned, then shift by scroll
-        var msg_y_top    = content_y1 + msg_margin_top + i * msg_total_h - scroll;
-        var msg_y_bottom = msg_y_top + msg_row_h;
-
-        if (msg_y_bottom < content_y1 || msg_y_top > content_y2)
-        {
-            continue;
-        }
-
-        var msg = messages[i];
-
-        // left column: pfp
-        var pfp_radius = 14;
-        var pfp_x      = content_x1 + msg_margin_side + pfp_radius;
-        var pfp_y      = msg_y_top + pfp_radius + 4;
-
-        draw_set_color(msg.col_pfp);
-        draw_circle(pfp_x, pfp_y, pfp_radius, false);
-
-        // username
-        draw_set_color(msg.col_name);
-        var name_x = pfp_x + pfp_radius + 10;
-        var name_y = msg_y_top + 2;
-        draw_text(name_x, name_y, msg.user);
-
-        // placeholder message text 
-        draw_set_color(make_color_rgb(40, 40, 40));
-        var text_x = name_x;
-        var text_y = name_y + 18;
-        draw_text(text_x, text_y, msg.text);
-    }
-
-    gpu_set_scissor(old_scissor);
-}
-
-// ----------------
-// buttons
-// ----------------
-
-// close [X]
-draw_set_color(c_red);
-draw_roundrect(btn_close_x1, btn_close_y1, btn_close_x2, btn_close_y2, false);
-draw_set_color(c_white);
-draw_text(btn_close_x1 + 7, btn_close_y1 + 3, "x");
-
-// minimize [_]
-draw_set_color(make_color_rgb(230, 230, 230));
-draw_roundrect(btn_min_x1, btn_min_y1, btn_min_x2, btn_min_y2, false);
-draw_set_color(c_black);
-draw_text(btn_min_x1 + 6, btn_min_y1 + 2, "_");
-
-

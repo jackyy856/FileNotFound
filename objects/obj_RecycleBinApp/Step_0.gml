@@ -170,7 +170,7 @@ for (var i = 0; i < file_count; i++) {
                 var text_bottom = f.box_y + f.box_h - 10;
                 var visible_h   = text_bottom - text_top;
 
-                var text_h = string_height_ext(f.content, 0, text_w);
+                var text_h = string_height_ext(f.content, -1, text_w);
 
                 f.scroll_max  = max(0, text_h - visible_h);
                 f.scroll      = 0;

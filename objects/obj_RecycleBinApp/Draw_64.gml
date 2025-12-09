@@ -180,17 +180,36 @@ for (var j = 0; j < file_count; j++) {
     draw_set_valign(fa_middle);
     draw_text((x_left + x_right) * 0.5, (x_top + x_bottom) * 0.5, "X");
 
-    // text area
-    var text_left   = bx + 12;
-    var text_top    = by + title_h + 8;
-    var text_right  = bx + bw - 12 - scroll_w - 4;
-    var text_bottom = by + bh - 10;
-    var text_w      = text_right - text_left;
+        // text area
+	    var text_left   = bx + 12;
+	    var text_top    = by + title_h + 8;
+	    var text_right  = bx + bw - 12 - scroll_w - 4;
+	    var text_bottom = by + bh - 10;
+	    var text_w      = text_right - text_left;
+	    var visible_h   = text_bottom - text_top;
 
-    draw_set_halign(fa_left);
-    draw_set_valign(fa_top);
-    draw_set_color(c_black);
-    draw_text_ext(text_left, text_top - g.scroll, g.content, 0, text_w);
+	    if (text_w > 0 && visible_h > 0) {
+	        // ensure surface exists and is correct size
+	        if (!surface_exists(text_surface)
+	            || surface_get_width(text_surface)  != text_w
+	            || surface_get_height(text_surface) != visible_h)
+	        {
+	            if (surface_exists(text_surface)) surface_free(text_surface);
+	            text_surface = surface_create(text_w, visible_h);
+	        }
+
+	        // draw text into the surface (clipped to its bounds)
+	        surface_set_target(text_surface);
+	        draw_clear_alpha(c_white, 1);  // white background inside the popup
+	        draw_set_halign(fa_left);
+	        draw_set_valign(fa_top);
+	        draw_set_color(c_black);
+	        draw_text_ext(0, -g.scroll, g.content, -1, text_w);
+	        surface_reset_target();
+
+	        // now draw the surface into the popup's text area
+	        draw_surface(text_surface, text_left, text_top);
+	    }
 
     // scrollbar track
     var track_left   = bx + bw - 8 - scroll_w;
