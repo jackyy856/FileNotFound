@@ -407,6 +407,12 @@ if (intro_active)
                         hacker_offline = true;
                         // optionally: global.hacker_notes_hint_unlocked = true;
                         break;
+					// After key #1 calendar hint lines
+                    case 20:
+                        // key-1 hint done → hacker goes offline
+                        hacker_offline = true;
+                        break;
+
                 }
 
             }
@@ -444,7 +450,7 @@ if (intro_active)
                     hacker_offline = true;
                     break;
 
-                // --- WIFI BRANCH PHASES (safety mirror) ---
+                // --- WIFI BRANCH PHASES ---
                 case 10:
                     choice_menu_id = 4;
                     choice_options = [ "It's not the same as before." ];
@@ -490,35 +496,41 @@ if (intro_active)
                 case 14:
                     hacker_offline = true;
                     break;
+				// --- KEY #1 HINT  ---
+                case 20:
+                    hacker_offline = true;
+                    break;
             }
         }
     }
 }
 
-// --- WIFI HINT: start branch via intro queue (3s typing between lines) ---
-if (global.hacker_wifi_hint_pending
+// --- KEY #1 HINT: after first key is collected in Email ---
+if (global.hacker_key1_hint_pending
     && !intro_active
     && !choice_active
     && !typing)
 {
-    global.hacker_wifi_hint_pending = false;
+    global.hacker_key1_hint_pending = false;
 
-    // bring hacker "online" again if you use this flag
     hacker_offline = false;
 
-    // wifi branch initial phase
-    conversation_phase = 10;
+    // key #1 branch phase
+    conversation_phase = 20;
 
     intro_messages = [
-        { sender: "UrHacker", text: "stuck?", is_hacker: true },
-        { sender: "UrHacker", text: "dont tell me u forgot ur own password LOL", is_hacker: true }
+        { sender: "UrHacker", text: "found it yet?", is_hacker: true },
+        { sender: "UrHacker", text: "nice going, myers.", is_hacker: true },
+        { sender: "UrHacker", text: "u'll need to find all three keys to access \"the file\"", is_hacker: true },
+        { sender: "UrHacker", text: "you'll find the calendar has some useful info next", is_hacker: true },
+        { sender: "UrHacker", text: "chop chop", is_hacker: true }
     ];
 
     intro_index    = 0;
     intro_active   = true;
     typing         = true;
-    intro_timer_ms = 3000; // 3 second "is typing..." before each line
+    intro_timer_ms = 3000; // 3s "is typing..." 
 
-    // mark as unread so icon can blink/meow etc if you want
     global.hacker_unread = true;
 }
+

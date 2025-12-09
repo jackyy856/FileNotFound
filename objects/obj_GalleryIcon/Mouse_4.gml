@@ -1,4 +1,8 @@
-/// obj_GalleryIcon - Mouse Left Pressed
+
+if (!global.apps_unlocked.Gallery) {
+    // play a “locked” sound or brief tooltip later
+    exit;
+}
 
 // If some app window already consumed this click, don't open
 if (variable_global_exists("_ui_click_consumed") && global._ui_click_consumed) {

@@ -1,7 +1,5 @@
-app_key = "Files";          // matches key in global.apps_unlocked
-app_obj = obj_FilesApp;     // icon opens files app obj
 
-// safety, in case controller hasn’t run yet
+// safety, in case this runs before GameController
 if (!variable_global_exists("apps_unlocked")) {
     global.apps_unlocked = {
         Email      : true,
@@ -15,7 +13,9 @@ if (!variable_global_exists("apps_unlocked")) {
     };
 }
 
-spr_locked   = spr_Hacked_FilesIcon;
-spr_unlocked = spr_FilesIcon;
+// assign sprites
+spr_locked   = spr_Hacked_CalendarIcon; // locked version
+spr_unlocked = spr_CalendarIcon;        // normal version
 
-sprite_index = global.apps_unlocked.Files ? spr_unlocked : spr_locked;
+// initial sprite based on unlock state
+sprite_index = global.apps_unlocked.Calendar ? spr_unlocked : spr_locked;
