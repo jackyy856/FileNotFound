@@ -68,6 +68,14 @@ if (capture_mode && keyboard_check_pressed(vk_escape)) {
 }
 
 /// --- Overlay + timers
+// Recalculate panel if GUI size changed (handles window resize)
+var current_gui_w = display_get_gui_width();
+var current_gui_h = display_get_gui_height();
+if (current_gui_w != panel_main.w || current_gui_h != panel_main.h) {
+    _init_panel();
+    _recalc_layout();
+}
+
 var p = [ device_mouse_x_to_gui(0), device_mouse_y_to_gui(0) ];
 if (dialog_timer > 0) dialog_timer--;
 if (keyboard_check_pressed(vk_f6)) { if (_load_layout()) show_prompt("Layout loaded"); else show_prompt("No saved layout"); }

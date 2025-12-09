@@ -11,12 +11,32 @@
 enum DeskState { DESK, EMAIL_LIST, EMAIL_OPEN }
 state = DeskState.DESK;
 
-// Force GUI to 1920×1080 to match sprite resolution
+// ---------------------------- Flex Panel Container System ----------------------------
+// Use actual display dimensions for proper scaling across devices
 display_set_gui_size(1920, 1080);
 
-// Reference dimensions for hitbox calculations (sprite resolution)
-REF_GUI_W = 1920;
-REF_GUI_H = 1080;
+// Main container panel (fills entire GUI)
+function _init_panel() {
+    var gui_w = display_get_gui_width();
+    var gui_h = display_get_gui_height();
+    
+    // Main container
+    panel_main = {
+        x: 0,
+        y: 0,
+        w: gui_w,
+        h: gui_h
+    };
+    
+    // Store reference dimensions (sprite resolution)
+    REF_W = 1920;
+    REF_H = 1080;
+    
+    // Calculate scale factors for converting reference coords to actual GUI coords
+    panel_scale_x = gui_w / REF_W;
+    panel_scale_y = gui_h / REF_H;
+}
+_init_panel();
 
 // ---------------------------- Art references ----------------------------
 sprDesk      = spr_desk_bg;      // DeskView.png (monitor bezel + desktop)
@@ -54,27 +74,31 @@ BACK_OFF   = [  8,  6,  96, 30 ];  // only used on EMAIL_OPEN
 CLOSEX_OFF = [ -26, 6,  20, 20 ];  // -26 => (winRight - 26)
 
 // ---------------------------- Derived rects from monitor ----------------------------
+// All coordinates stored in reference space (1920×1080), converted to GUI at runtime
 function _recalc_layout() {
-    // Email window (inside monitor)
+    // Recalculate panel scale in case GUI size changed
+    _init_panel();
+    
+    // Email window (inside monitor) - stored in reference coordinates
     WIN_X = MON_X + WIN_OFF_X;
     WIN_Y = MON_Y + WIN_OFF_Y;
     WIN_W = (WIN_OFF_W >= 0) ? WIN_OFF_W : (MON_W + WIN_OFF_W);
     WIN_H = (WIN_OFF_H >= 0) ? WIN_OFF_H : (MON_H + WIN_OFF_H);
 
-    // Email icon on the desktop (inside monitor)
+    // Email icon on the desktop (inside monitor) - reference coordinates
     var icon_x = MON_X + ICON_OFF_X;
     var icon_y = MON_Y + ICON_OFF_TOP + (ICON_H + ICON_GAP) * ICON_EMAIL_INDEX;
     BTN_EMAIL_ICON = [ icon_x, icon_y, ICON_W, ICON_H ];
 
-    // Titlebar hotspots
+    // Titlebar hotspots - reference coordinates
     BTN_BACK   = [ WIN_X + BACK_OFF[0],  WIN_Y + BACK_OFF[1],  BACK_OFF[2],  BACK_OFF[3] ];
     BTN_CLOSEX = [ (WIN_X + WIN_W) + CLOSEX_OFF[0], WIN_Y + CLOSEX_OFF[1], CLOSEX_OFF[2], CLOSEX_OFF[3] ];
 
-    // Email list “Congratulations!” subject row
+    // Email list "Congratulations!" subject row - reference coordinates
     var row_top = WIN_Y + ROW_TOP_OFF + ROW_H * PHISH_ROW_INDEX;
     BTN_PHISH_SUBJ = [ WIN_X + 16, row_top, WIN_W - 32, ROW_H ];
 
-    // Email open “phishing link” area
+    // Email open "phishing link" area - reference coordinates
     BTN_PHISH_LINK = [ WIN_X + WIN_W * 0.26, WIN_Y + WIN_H * 0.44, WIN_W * 0.38, 44 ];
 }
 _recalc_layout();
@@ -92,21 +116,41 @@ function show_prompt(txt) {
     dialog_timer = DIALOG_TIME;
 }
 
-// Scale hitbox coordinates based on actual GUI size vs reference size
-// This handles cases where GameMaker scales the GUI differently on different devices
-function _scale_rect(r) {
-    var gui_w = display_get_gui_width();
-    var gui_h = display_get_gui_height();
-    // Calculate scale factors (should be 1.0 if GUI is exactly 1920×1080)
-    var scale_x = gui_w / REF_GUI_W;
-    var scale_y = gui_h / REF_GUI_H;
-    return [r[0] * scale_x, r[1] * scale_y, r[2] * scale_x, r[3] * scale_y];
+// ---------------------------- Flex Panel Coordinate System ----------------------------
+// Convert reference coordinates (1920×1080) to actual GUI coordinates
+function _ref_to_gui_x(ref_x) {
+    return ref_x * panel_scale_x;
 }
 
+function _ref_to_gui_y(ref_y) {
+    return ref_y * panel_scale_y;
+}
+
+function _ref_to_gui_w(ref_w) {
+    return ref_w * panel_scale_x;
+}
+
+function _ref_to_gui_h(ref_h) {
+    return ref_h * panel_scale_y;
+}
+
+// Convert a reference rectangle [x, y, w, h] to GUI coordinates
+function _ref_rect_to_gui(r) {
+    return [
+        _ref_to_gui_x(r[0]),
+        _ref_to_gui_y(r[1]),
+        _ref_to_gui_w(r[2]),
+        _ref_to_gui_h(r[3])
+    ];
+}
+
+// Check if point is in rectangle (using container-relative coordinates)
 function _in_rect(p, r) {
-    // Scale the hitbox to match current GUI size
-    var scaled_r = _scale_rect(r);
-    return (p[0] >= scaled_r[0]) && (p[1] >= scaled_r[1]) && (p[0] < scaled_r[0] + scaled_r[2]) && (p[1] < scaled_r[1] + scaled_r[3]);
+    // Convert reference rectangle to GUI coordinates
+    var gui_r = _ref_rect_to_gui(r);
+    // Check if point (already in GUI coords) is within the scaled rectangle
+    return (p[0] >= gui_r[0]) && (p[1] >= gui_r[1]) && 
+           (p[0] < gui_r[0] + gui_r[2]) && (p[1] < gui_r[1] + gui_r[3]);
 }
 
 // ---------------------------- Manual hotspot capture (1..5) ----------------------------
