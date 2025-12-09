@@ -1,5 +1,11 @@
 /// Open or focus the Slack app window when this icon is clicked
 
+// If still locked, ignore click
+if (!global.apps_unlocked.Slack) {
+    // optional later: locked sound / tooltip
+    exit;
+}
+
 // Respect global click gate (same pattern as other icons)
 if (variable_global_exists("_ui_click_consumed") && global._ui_click_consumed) {
     exit;
