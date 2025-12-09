@@ -83,13 +83,13 @@ inbox_back_btn = [window_x + window_w - 140, window_y + header_h + 20,  100, 30]
 
 // Image data - with puzzle integration
 gallery_images = [
-    { id: 0, sprite: Image1, name: "Cat",      date: "2024-01-01", is_puzzle: false },
-    { id: 1, sprite: Image2, name: "People",   date: "2024-01-02", is_puzzle: false },
-    { id: 2, sprite: Image3, name: "Store",    date: "2024-02-13", is_puzzle: false },
-    { id: 3, sprite: Image4, name: "!!!",      date: "2024-02-29", is_puzzle: false },
-    { id: 4, sprite: Image5, name: "??????",   date: "2024-05-25", is_puzzle: true }, // Puzzle image!
-    { id: 5, sprite: Image6, name: "Building", date: "2024-07-06", is_puzzle: false },
-    { id: 6, sprite: Image7, name: "Project",  date: "2024-08-25", is_puzzle: false },
+    { id: 0, sprite: Image1, name: "Cat",       date: "2024-01-01", is_puzzle: false },
+    { id: 1, sprite: Image2, name: "People",    date: "2024-01-02", is_puzzle: false },
+    { id: 2, sprite: Image3, name: "Store",     date: "2024-02-13", is_puzzle: false },
+    { id: 3, sprite: Image4, name: "!!!",       date: "2024-02-29", is_puzzle: false },
+    { id: 4, sprite: Image5, name: "??????",    date: "2024-05-25", is_puzzle: true }, // Puzzle image!
+    { id: 5, sprite: Image6, name: "Building",  date: "2024-07-06", is_puzzle: false },
+    { id: 6, sprite: Image7, name: "Personal",  date: "2024-08-25", is_puzzle: false },
 ];
 
 total_images = array_length(gallery_images);
