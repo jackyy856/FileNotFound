@@ -5,8 +5,8 @@ global.apps_unlocked = {
     Email      : true,
     HackerMsgr : true,
 	Calendar   : false,
-    Files      : false,
-    Gallery    : false,
+    Files      : true,
+    Gallery    : true,
     RecycleBin : false,
     Notes      : true,
     Slack      : false   

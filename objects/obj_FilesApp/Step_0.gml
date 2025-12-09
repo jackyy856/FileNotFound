@@ -105,6 +105,22 @@ if (view_mode == 0) {
             if (mx >= e.rx && mx <= e.rx + e.rw &&
                 my >= e.ry && my <= e.ry + e.rh) {
 
+                // Gate FileNotFound until all 3 keys are collected
+                if (e.label == "FileNotFound") {
+                    if (!variable_global_exists("key_collected")) {
+                        global.key_collected = array_create(3, false);
+                    }
+                    var keys_ok = (global.key_collected[0] && global.key_collected[1] && global.key_collected[2]);
+                    if (!keys_ok) {
+                        if (variable_global_exists("_toast_files")) {
+                            global._toast_files = "You need to collect 3 keys to unlock it.";
+                        } else {
+                            show_message_async("You need to collect 3 keys to unlock it.");
+                        }
+                        exit;
+                    }
+                }
+
                 if (e.kind == "file_minigame") {
                     // Launch the Click-the-File mini-game
                     room_goto(room_ClickFiles);

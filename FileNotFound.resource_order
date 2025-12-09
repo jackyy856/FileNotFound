@@ -72,6 +72,7 @@
     {"name":"obj_UIClickGate","order":6,"path":"objects/obj_UIClickGate/obj_UIClickGate.yy",},
     {"name":"Login","order":1,"path":"rooms/Login/Login.yy",},
     {"name":"room_ClickFiles","order":5,"path":"rooms/room_ClickFiles/room_ClickFiles.yy",},
+    {"name":"room_Credits","order":6,"path":"rooms/room_Credits/room_Credits.yy",},
     {"name":"room_Desk_View","order":4,"path":"rooms/room_Desk_View/room_Desk_View.yy",},
     {"name":"room_Menu","order":1,"path":"rooms/room_Menu/room_Menu.yy",},
     {"name":"sfx_keywow","order":3,"path":"sounds/sfx_keywow/sfx_keywow.yy",},
