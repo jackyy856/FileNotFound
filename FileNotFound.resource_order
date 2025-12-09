@@ -108,6 +108,7 @@
     {"name":"spr_HackerMsgrIcon_unread","order":10,"path":"sprites/spr_HackerMsgrIcon_unread/spr_HackerMsgrIcon_unread.yy",},
     {"name":"spr_iWorkIcon","order":8,"path":"sprites/spr_iWorkIcon/spr_iWorkIcon.yy",},
     {"name":"spr_mail_principal","order":1,"path":"sprites/spr_mail_principal/spr_mail_principal.yy",},
+    {"name":"spr_menu_BG","order":4,"path":"sprites/spr_menu_BG/spr_menu_BG.yy",},
     {"name":"spr_notes","order":2,"path":"sprites/spr_notes/spr_notes.yy",},
     {"name":"spr_pfp_hacker","order":4,"path":"sprites/spr_pfp_hacker/spr_pfp_hacker.yy",},
     {"name":"spr_pfp_player","order":5,"path":"sprites/spr_pfp_player/spr_pfp_player.yy",},
@@ -116,6 +117,6 @@
     {"name":"spr_red_key","order":7,"path":"sprites/spr_red_key/spr_red_key.yy",},
     {"name":"spr_StickyNoteIcon","order":6,"path":"sprites/spr_StickyNoteIcon/spr_StickyNoteIcon.yy",},
     {"name":"spr_title_notes","order":7,"path":"sprites/spr_title_notes/spr_title_notes.yy",},
-    {"name":"spr_unhacked_desktop_bg","order":4,"path":"sprites/spr_unhacked_desktop_bg/spr_unhacked_desktop_bg.yy",},
+    {"name":"spr_unhacked_desktop_bg","order":15,"path":"sprites/spr_unhacked_desktop_bg/spr_unhacked_desktop_bg.yy",},
   ],
 }

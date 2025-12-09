@@ -16,7 +16,10 @@ if (display_get_gui_width() != _last_gui_w || display_get_gui_height() != _last_
 // ---------- ESC toggle (use latched edge from Begin Step) ----------
 if (esc_edge) {
     if (active) {
-        if (state == "confirm") state = "submenu";
+        if (state == "confirm") {
+            if (submenu == "mainmenu") { state = "root"; submenu = ""; }
+            else state = "submenu";
+        }
         else if (state == "submenu") { state = "root"; submenu = ""; }
         else active = false;
     } else {
@@ -141,11 +144,25 @@ switch (state) {
                 }
                 else if (submenu == "load") {
                     if (_save_load(confirm_slot)) { active = false; state = "root"; submenu = ""; }
-                    else { state = "submenu"; _toast("Save slot empty or corrupt"); }
+                    else {
+                        state = "submenu";
+                        var err_txt = "Save slot empty or corrupt";
+                        if (variable_global_exists("_last_save_error") && string_length(string(global._last_save_error)) > 0) {
+                            err_txt = string(global._last_save_error);
+                        }
+                        _toast(err_txt);
+                    }
                 }
                 else if (submenu == "save") {
-                    _save_write(confirm_slot);
-                    _toast("Saved");
+                    if (_save_write(confirm_slot)) {
+                        _toast("Saved");
+                    } else {
+                        var save_err = "Save failed";
+                        if (variable_global_exists("_last_save_error") && string_length(string(global._last_save_error)) > 0) {
+                            save_err = string(global._last_save_error);
+                        }
+                        _toast(save_err);
+                    }
                     state   = "submenu";
                     submenu = "save";
                 }
