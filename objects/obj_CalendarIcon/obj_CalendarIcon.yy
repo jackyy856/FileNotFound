@@ -1,7 +1,12 @@
 {
   "$GMObject":"",
   "%Name":"obj_CalendarIcon",
-  "eventList":[],
+  "eventList":[
+    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":0,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
+    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":3,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
+    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":4,"eventType":6,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
+    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":8,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
+  ],
   "managed":true,
   "name":"obj_CalendarIcon",
   "overriddenProperties":[],
@@ -28,8 +33,8 @@
   "resourceVersion":"2.0",
   "solid":false,
   "spriteId":{
-    "name":"spr_Hacked_CalendarIcon",
-    "path":"sprites/spr_Hacked_CalendarIcon/spr_Hacked_CalendarIcon.yy",
+    "name":"spr_CalendarIcon",
+    "path":"sprites/spr_CalendarIcon/spr_CalendarIcon.yy",
   },
   "spriteMaskId":null,
   "visible":true,

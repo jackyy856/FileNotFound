@@ -1,4 +1,13 @@
-//open recycle bin app
+if (!global.apps_unlocked.RecycleBin) {
+    // optional: play a “locked” sound or brief tooltip later
+    exit;
+}
+
+// if locked, ignore click
+if (!global.apps_unlocked.Files) {
+    // optional: play a “locked” sound or brief tooltip later
+    exit;
+}
 
 var exists   = variable_struct_exists(global.apps_unlocked, app_key);
 var unlocked = exists ? variable_struct_get(global.apps_unlocked, app_key) : false;

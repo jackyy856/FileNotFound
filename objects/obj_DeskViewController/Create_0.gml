@@ -1,23 +1,46 @@
-
+/// obj_DeskViewController – Create
 /// Purpose:
-///   Drives the "Desk View → Email List → Email Open" flow using 1920×1080 PNGs,
+///   Drives the “Desk View → Email List → Email Open” flow using 1920×1080 PNGs,
 ///   with transparent hotspot rectangles overlaid on the art.
-/// Key hotkeys (dev only):
+/// Key hotkeys:
+///   D  = toggle debug overlay (blue monitor + green hotspots)
 ///   F1 = edit monitor viewport (blue) with Arrows (move) + Shift+W/A/S/D (resize)
+///   F2 = edit currently selected hotspot (green) with Arrows + Shift+W/A/S/D
 ///   1..5 = capture a single hotspot by clicking TL then BR
-///   F6/F7 = load / reset hotspots to INI
+///   F3 = guided capture (runs Email Icon → Subject → Link → Back → X)
+///   F5/F6/F7 = save / load / reset hotspots to INI
 
 // ---------------------------- State machine ----------------------------
 enum DeskState { DESK, EMAIL_LIST, EMAIL_OPEN }
 state = DeskState.DESK;
 
-// GUI fixed to 1920×1080 to match sprite resolution (ensures consistent hitboxes across devices)
+// ---------------------------- Reference Resolution System ----------------------------
+// CRITICAL: keep GUI fixed to art resolution; everything else scales from here.
 display_set_gui_size(1920, 1080);
+
+// Initialize coordinate scaling system (reference space 1920×1080 → GUI space)
+function _init_panel() {
+    var gui_w = display_get_gui_width();
+    var gui_h = display_get_gui_height();
+
+    // Main container matches GUI
+    panel_main = { x: 0, y: 0, w: gui_w, h: gui_h };
+
+    // Reference dimensions (art authored at 1920×1080)
+    REF_W = 1920;
+    REF_H = 1080;
+
+    // Scale factors to convert reference → GUI
+    panel_scale_x = gui_w / REF_W;
+    panel_scale_y = gui_h / REF_H;
+}
+_init_panel();
 
 // ---------------------------- Art references ----------------------------
 sprDesk      = spr_desk_bg;      // DeskView.png (monitor bezel + desktop)
-sprEmailList = spr_email_list;   // EmailList.png (in-monitor email list)
-sprEmailOpen = spr_email_open;   // EmailOpen.png (in-monitor opened email)
+// Unused email list/open art removed
+sprEmailList = -1;
+sprEmailOpen = -1;
 
 // ---------------------------- Monitor viewport (blue) ----------------------------
 // The monitor’s visible “screen” area inside DeskView.png. Adjust once, then save (F5).
@@ -77,6 +100,7 @@ _recalc_layout();
 
 // ---------------------------- UX helpers ----------------------------
 edit_monitor = false; // F1
+show_dev     = false; // D
 
 // Minimal prompt (bottom bar). Keep it unobtrusive.
 dialog_text  = "";
@@ -88,7 +112,30 @@ function show_prompt(txt) {
     dialog_timer = DIALOG_TIME;
 }
 
-function _in_rect(p, r) {
+// ---------------------------- Coordinate helpers ----------------------------
+// Reference (1920×1080) → GUI
+function _ref_to_gui_x(ref_x) { return ref_x * panel_scale_x; }
+function _ref_to_gui_y(ref_y) { return ref_y * panel_scale_y; }
+function _ref_to_gui_w(ref_w) { return ref_w * panel_scale_x; }
+function _ref_to_gui_h(ref_h) { return ref_h * panel_scale_y; }
+
+function _ref_rect_to_gui(r) {
+    return [ _ref_to_gui_x(r[0]), _ref_to_gui_y(r[1]), _ref_to_gui_w(r[2]), _ref_to_gui_h(r[3]) ];
+}
+
+// GUI → Reference (for capture persistence)
+function _gui_to_ref_x(gui_x) { return gui_x / panel_scale_x; }
+function _gui_to_ref_y(gui_y) { return gui_y / panel_scale_y; }
+function _gui_to_ref_w(gui_w) { return gui_w / panel_scale_x; }
+function _gui_to_ref_h(gui_h) { return gui_h / panel_scale_y; }
+
+function _gui_rect_to_ref(r) {
+    return [ _gui_to_ref_x(r[0]), _gui_to_ref_y(r[1]), _gui_to_ref_w(r[2]), _gui_to_ref_h(r[3]) ];
+}
+
+// Hit test: point (GUI space) vs rect (reference space)
+function _in_rect(p, r_ref) {
+    var r = _ref_rect_to_gui(r_ref);
     return (p[0] >= r[0]) && (p[1] >= r[1]) && (p[0] < r[0] + r[2]) && (p[1] < r[1] + r[3]);
 }
 
@@ -111,6 +158,39 @@ function _rect_from_points(p1, p2) {
     var x2 = max(p1[0], p2[0]);
     var y2 = max(p1[1], p2[1]);
     return [ x1, y1, x2 - x1, y2 - y1 ];
+}
+
+// ---------------------------- Hotspot edit (F2) ----------------------------
+edit_hotspot     = false;
+selected_hotspot = 1; // 1..5
+
+function _get_rect(id) {
+    switch (id) {
+        case 1: return BTN_EMAIL_ICON;
+        case 2: return BTN_BACK;        // (used only on EMAIL_OPEN)
+        case 3: return BTN_CLOSEX;
+        case 4: return BTN_PHISH_SUBJ;
+        case 5: return BTN_PHISH_LINK;
+    }
+    return [0,0,0,0];
+}
+
+function _set_rect(id, r) {
+    switch (id) {
+        case 1: BTN_EMAIL_ICON = r; break;
+        case 2: BTN_BACK       = r; break;
+        case 3: BTN_CLOSEX     = r; break;
+        case 4: BTN_PHISH_SUBJ = r; break;
+        case 5: BTN_PHISH_LINK = r; break;
+    }
+}
+
+function _clamp_rect(r) {
+    r[2] = max(1, r[2]);
+    r[3] = max(1, r[3]);
+    r[0] = clamp(r[0], 0, 1920 - r[2]);
+    r[1] = clamp(r[1], 0, 1080 - r[3]);
+    return r;
 }
 
 // ---------------------------- Persist (INI) ----------------------------
@@ -228,5 +308,68 @@ function _guided_advance() {
     } else {
         guided_mode = false;
         show_prompt("Guided done. Press F5 to save.");
+    }
+}
+
+function _save_state_blob() {
+    var blob = {
+        state: state,
+        dialog_text: dialog_text,
+        dialog_timer: dialog_timer,
+        capture_mode: capture_mode,
+        capture_target: capture_target,
+        capture_completed: capture_completed,
+        guided_mode: guided_mode,
+        guided_idx: guided_idx,
+        guided_ids: guided_ids,
+        edit_monitor: edit_monitor,
+        edit_hotspot: edit_hotspot,
+        selected_hotspot: selected_hotspot,
+        show_dev: show_dev,
+        edit_state: {
+            MON_X: MON_X,
+            MON_Y: MON_Y,
+            MON_W: MON_W,
+            MON_H: MON_H
+        }
+    };
+    if (!is_undefined(capture_first)) blob.capture_first = capture_first;
+    return blob;
+}
+
+function _apply_state_blob(blob) {
+    if (!is_struct(blob)) return;
+    if (!is_undefined(blob.state)) state = blob.state;
+    if (!is_undefined(blob.dialog_text)) dialog_text = blob.dialog_text;
+    else dialog_text = "";
+    if (!is_undefined(blob.dialog_timer)) dialog_timer = blob.dialog_timer;
+    else dialog_timer = 0;
+    if (!is_undefined(blob.capture_mode)) capture_mode = blob.capture_mode;
+    if (!is_undefined(blob.capture_target)) capture_target = blob.capture_target;
+    if (variable_struct_exists(blob, "capture_first")) capture_first = blob.capture_first; else capture_first = undefined;
+    if (!is_undefined(blob.capture_completed)) capture_completed = blob.capture_completed;
+    if (!is_undefined(blob.guided_mode)) guided_mode = blob.guided_mode;
+    if (!is_undefined(blob.guided_idx)) guided_idx = blob.guided_idx;
+    if (!is_undefined(blob.guided_ids)) guided_ids = blob.guided_ids;
+    if (!is_undefined(blob.edit_monitor)) edit_monitor = blob.edit_monitor;
+    if (!is_undefined(blob.edit_hotspot)) edit_hotspot = blob.edit_hotspot;
+    if (!is_undefined(blob.selected_hotspot)) selected_hotspot = blob.selected_hotspot;
+    if (!is_undefined(blob.show_dev)) show_dev = blob.show_dev;
+
+    if (variable_struct_exists(blob, "edit_state")) {
+        var es = blob.edit_state;
+        if (!is_undefined(es.MON_X)) MON_X = es.MON_X;
+        if (!is_undefined(es.MON_Y)) MON_Y = es.MON_Y;
+        if (!is_undefined(es.MON_W)) MON_W = es.MON_W;
+        if (!is_undefined(es.MON_H)) MON_H = es.MON_H;
+        _recalc_layout();
+    }
+}
+
+if (variable_global_exists("_pending_save_chunks") && is_struct(global._pending_save_chunks)) {
+    if (variable_struct_exists(global._pending_save_chunks, "desk_state")
+    && !is_undefined(global._pending_save_chunks.desk_state)) {
+        _apply_state_blob(global._pending_save_chunks.desk_state);
+        global._pending_save_chunks.desk_state = undefined;
     }
 }

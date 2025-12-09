@@ -32,8 +32,8 @@
   "resourceVersion":"2.0",
   "solid":false,
   "spriteId":{
-    "name":"spr_Hacked_StickyNoteIcon",
-    "path":"sprites/spr_Hacked_StickyNoteIcon/spr_Hacked_StickyNoteIcon.yy",
+    "name":"spr_StickyNoteIcon",
+    "path":"sprites/spr_StickyNoteIcon/spr_StickyNoteIcon.yy",
   },
   "spriteMaskId":null,
   "visible":true,

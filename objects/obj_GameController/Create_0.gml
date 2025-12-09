@@ -4,11 +4,12 @@
 global.apps_unlocked = {
     Email      : true,
     HackerMsgr : true,
-    Files      : true,
-    Gallery    : true,
-    RecycleBin : true,
+	Calendar   : false,
+    Files      : false,
+    Gallery    : false,
+    RecycleBin : false,
     Notes      : true,
-    Slack      : true   
+    Slack      : false   
 };
 
 // Story progression keys for the desktop key slots
@@ -22,8 +23,17 @@ if (!variable_global_exists("window_z_next")) {
     global.window_z_next = -10;
 }
 
-
 global.hacker_unread = true;
+
+// --- Hacker key #1 hint timing ---
+if (!variable_global_exists("hacker_key1_delay")) {
+    global.hacker_key1_delay = -1;
+}
+
+//hacker hint state for key1
+if (!variable_global_exists("hacker_key1_hint_pending")) {
+    global.hacker_key1_hint_pending = false;
+}
 
 // one-time desktop notification meow ---
 if (!variable_global_exists("desktop_meow_played")) {
