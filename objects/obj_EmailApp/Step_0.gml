@@ -151,11 +151,12 @@ if (selected_index == -1) {
             thread_scroll = 0; // Reset scroll when opening new email
 
             // unlock messenger if suspicious
-            if (inbox[actual_idx].is_suspicious) {
-                if (!is_undefined(global.apps_unlocked) && is_struct(global.apps_unlocked)) {
-                    global.apps_unlocked.Messenger = true;
-                }
-            }
+	    if (inbox[actual_idx].is_suspicious) {
+		    if (!is_undefined(global.apps_unlocked) && is_struct(global.apps_unlocked)) {
+		        global.apps_unlocked.HackerMsgr = true;
+		    }
+		}
+
 
             if (actual_idx == corrupted_index) {
                 puzzle_active     = puzzle_gate && !puzzle_solved;
@@ -459,9 +460,14 @@ if (selected_index == corrupted_index && puzzle_solved && !email_key1_collected)
             }
 
             global.key_collected[0] = true;
+
+            // trigger hacker follow-up for key #1
+            global.hacker_key1_hint_pending = true;
+            global.hacker_unread            = true;
         }
     }
 }
+
 
 // advance binary rain
 bin_scroll += bin_speed;

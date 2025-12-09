@@ -3,7 +3,22 @@
 app_key = "Slack";       // key used in global.apps_unlocked
 app_obj = obj_SlackApp;  // app window object for this icon
 
-// Safety: if you forgot to assign a sprite in the editor, reuse Files icon art
-if (sprite_index == -1) {
-    sprite_index = spr_iWorkIcon;
+// safety, in case controller hasn’t run yet
+if (!variable_global_exists("apps_unlocked")) {
+    global.apps_unlocked = {
+        Email      : true,
+        HackerMsgr : true,
+        Calendar   : false,
+        Files      : false,
+        Gallery    : false,
+        RecycleBin : false,
+        Notes      : true,
+        Slack      : false
+    };
 }
+
+spr_locked   = spr_Hacked_iWorkIcon;
+spr_unlocked = spr_iWorkIcon;
+
+sprite_index = global.apps_unlocked.Slack ? spr_unlocked : spr_locked;
+
