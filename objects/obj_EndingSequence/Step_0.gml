@@ -15,35 +15,42 @@ if (phase == 0) {
         text_scale = target_scale + 0.03 * sin(timer * 0.25);
     }
 
+    // Fade text in
     if (text_alpha < 1) {
         text_alpha += 0.07;
         if (text_alpha > 1) text_alpha = 1;
     }
 
-    // Start file "confetti" once text is basically done
+    // Start confetti once text is basically done
     if (!confetti_started && text_scale >= target_scale - 0.05) {
         confetti_started = true;
 
         confetti_count = 220;
         confetti       = array_create(confetti_count, undefined);
 
-        var spr_icon = is_win ? spr_FilesIcon : spr_HackedFilesIcon;
-
         for (var i = 0; i < confetti_count; i++) {
             var p = {
-                x   : irandom_range(0, gui_w),
-                y   : irandom_range(-gui_h, 0),
-                vx  : -0.5 + random(1),
-                vy  : 2.0 + random(3.0),
-                spr : spr_icon,
-                sc  : 0.18 + random(0.10),   // small icon size
-                a   : 0.65 + random(0.30)    // slight alpha variation
+                x  : irandom_range(0, gui_w),
+                y  : irandom_range(-gui_h, 0),
+                vx : -0.5 + random(1),
+                vy : 2.0 + random(3.0),
+                sc : 0.18 + random(0.10),
+                a  : 0.65 + random(0.30)
             };
+
+            if (is_win) {
+                // YOU WIN: falling file icons (same as before)
+                p.spr = spr_FilesIcon;
+            } else {
+                // YOU LOSE: dropping binary digits instead of file icons
+                p.bit = choose(0, 1);   // will be drawn as "0" or "1" in Draw
+            }
+
             confetti[i] = p;
         }
     }
 
-    // Update falling file icons
+    // Update falling confetti (icons or bits)
     if (confetti_started) {
         for (var j = 0; j < confetti_count; j++) {
             var p = confetti[j];
@@ -56,8 +63,8 @@ if (phase == 0) {
 
             // loop back to top when off-screen
             if (p.y > gui_h + 40) {
-                p.y = irandom_range(-gui_h, -40);
-                p.x = irandom_range(0, gui_w);
+                p.y  = irandom_range(-gui_h, -40);
+                p.x  = irandom_range(0, gui_w);
                 p.vx = -0.5 + random(1);
                 p.vy = 2.0 + random(3.0);
             }
