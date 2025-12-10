@@ -21,7 +21,7 @@ var header_vis_h    = header_bottom - y1;
 var footer_top_full = win_y + win_h_full - footer_h; 
 
 // NEW: as long as the window is open (not minimized), consider messages "read"
-if (!minimized && !intro_active && !choice_active && !typing)
+if (!minimized && visible && !intro_active && !choice_active && !typing)
 {
     global.hacker_unread = false;
 }
@@ -520,7 +520,9 @@ if (intro_active)
 if (global.hacker_key1_hint_pending
     && !intro_active
     && !choice_active
-    && !typing)
+    && !typing
+    && visible
+    && !minimized)
 {
     global.hacker_key1_hint_pending = false;
 
@@ -549,7 +551,9 @@ if (global.hacker_key1_hint_pending
 if (global.hacker_dove_calendar_pending
     && !intro_active
     && !choice_active
-    && !typing)
+    && !typing
+    && visible
+    && !minimized)
 {
     global.hacker_dove_calendar_pending = false;
     global.hacker_dove_calendar_fired   = true;
@@ -575,7 +579,9 @@ if (global.hacker_dove_calendar_pending
 if (global.hacker_key2_hint_pending
     && !intro_active
     && !choice_active
-    && !typing)
+    && !typing
+    && visible
+    && !minimized)
 {
     global.hacker_key2_hint_pending = false;
 
@@ -608,7 +614,9 @@ if (global.hacker_key2_hint_pending
 if (global.hacker_wifi_hint_pending
     && !intro_active
     && !choice_active
-    && !typing)
+    && !typing
+    && visible
+    && !minimized)
 {
     global.hacker_wifi_hint_pending = false;
 
@@ -657,7 +665,9 @@ if (global.hacker_dove_hint_pending
 if (global.hacker_dove_unlock_pending
     && !intro_active
     && !choice_active
-    && !typing)
+    && !typing
+    && visible
+    && !minimized)
 {
     global.hacker_dove_unlock_pending = false;
 
@@ -694,7 +704,9 @@ if (global.hacker_dove_unlock_pending
 if (global.hacker_dove_follow_pending
     && !intro_active
     && !choice_active
-    && !typing)
+    && !typing
+    && visible
+    && !minimized)
 {
     global.hacker_dove_follow_pending = false;
 
