@@ -30,11 +30,11 @@ choice1_opt2_text  = "Who are you?";
 choice1_opt3_text  = "...";
 
 // menu 2
-choice2_opt1_text  = "I’m calling the police.";
+choice2_opt1_text  = "I'm calling the police.";
 choice2_opt2_text  = "What secret?";
 
 // menu 3
-choice3_opt1_text  = "Don’t leave yet.";
+choice3_opt1_text  = "Don't leave yet.";
 choice3_opt2_text  = "Answer my questions first.";
 choice3_opt3_text  = "Why are you doing this?";
 

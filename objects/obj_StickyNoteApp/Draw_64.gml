@@ -49,7 +49,7 @@ draw_set_color(c_black);
 if (selected_index == -1) {
 
     draw_set_alpha(0.7);
-    draw_text(content_x1, content_y1 - 26, "All Notes");
+    draw_text(content_x1, content_y1 - 26, "Notes | Welcome, Vanessa Myers");
     draw_set_alpha(1);
 
     var area_w = (content_x2 - content_x1);
