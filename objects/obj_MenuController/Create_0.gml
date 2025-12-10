@@ -1,6 +1,7 @@
 // Force GUI to 1920x1080 for this room so layout is exact.
 display_set_gui_size(1920, 1080);
 
+global.menu_music_disabled = false;
 // ----- state machine -----
 state = "main";   // "main" | "load" | "settings" | "narr1" | "narr2"
 

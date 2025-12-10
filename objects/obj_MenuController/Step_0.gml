@@ -7,10 +7,13 @@ switch (state) {
 
 case "main":
     if (mouse_check_button_pressed(mb_left)) {
+		
         for (var i = 0; i < array_length(buttons); i++) {
+			
             var b = buttons[i];
             if (_hit(b, mx, my)) {
                 switch (b.kind) {
+					
                     case "load":     state = "load";    break;
                     case "new":
                         global.flags = {};
@@ -91,10 +94,15 @@ case "narr2":
         if (visible_chars >= string_length(lines[line_index])) {
             visible_chars = string_length(lines[line_index]); 
             done_line = true;
+			global.menu_music_disabled = true;
+		    if (audio_is_playing(bg_mus_menu)) {
+		        audio_stop_sound(bg_mus_menu);
+		    }
         }
     }
     if (mouse_check_button_pressed(mb_left) || keyboard_check_pressed(vk_enter) || keyboard_check_pressed(vk_space)) {
         _advance();
+		
     }
 break;
 }

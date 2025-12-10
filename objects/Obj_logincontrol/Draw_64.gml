@@ -19,5 +19,5 @@ if (hint_clicked) {
 draw_set_font(Login_hint)
 if (login_message != "") {
 	draw_set_color(c_red)
-    draw_text(1115, 600, login_message);
+    draw_text(1125, 605, login_message);
 }
