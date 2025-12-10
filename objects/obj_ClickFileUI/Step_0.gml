@@ -81,7 +81,9 @@ else if (mode == 3) {
     var back_x2 = cx + bw * 0.5;
 
     if (mx >= back_x1 && mx <= back_x2 && my >= btn_y && my <= btn_y + bh) {
-        // Return to your desktop room; ending sequence will handle itself there
-        room_goto(room_Desktop);
+        // Go to Credits room; ending sequence runs there
+        room_goto(room_Credits);
     }
 }
+
+

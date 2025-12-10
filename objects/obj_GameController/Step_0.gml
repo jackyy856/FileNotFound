@@ -13,16 +13,34 @@ if (global.hacker_key1_delay > 0) {
     }
 }
 
-//DELETE FOR REAL SUBMISSION -----------------------------
-/// Auto-unlock gallery, slack, recycle bin when Calendar is unlocked
+// Dove email timers (15s post-unlock, 30s follow-up)
+if (global.hacker_dove_unlock_timer > 0) {
+    global.hacker_dove_unlock_timer--;
+    if (global.hacker_dove_unlock_timer <= 0) {
+        global.hacker_dove_unlock_timer = -1;
+        global.hacker_dove_unlock_pending = true;
+        if (variable_global_exists("hacker_unread")) global.hacker_unread = true;
+    }
+}
 
-if (variable_struct_exists(global.apps_unlocked, "Calendar"))
-{
-    if (global.apps_unlocked.Calendar)
-    {
-        // Mirror Calendar's unlock state
-        global.apps_unlocked.Gallery    = true;
-        global.apps_unlocked.Slack      = true;
-        global.apps_unlocked.RecycleBin = true;
+if (global.hacker_dove_follow_timer > 0) {
+    global.hacker_dove_follow_timer--;
+    if (global.hacker_dove_follow_timer <= 0) {
+        global.hacker_dove_follow_timer = -1;
+        global.hacker_dove_follow_pending = true;
+        if (variable_global_exists("hacker_unread")) global.hacker_unread = true;
+    }
+}
+
+// iWork open timer (after first open)
+if (global.iwork_opened_once && global.hacker_iwork_follow_timer > 0) {
+    global.hacker_iwork_follow_timer--;
+    if (global.hacker_iwork_follow_timer <= 0) {
+        global.hacker_iwork_follow_timer = -1;
+        global.hacker_iwork_follow_pending = true;
+        if (variable_global_exists("hacker_unread")) {
+            global.hacker_unread = true;
+        }
+        global.hacker_iwork_unread_queued = false;
     }
 }

@@ -180,36 +180,82 @@ for (var j = 0; j < file_count; j++) {
     draw_set_valign(fa_middle);
     draw_text((x_left + x_right) * 0.5, (x_top + x_bottom) * 0.5, "X");
 
-        // text area
-	    var text_left   = bx + 12;
-	    var text_top    = by + title_h + 8;
-	    var text_right  = bx + bw - 12 - scroll_w - 4;
-	    var text_bottom = by + bh - 10;
-	    var text_w      = text_right - text_left;
-	    var visible_h   = text_bottom - text_top;
+    // ---------- text / cat content area ----------
+    var text_left   = bx + 12;
+    var text_top    = by + title_h + 8;
+    var text_right  = bx + bw - 12 - scroll_w - 4;
+    var text_bottom = by + bh - 10;
+    var text_w      = text_right - text_left;
+    var visible_h   = text_bottom - text_top;
 
-	    if (text_w > 0 && visible_h > 0) {
-	        // ensure surface exists and is correct size
-	        if (!surface_exists(text_surface)
-	            || surface_get_width(text_surface)  != text_w
-	            || surface_get_height(text_surface) != visible_h)
-	        {
-	            if (surface_exists(text_surface)) surface_free(text_surface);
-	            text_surface = surface_create(text_w, visible_h);
-	        }
+    if (text_w > 0 && visible_h > 0) {
 
-	        // draw text into the surface (clipped to its bounds)
-	        surface_set_target(text_surface);
-	        draw_clear_alpha(c_white, 1);  // white background inside the popup
-	        draw_set_halign(fa_left);
-	        draw_set_valign(fa_top);
-	        draw_set_color(c_black);
-	        draw_text_ext(0, -g.scroll, g.content, -1, text_w);
-	        surface_reset_target();
+        // For the first three files (0,1,2), show cat memes instead of text
+        if (j <= 2) {
+            // white background in the text area
+            draw_set_color(c_white);
+            draw_rectangle(text_left, text_top, text_right, text_bottom, false);
 
-	        // now draw the surface into the popup's text area
-	        draw_surface(text_surface, text_left, text_top);
-	    }
+            // pick the correct cat sprite for this file
+            var spr_cat;
+            if (j == 0) {
+                spr_cat = spr_catmeme1;
+            } else if (j == 1) {
+                spr_cat = spr_catmeme2;
+            } else {
+                spr_cat = spr_catmeme3;
+            }
+
+            if (sprite_exists(spr_cat)) {
+                var sw = sprite_get_width(spr_cat);
+                var sh = sprite_get_height(spr_cat);
+
+                var area_w = text_w;
+                var area_h = visible_h;
+
+                // scale to fit the popup area
+                var scale = min(area_w / sw, area_h / sh);
+                var draw_w = sw * scale;
+                var draw_h = sh * scale;
+
+                var draw_x = text_left + (area_w - draw_w) * 0.5;
+                var draw_y = text_top  + (area_h - draw_h) * 0.5;
+
+                // animate across frames if the sprite has multiple subimages
+                var frames = sprite_get_number(spr_cat);
+                var frame  = 0;
+                if (frames > 1) {
+                    frame = (floor(current_time / 80) mod frames);
+                }
+
+                draw_sprite_ext(spr_cat, frame, draw_x, draw_y, scale, scale, 0, c_white, 1);
+            }
+
+        } else {
+            // For the yellow file (index 3), keep the original text behavior
+
+            // ensure surface exists and is correct size
+            if (!surface_exists(text_surface)
+                || surface_get_width(text_surface)  != text_w
+                || surface_get_height(text_surface) != visible_h)
+            {
+                if (surface_exists(text_surface)) surface_free(text_surface);
+                text_surface = surface_create(text_w, visible_h);
+            }
+
+            // draw text into the surface (clipped to its bounds)
+            surface_set_target(text_surface);
+            draw_clear_alpha(c_white, 1);  // white background inside the popup
+            draw_set_halign(fa_left);
+            draw_set_valign(fa_top);
+            draw_set_color(c_black);
+            draw_text_ext(0, -g.scroll, g.content, -1, text_w);
+            surface_reset_target();
+
+            // now draw the surface into the popup's text area
+            draw_surface(text_surface, text_left, text_top);
+        }
+    }
 
     // scrollbar track
     var track_left   = bx + bw - 8 - scroll_w;
@@ -224,11 +270,11 @@ for (var j = 0; j < file_count; j++) {
 
     // thumb
     if (g.scroll_max > 0) {
-        var visible_h = text_bottom - text_top;
-        var track_h   = track_bottom - track_top;
-        var thumb_h   = max(20, track_h * (visible_h / (visible_h + g.scroll_max)));
-        var ratio     = (g.scroll_max == 0) ? 0 : (g.scroll / g.scroll_max);
-        var thumb_top = track_top + ratio * (track_h - thumb_h);
+        var visible_h2 = text_bottom - text_top;
+        var track_h    = track_bottom - track_top;
+        var thumb_h    = max(20, track_h * (visible_h2 / (visible_h2 + g.scroll_max)));
+        var ratio      = (g.scroll_max == 0) ? 0 : (g.scroll / g.scroll_max);
+        var thumb_top  = track_top + ratio * (track_h - thumb_h);
         var thumb_bottom = thumb_top + thumb_h;
 
         draw_set_color(make_colour_rgb(180,180,180));

@@ -78,6 +78,11 @@ if (inbox_mode && gallery_open && !inbox_key_collected) {
         if (mx >= rx && mx <= rx + rw && my >= ry && my <= ry + rh && rw > 0 && rh > 0) {
             // Mark collected locally (for immediate Draw feedback)
             inbox_key_collected = true;
+            // Play key SFX safely
+            var _snd = asset_get_index("sfx_keywow");
+            if (_snd != -1) {
+                audio_play_sound(_snd, 1, false);
+            }
             
             // Ensure global array exists
             if (!variable_global_exists("key_collected")) {
