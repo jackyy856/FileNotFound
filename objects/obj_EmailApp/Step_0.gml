@@ -504,7 +504,7 @@ if (selected_index == corrupted_index && puzzle_solved && !email_key1_collected)
             }
             global.apps_unlocked.Calendar = true;
 
-            // queue hacker hint immediately (only once)
+            // queue hacker hint after a brief delay so key SFX can finish
             if (!variable_global_exists("hacker_key1_hint_pending")) {
                 global.hacker_key1_hint_pending = false;
             }
@@ -512,17 +512,24 @@ if (selected_index == corrupted_index && puzzle_solved && !email_key1_collected)
                 global.hacker_key1_hint_fired = false;
             }
             if (!global.hacker_key1_hint_fired) {
-                global.hacker_key1_hint_pending = true;
-                global.hacker_key1_hint_fired   = true;
-                if (variable_global_exists("hacker_unread")) {
-                    global.hacker_unread = true;
-                }
+                // delay 2s after SFX before sending notification
+                key1_hacker_delay = room_speed * 2;
             }
 
-            // no further delay needed
-            key1_hacker_delay = 0;
-
         }
+    }
+}
+
+// ------------------ DELAYED HACKER NOTIF AFTER KEY #1 ------------------
+if (key1_hacker_delay > 0) {
+    key1_hacker_delay -= 1;
+    if (key1_hacker_delay <= 0) {
+        if (!global.hacker_key1_hint_fired) {
+            global.hacker_key1_hint_pending = true;
+            global.hacker_key1_hint_fired   = true;
+            if (variable_global_exists("hacker_unread")) global.hacker_unread = true;
+        }
+        key1_hacker_delay = 0;
     }
 }
 

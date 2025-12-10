@@ -54,6 +54,10 @@ if (!variable_global_exists("calendar_opened_once"))        global.calendar_open
 if (!variable_global_exists("hacker_dove_calendar_pending")) global.hacker_dove_calendar_pending = false;
 if (!variable_global_exists("hacker_dove_calendar_fired"))   global.hacker_dove_calendar_fired   = false;
 if (!variable_global_exists("dove_unlocked"))               global.dove_unlocked               = false;
+if (!variable_global_exists("iwork_opened_once"))           global.iwork_opened_once           = false;
+if (!variable_global_exists("hacker_iwork_follow_timer"))   global.hacker_iwork_follow_timer   = -1;
+if (!variable_global_exists("hacker_iwork_follow_pending")) global.hacker_iwork_follow_pending = false;
+if (!variable_global_exists("hacker_iwork_unread_queued"))  global.hacker_iwork_unread_queued  = false;
 
 // one-time desktop notification meow ---
 if (!variable_global_exists("desktop_meow_played")) {

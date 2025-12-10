@@ -43,6 +43,17 @@ if (!instance_exists(app_obj)) {
     }
 }
 
+// First open: set iWork opened flag and start 30s timer for follow-up
+if (!global.iwork_opened_once) {
+    global.iwork_opened_once = true;
+    if (variable_global_exists("hacker_iwork_follow_timer")) {
+        global.hacker_iwork_follow_timer = room_speed * 30;
+    }
+    if (variable_global_exists("hacker_iwork_unread_queued")) {
+        global.hacker_iwork_unread_queued = false;
+    }
+}
+
 // Consume the click so it doesn’t fall through
 if (variable_global_exists("_ui_click_consumed")) {
     global._ui_click_consumed = true;
