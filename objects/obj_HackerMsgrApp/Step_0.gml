@@ -568,3 +568,30 @@ if (global.hacker_key2_hint_pending
     }
 }
 
+// --- WIFI HINT: after both fake wifi passwords are tried ---
+if (global.hacker_wifi_hint_pending
+    && !intro_active
+    && !choice_active
+    && !typing)
+{
+    global.hacker_wifi_hint_pending = false;
+
+    hacker_offline = false;
+
+    // wifi branch entry
+    conversation_phase = 10;
+
+    intro_messages = [
+        { sender: "UrHacker", text: "stuck?", is_hacker: true },
+        { sender: "UrHacker", text: "dont tell me ur still reusing the same passwords…", is_hacker: true }
+    ];
+
+    intro_index    = 0;
+    intro_active   = true;
+    typing         = true;
+    intro_timer_ms = 3000; // 3s "is typing..."
+
+    global.hacker_unread = true;
+    hacker_offline = true;
+}
+

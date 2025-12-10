@@ -146,26 +146,49 @@ if (selected_index == -1) {
         }
         
         if (actual_idx >= 0 && actual_idx < len) {
-            selected_index = actual_idx;
-            inbox[actual_idx].read = true;
-            thread_scroll = 0; // Reset scroll when opening new email
-
-            // unlock messenger if suspicious
-	    if (inbox[actual_idx].is_suspicious) {
-		    if (!is_undefined(global.apps_unlocked) && is_struct(global.apps_unlocked)) {
-		        global.apps_unlocked.HackerMsgr = true;
-		    }
-		}
-
-
-            if (actual_idx == corrupted_index) {
-                puzzle_active     = puzzle_gate && !puzzle_solved;
-                puzzle_hint_timer = 0;
-                puzzle_show_hint  = false;
+            var is_dove = (inbox[actual_idx].id == dove_email_id);
+            if (is_dove && dove_locked) {
+                var pw = get_string("Enter password", "");
+                if (is_string(pw) && string_lower(string_trim(pw)) == dove_password) {
+                    dove_locked = false;
+                    selected_index = actual_idx;
+                    inbox[actual_idx].read = true;
+                    thread_scroll = 0;
+                    if (variable_global_exists("hacker_dove_unlock_timer")) {
+                        global.hacker_dove_unlock_timer = room_speed * 15;
+                    }
+                } else {
+                    if (variable_global_exists("calendar_opened_once") && global.calendar_opened_once) {
+                        if (variable_global_exists("hacker_dove_hint_fired") && !global.hacker_dove_hint_fired) {
+                            global.hacker_dove_hint_fired = true;
+                            if (variable_global_exists("hacker_dove_hint_pending")) {
+                                global.hacker_dove_hint_pending = true;
+                            }
+                        }
+                    }
+                    selected_index = -1;
+                }
             } else {
-                puzzle_active     = false;
-                puzzle_hint_timer = 0;
-                puzzle_show_hint  = false;
+                selected_index = actual_idx;
+                inbox[actual_idx].read = true;
+                thread_scroll = 0; // Reset scroll when opening new email
+
+                // unlock messenger if suspicious
+	            if (inbox[actual_idx].is_suspicious) {
+		            if (!is_undefined(global.apps_unlocked) && is_struct(global.apps_unlocked)) {
+		                global.apps_unlocked.HackerMsgr = true;
+		            }
+		        }
+
+                if (actual_idx == corrupted_index) {
+                    puzzle_active     = puzzle_gate && !puzzle_solved;
+                    puzzle_hint_timer = 0;
+                    puzzle_show_hint  = false;
+                } else {
+                    puzzle_active     = false;
+                    puzzle_hint_timer = 0;
+                    puzzle_show_hint  = false;
+                }
             }
         }
     }
@@ -464,7 +487,7 @@ if (selected_index == corrupted_index && puzzle_solved && !email_key1_collected)
             }
             global.key_collected[0] = true;  // first key obtained
 
-            // unlock Calendar app
+            // unlock Calendar app only
             if (!variable_global_exists("apps_unlocked")) {
                 global.apps_unlocked = {
                     Email      : true,
@@ -480,7 +503,7 @@ if (selected_index == corrupted_index && puzzle_solved && !email_key1_collected)
             global.apps_unlocked.Calendar = true;
 
             // start 2.5s delay before hacker reacts
-			global.hacker_key1_delay = room_speed * 2.5;
+			key1_hacker_delay = room_speed * 2.5;
 
         }
     }
@@ -488,18 +511,7 @@ if (selected_index == corrupted_index && puzzle_solved && !email_key1_collected)
 
 // ------------------ DELAYED HACKER NOTIF AFTER KEY #1 ------------------
 if (key1_hacker_delay > 0) {
-    // Email key reward
-	email_key1_collected = false;
-	email_key1_rect      = [0,0,0,0];
-
-	// global timer for hacker reaction (initialized in GameController)
-	if (!variable_global_exists("hacker_key1_delay")) {
-	    global.hacker_key1_delay = -1;
-	}
-	if (!variable_global_exists("hacker_key1_hint_pending")) {
-	    global.hacker_key1_hint_pending = false;
-	}
-
+    key1_hacker_delay -= 1;
     if (key1_hacker_delay <= 0) {
         // safety init
         if (!variable_global_exists("hacker_key1_hint_pending")) {

@@ -6,6 +6,11 @@ if (!global.apps_unlocked.Calendar) {
     exit;
 }
 
+// Mark calendar opened at least once (for hacker gating)
+if (!global.calendar_opened_once) {
+    global.calendar_opened_once = true;
+}
+
 // Open or focus the Calendar app
 var inst = instance_find(obj_CalendarApp, 0);
 
