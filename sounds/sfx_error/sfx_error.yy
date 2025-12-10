@@ -1,6 +1,6 @@
 {
   "$GMSound":"v2",
-  "%Name":"sfx_meow2",
+  "%Name":"sfx_error",
   "audioGroupId":{
     "name":"audiogroup_default",
     "path":"audiogroups/audiogroup_default",
@@ -10,9 +10,9 @@
   "compression":0,
   "compressionQuality":4,
   "conversionMode":0,
-  "duration":1.2538775,
+  "duration":3.6973922,
   "exportDir":"",
-  "name":"sfx_meow2",
+  "name":"sfx_error",
   "parent":{
     "name":"SFX",
     "path":"folders/Sounds/SFX.yy",
@@ -21,6 +21,6 @@
   "resourceType":"GMSound",
   "resourceVersion":"2.0",
   "sampleRate":44100,
-  "soundFile":"sfx_meow2.mp3",
+  "soundFile":"sfx_error.mp3",
   "volume":1.0,
 }
