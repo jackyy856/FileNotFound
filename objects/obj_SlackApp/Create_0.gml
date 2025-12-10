@@ -131,7 +131,7 @@ var elizabeth_msgs = [
 
 var thomas_msgs = [
     { text: "Security wants a summary of the incident from last week.",  who: "them", time: "2:18 PM" },
-    { text: "I’ll draft something high-level and send it to you for review.", who: "me", time: "2:22 PM" },
+    { text: "I’ll draft something and send it to you for review.", who: "me", time: "2:22 PM" },
 
     // ---- Your added escalation ----
     { text: "I know what you did.",                                     who: "them", time: "4:10 PM" },
@@ -139,7 +139,7 @@ var thomas_msgs = [
 
     // hours later
     { text: "I voice-recorded the meeting.",                             who: "me",   time: "9:03 PM" },
-    { text: "Made sure to eliminate it. And also, kept the bank statements in a safe place.", who: "them", time: "9:05 PM" }
+    { text: "Of course you did... Just delete. And also, keep the bank statements in a safe place.", who: "them", time: "9:05 PM" }
 ];
 
 // =======================
@@ -148,10 +148,10 @@ var thomas_msgs = [
 var leonn_msgs = [
 
     // ---- Day 1 ----
-    { kind: "day", label: "Feb 14" },
+    { kind: "day", label: "7 mos. ago" },
 
     { kind: "msg", who: "them",
-      text: "um hi Ms Myers, my name is Leonn, im an intern under Mr Fowler. I fixed the VPN thing..",
+      text: "um hi Ms Myers, my name is Leonn, i'm an intern under Mr Fowler. I fixed the VPN issue we've been having..",
       time: "10:08 AM" },
 
     { kind: "msg", who: "me",
@@ -160,10 +160,10 @@ var leonn_msgs = [
 
 
     // ---- Day 2 ----
-    { kind: "day", label: "Feb 15" },
+    { kind: "day", label: "7 mos. ago" },
 
     { kind: "msg", who: "them",
-      text: "I saw you in the cafeteria today",
+      text: "i saw you in the cafeteria today",
       time: "11:23 AM" },
 
     { kind: "msg", who: "me",
@@ -179,7 +179,7 @@ var leonn_msgs = [
       time: "11:26 AM" },
 
     { kind: "msg", who: "them",
-      text: "I can help if you like. ive been studying our logs.",
+      text: "i can help if you like. i've been studying our logs.",
       time: "11:30 AM" },
 
     { kind: "msg", who: "me",
@@ -187,7 +187,7 @@ var leonn_msgs = [
       time: "11:32 AM" },
 
     { kind: "msg", who: "them",
-      text: "yeah but im good at this! I already flagged 3 weird access patterns. im not supposed to touch them though.",
+      text: "yeah but im good at this! i already flagged 3 weird access patterns. im not supposed to touch them though.",
       time: "11:34 AM" },
 
     { kind: "msg", who: "me",
@@ -196,7 +196,7 @@ var leonn_msgs = [
 
 
     // ---- Day 3 ----
-    { kind: "day", label: "Feb 16" },
+    { kind: "day", label: "6 mos. ago" },
 
     { kind: "msg", who: "them",
       text: "sent you an email with my notes btw.",
@@ -228,7 +228,7 @@ var leonn_msgs = [
 
 
     // ---- Day 4 ----
-    { kind: "day", label: "Feb 18" },
+    { kind: "day", label: "6 mos. ago" },
 
     { kind: "msg", who: "them",
       text: "I think someone’s trying to cover their tracks now. the logs look scrubbed.",
@@ -261,12 +261,12 @@ var leonn_msgs = [
       time: "4:03 PM" },
 
     { kind: "msg", who: "them",
-      text: "sorry ms myers. data only. got it.",
+      text: "sorry miss myers. data only. got it.",
       time: "4:05 PM" },
 
 
     // ---- Day 5 ----
-    { kind: "day", label: "Feb 20" },
+    { kind: "day", label: "6 mos. ago" },
 
     { kind: "msg", who: "them",
       text: "I ran another pass on the logs… it’s definitely someone with elevated access.",
@@ -311,13 +311,13 @@ var leonn_msgs = [
       time: "2:07 PM" },
 
     { kind: "msg", who: "them",
-      text: "ooh. yes maam! (cute cat emoji)",
+      text: "ooh. yes ma'am! :3",
       time: "2:08 PM" },
 
 
     // ---- Same day, later ----
     { kind: "msg", who: "them",
-      text: "can I stay in your office for a bit? Richard is being weird today.",
+      text: "can i stay in your office for a bit? richard is being weird today.",
       time: "3:19 PM" },
 
     { kind: "msg", who: "me",
@@ -335,7 +335,7 @@ var leonn_msgs = [
       time: "4:04 PM" },
 
     { kind: "msg", who: "them",
-      text: "yes! he thinks he truly is the best but well, he is...e isnt even THAT good, i can do better than that as an intern.",
+      text: "yes! he thinks he truly is the best but well, he is...he isnt even THAT good, i can do better than that as an intern.",
       time: "4:08 PM" },
 
     { kind: "msg", who: "me",
@@ -343,23 +343,15 @@ var leonn_msgs = [
       time: "4:10 PM" },
 
     { kind: "msg", who: "them",
-      text: "...yeah. I am. I wish I had a boss like you, Van",
+      text: "...yeah. i am. i wish i had a boss like you, Miss Myers",
       time: "4:12 PM" },
-
-    { kind: "msg", who: "me",
-      text: "Van?",
-      time: "4:13 PM" },
-
-    { kind: "msg", who: "them",
-      text: "likeanicknameuknow uh ah yes.",
-      time: "4:14 PM" },
 
     { kind: "msg", who: "them",
       text: "whatevs. i got left behind again by the rest of IT. wanna have lunch together?",
       time: "4:27 PM" },
 
     { kind: "msg", who: "me",
-      text: "Sure. Tell me more about Richard.",
+      text: "Sure. While we're at it, I'd like to discuss Richard.",
       time: "4:30 PM" }
 ];
 

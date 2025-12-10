@@ -43,45 +43,80 @@ var content_decoy_note =
 
 var content_vanessa_thomas =
 "Thomas: Close the door behind you.\n" +
-"Vanessa: Did.\n" +
-"Vanessa: ..\n" +
+"Vanessa: ...\n" +
 "Vanessa: What do you know?\n" +
-"Thomas: Everything. I found the bank statements while clearing some data.\n" +
-"Thomas: It was a coincidence, though. Figuring that out.\n" +
+"Thomas: Enough.\n" +
+"Thomas: Q3 backup routine flagged a mismatch on the finance server.\n" +
+"Thomas: I pulled the raw logs. Night access from your laptop, 2:13 a.m., three days before the internal audit.\n" +
+"Vanessa: You go through everyone’s late-night sessions now?\n" +
+"Thomas: Only the ones that reroute a five-figure transfer through a ghost vendor with no payroll, no tax ID, and an address that’s a parking lot.\n" +
+"Thomas: The money leaves Rosenwood, lands in that shell, then vanishes into three smaller accounts. Classic.\n" +
 "Vanessa: Where are you going with this?\n" +
-"Thomas: Isn’t it obvious? I haven’t reported you nor have I the intention.\n" +
-"Vanessa: …You also want to get rid of Richard.\n" +
-"Thomas: Exactly. But I was never able to change the CTO’s mind. This might be the solution.\n" +
-"Vanessa: Great. Back me up and we can put this behind.\n" +
-"Thomas: Not so fast. You do understand what you did, right?\n" +
-"Vanessa: Hah, take money from the project, send it to a ghost company and put Richard's name as the party to blame. That was it.\n" +
-"Thomas: More than 100K dollars…\n" +
-"Thomas: And, why are you so confident in saying it out loud, what if I am recording?\n" +
-"Vanessa: You are not.\n" +
-"Thomas: You seem sure of it.\n" +
+"Thomas: Isn’t it obvious? I know you did the embezzlement, Vanessa. And I know you rewrote the trail.\n" +
+"Thomas: Access keys, approval stamps, device IDs… all rewritten so it looks like Richard pushed the payment himself.\n" +
+"Thomas: Take money from the project, send it to a ghost company, put Richard’s name on the paperwork, and let everyone finally see him as the problem.\n" +
+"Vanessa: That’s the summary...\n" +
+"Thomas: A few dozen grand...\n" +
+"Thomas: I have to admit, it's genious\n" +
+"Vanessa: ...\n" +
+"Thomas: Don't give me that look. You're not in trouble quite yet." +
+"Vanessa: I don't follow?\n" +
+"Thomas: We were already watching him for Sofia’s case, nobody will question it.\n" +
+"Vanessa: HR wasn’t watching him. HR buried her case.\n" +
+"Thomas: Exactly. Several emails from Sofia. More follow-ups from you. Case number, timestamps, nothing done.\n" +
+"Thomas: Legal told them to be careful because Richard is close to the CTO. HR chose to sit on it.\n" +
+"Thomas: You decided to solve it another way.\n" +
+"Vanessa: I did what they refused to do.\n" +
+"Thomas: And where's your denial? What if I’m recording?\n" +
+"Vanessa: You’re not.\n" +
+"Thomas: You seem very sure of that.\n" +
 "Vanessa: I can bet on it.\n" +
-"Thomas: …You truly know how to read people.\n" +
-"Vanessa: Just go back to the point. I have work to do.\n" +
-"Thomas: Alright. In that case, you should know Richard won’t be the only one to fall.\n" +
-"Vanessa: What?\n" +
-"Thomas: That intern.. the one you used to get Richard’s access information, he was there when Richard \"did\" the embezzlement. What was his name?\n" +
-"Vanessa: …Leonn.\n" +
-"Thomas: He won’t go to prison. But I’ll have to fire him and blacklist him. He won’t find a job in a company as big as ours again. Maybe not even in the IT industry.\n" +
-"Vanessa: …\n" +
+"Thomas: ...You really do know how to read people.\n" +
+"Vanessa: Then stop circling. You haven’t reported me, and you don’t intend to.\n" +
+"Vanessa: Because you also want Richard gone.\n" +
+"Thomas: Correct.\n" +
+"Thomas: I’ve tried to get the CTO to cut him loose for years. Complaints, performance flags, nothing sticks.\n" +
+"Thomas: This? This sticks.\n" +
+"Vanessa: Good. Back me up, and we can put this behind us.\n" +
+"Thomas: Not so fast.\n" +
+"Thomas: You do understand what you actually set in motion, right?\n" +
+"Vanessa: You just explained it.\n" +
+"Thomas: No. I explained the money.\n" +
+"Thomas: I’m talking about everyone who gets dragged down with him on paper.\n" +
+"Vanessa: ...What are you implying?\n" +
+"Thomas: The night 'Richard' did the embezzlement, he wasn’t logged in alone.\n" +
+"Thomas: Your little leverage. The intern he keeps glued to his side.\n" +
+"Thomas: He’s on the same VPN tunnel, same room, same timestamp. Witness by proximity.\n" +
+"Vanessa: ...Leonn.\n" +
+"Thomas: Yes. Your friendly IT puppy.\n" +
+"Thomas: The logs show him escalating Richard’s permissions earlier that week. Under orders, sure, but HR and Legal won’t care.\n" +
+"Thomas: When this goes up the chain, they’ll see a senior officer and his junior both tied to the same dirty transaction.\n" +
+"Vanessa: Is he going to prison?\n" +
+"Thomas: No. Richard will. The intern will just be fired, blacklisted, and quietly flagged as 'security risk' in every reference call.\n" +
+"Thomas: No big firm will touch him again. Maybe not even a mid-tier one.\n" +
+"Vanessa: ...\n" +
 "Thomas: Are you feeling bad?\n" +
 "Vanessa: I can’t take it back.\n" +
 "Thomas: You could.\n" +
-"Vanessa: So I go to prison?\n" +
+"Thomas: I redact the report, kill the alerts, restore the original transaction trail, and we both pretend I never saw any of this.\n" +
+"Vanessa: So I go to prison instead, is that it?\n" +
 "Thomas: You did the crime.\n" +
-"Vanessa: For Sofia.\n" +
-"Thomas: To not feel bad about Sofia.\n" +
-"Vanessa: …\n" +
-"Thomas: Are you okay dragging an innocent party into this and destroying their career? You make that decision.\n" +
-"Vanessa: I don’t care about that guy. Sofia is more important.\n" +
-"Thomas: … You are crueler than I thought.\n" +
+"Vanessa: I did it because HR left Sofia alone.\n" +
+"Thomas: You did it because you couldn’t live with feeling helpless about Sofia.\n" +
+"Thomas: That’s not the same thing.\n" +
+"Vanessa: ...\n" +
+"Thomas: So here it is.\n" +
+"Thomas: Are you okay dragging an innocent party into this and destroying his career to get Richard out and protect yourself?\n" +
+"Thomas: You decide that. Not me.\n" +
+"Vanessa: I don’t care about that guy.\n" +
+"Vanessa: Sofia is more important. My life is more important.\n" +
+"Thomas: ...You’re crueler than I thought.\n" +
 "Vanessa: Are you on my side or not?\n" +
-"Thomas: I’ll help you. But you chose this. Don’t regret it.\n" +
-"Vanessa: As if I could.";
+"Thomas: I’ll help you.\n" +
+"Thomas: I’ll write the report so Richard takes the full fall, and Leonn is just 'careless' enough to be disposable.\n" +
+"Thomas: HR gets their neat resolution, the CTO loses his favorite dog, and nobody asks why the numbers never quite balanced before.\n" +
+"Thomas: But you chose this. Don’t pretend you were forced.\n" +
+"Vanessa: As if I could ever forget...";
 
 text_surface = -1; // surface for clipping popup text
 
