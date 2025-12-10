@@ -43,6 +43,7 @@ else {
             if (_hit_rect(mx,my,link_rect)) clicked_link = true;
         }
         if (clicked_link) {
+			audio_play_sound(sfx_error, 0, false)
             global._queued_narr_lines = [
                 "What just happened?",
                 "Oh right... that tech intern warned you about clicking random links...",
@@ -50,6 +51,7 @@ else {
             ];
             global._queued_narr_state = "narr2";
             room_goto(room_Menu);
+			
             exit;
         } else {
             wrong_body_clicks += 1;

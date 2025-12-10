@@ -51,6 +51,7 @@ if (!capture_mode && !guided_mode && mouse_check_button_pressed(mb_left)) {
             if (_in_rect(p, BTN_PHISH_LINK)) {
                 // >>> Handoff to Menu for Black Narration Screen 2 <<<
                 // obj_MenuController should detect these globals and start narr2.
+				audio_play_sound(sfx_error, 1, true)
                 global._queued_narr_lines = [
                     "What just happened?",
                     "Oh right... that tech intern warned you about random links...",
@@ -58,6 +59,10 @@ if (!capture_mode && !guided_mode && mouse_check_button_pressed(mb_left)) {
                 ];
                 global._queued_narr_state = "narr2";
                 room_goto(room_Menu);
+				global.menu_music_disabled = true;
+			    if (audio_is_playing(bg_mus_menu)) {
+			        audio_stop_sound(bg_mus_menu);
+			    }
             } else {
                 show_prompt("Are you kidding? It’s about time I got rewarded for my work.");
             }
