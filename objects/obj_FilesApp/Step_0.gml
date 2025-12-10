@@ -399,6 +399,25 @@ if (view_mode == 2) {
                 }
 
                 global.key_collected[2] = true;
+
+                // Play key SFX
+                var _snd_fw = asset_get_index("sfx_keywow");
+                if (_snd_fw != -1) {
+                    audio_play_sound(_snd_fw, 1, false);
+                }
+
+                // Trigger delayed hacker follow-up for key #3 (once)
+                if (!variable_global_exists("hacker_key3_hint_fired"))   global.hacker_key3_hint_fired   = false;
+                if (!variable_global_exists("hacker_key3_delay"))        global.hacker_key3_delay        = -1;
+                if (!variable_global_exists("hacker_key3_hint_pending")) global.hacker_key3_hint_pending = false;
+
+                if (!global.hacker_key3_hint_fired) {
+                    global.hacker_key3_hint_fired = true;
+                    global.hacker_key3_delay      = room_speed * 2;
+                    if (variable_global_exists("hacker_unread")) {
+                        global.hacker_unread = true;
+                    }
+                }
             }
         }
     }
