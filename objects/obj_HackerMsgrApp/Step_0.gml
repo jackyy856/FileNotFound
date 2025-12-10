@@ -698,7 +698,7 @@ if (global.hacker_key2_hint_pending
 
     intro_messages = [
         { sender: "UrHacker", text: "i thought we made such a great team", is_hacker: true },
-        { sender: "UrHacker", text: "the young credulous intern... getting buddy-buddy with the director of a different \ndepartment.", is_hacker: true },
+        { sender: "UrHacker", text: "the young credulous intern... getting buddy-buddy with the director of a different dept.", is_hacker: true },
         { sender: "UrHacker", text: "i should’ve know it was too good to be true.", is_hacker: true }
     ];
 
