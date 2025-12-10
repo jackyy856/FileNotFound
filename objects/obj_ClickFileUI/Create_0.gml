@@ -7,3 +7,7 @@
 mode   = 0;
 result = "";
 target_inst = noone;
+
+// Countdown for initial Delete/Share choice (5 seconds)
+timer_frames = room_speed * 5;
+lose_triggered = false;

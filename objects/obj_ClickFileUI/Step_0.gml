@@ -13,6 +13,17 @@ var cy = 1080 * 0.5;
 var bw = 220;
 var bh = 50;
 
+// Countdown while on initial prompt
+if (mode == 0 && !lose_triggered) {
+    timer_frames = max(0, timer_frames - 1);
+    if (timer_frames <= 0) {
+        lose_triggered = true;
+        result = "lose";
+        global.file_minigame_result = "lose";
+        mode = 3;
+    }
+}
+
 if (mode == 0) {
     // Delete / Share buttons
     var btn_y = cy + 40;
@@ -25,10 +36,14 @@ if (mode == 0) {
     if (mx >= del_x1 && mx <= del_x2 && my >= btn_y && my <= btn_y + bh) {
         // clicked Delete -> go to "Are you sure?"
         mode = 1;
+        lose_triggered = false;
+        timer_frames = room_speed * 5;
     }
     else if (mx >= share_x1 && mx <= share_x2 && my >= btn_y && my <= btn_y + bh) {
         // clicked Share -> go to Share screen
         mode = 2;
+        lose_triggered = false;
+        timer_frames = room_speed * 5;
     }
 }
 else if (mode == 1) {
@@ -52,6 +67,8 @@ else if (mode == 1) {
     else if (mx >= no_x1 && mx <= no_x2 && my >= btn_y && my <= btn_y + bh) {
         // Cancel -> back to Delete / Share
         mode = 0;
+        lose_triggered = false;
+        timer_frames = room_speed * 5;
     }
 }
 else if (mode == 2) {
@@ -72,6 +89,8 @@ else if (mode == 2) {
     else if (mx >= cancel_x1 && mx <= cancel_x2 && my >= btn_y && my <= btn_y + bh) {
         // Cancel -> back to Delete / Share
         mode = 0;
+        lose_triggered = false;
+        timer_frames = room_speed * 5;
     }
 }
 else if (mode == 3) {

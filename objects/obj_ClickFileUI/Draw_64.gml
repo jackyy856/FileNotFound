@@ -33,6 +33,10 @@ draw_set_color(c_black);
 if (mode == 0) {
     draw_text(cx, py1 + 24, "You clicked the real file!");
     draw_text(cx, py1 + 60, "What do you want to do with it?");
+    var seconds_left = ceil(max(0, timer_frames) / room_speed);
+    draw_set_color(c_red);
+    draw_text(cx, py1 + 96, "Time left: " + string(seconds_left) + "s");
+    draw_set_color(c_black);
 }
 else if (mode == 1) {
     draw_text(cx, py1 + 24, "Are you sure?");
@@ -43,7 +47,9 @@ else if (mode == 2) {
     draw_text(cx, py1 + 60, "Share this file directly to the hacker.");
 }
 else if (mode == 3) {
-    var msg = (result == "deleted") ? "File deleted." : "Shared successfully!";
+    var msg = "Shared successfully!";
+    if (result == "deleted") msg = "File deleted.";
+    else if (result == "lose") msg = "You Lose";
     draw_text(cx, py1 + 24, msg);
 }
 
