@@ -46,13 +46,13 @@ inbox = [
     { id:0,  from:"announcementz@rosenw00d.hr", subject:"You have been selected for a bonus opportunity!",
       body:"Congratulations!\n\n\n\nThanks to your outstanding performance, we have an amazing notice to share.\n\n\n\nPlease click here to redeem your certificate of recognition.\n\n\n\nThank you for your hard work!",
       read:false, show_in_inbox:true },
-    { id:20, from:"Rosenwood Corps HR <hr@rosenwood.com>", subject:"Mandatory Review: Code of Conduct Update",
+    { id:20, from:"Rosenwood Corps HR <hr@rosenwood.com>", subject:"Mandatory Review: Code of Conduct \n\nUpdate",
       body:"Hello Vanessa, ...", read:true, show_in_inbox:true },
-    { id:30, from:"Thomas Wylde <twylde@rosenwood.com>", subject:"Log review complete",
+    { id:30, from:"\nThomas Wylde <twylde@rosenwood.com>", subject:"Log review complete",
       body:"I've examined the access logs you asked for.", read:true, show_in_inbox:true },
-    { id:60, from:"Elizabeth Newman <enewman@rosenwood.com>", subject:"Corey finish the reconciliations and fix the numbers",
+    { id:60, from:"Elizabeth Newman <enewman@rosenwood.com>", subject:"Corey finish the reconciliations and \n\nfix the numbers",
       body:"Hey, I can't finalize the report without your section.", read:true, show_in_inbox:true },
-    { id:59, from:"Corey Lewis <clewis@rosenwood.com>", subject:"RE: Corey finish the reconciliations and fix the numbers",
+    { id:59, from:"\nCorey Lewis <clewis@rosenwood.com>", subject:"RE: Corey finish the reconciliations and fix the \nnumbers",
       body:"Hello, forgot about it, should be done now.", read:true, show_in_inbox:true }
 ];
 

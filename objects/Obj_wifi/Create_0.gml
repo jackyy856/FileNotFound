@@ -153,7 +153,7 @@ handle_password_submission = function() {
 	    }
 
         // Check correct password for Myers0923
-        if (input_text == "collateral") {
+        if (input_text == "collateral85") {
             show_debug_message("*** CORRECT PASSWORD FOR MYERS0923!");
             
             connection_success = true;
