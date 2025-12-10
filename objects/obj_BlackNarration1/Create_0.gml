@@ -2,8 +2,13 @@
 event_inherited();
 
 lines = [
-    "You've just come home from a long day as head of financial management at Rosenwood Corporation.",
-    "...but the achiever in you is itching to check your inbox for the 76th time today."
-];
+    "Whew, you're finally home.",
+	"As the youngest Head of the Financial Department in Rosenwood Corporation’s history, your role is demanding.",
+	"But you, Vanessa Myers, go beyond any expectations.",
+	"With record-breaking profits under your belt, nobody in the office doubts your expertise.",
+	"You are dedicated to your job, which includes checking your emails even when you're at home... ",
+    "...which is what you should do right now."
+]; 
 
 next_room = room_Black_2;
+           
