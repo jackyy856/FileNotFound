@@ -1,5 +1,5 @@
 // ---------- Window/layout ----------
-x1 = 260; y1 = 120;  w = 820; h = 560;  bar_h = 40;
+x1 = 260; y1 = 120;  w = 820; h = 800;  bar_h = 40;
 x2 = x1 + w; y2 = y1 + h;
 
 title = "Notes";
@@ -38,25 +38,30 @@ font_body  = fnt_gen;
 */
 notes = [
     // Most notes: normal life / work clutter
-    { id:0, title:"Groceries", locked:false, password:"", read:false, tag:"list",
-      body:"milk\n\ncoffee\n\nfrozen meals\n\nsticky notes (again)\n\nreminder: do NOT leave the fridge empty." },
+    { id:0, title:"Groceries", locked:false, password:"", read:true, tag:"list",
+      body:"-Milk\n\n-Coffee\n\n-Frozen meals\n\n-Protein (chicken?)\n\n-Salad stuff\n\n-Paprika\n\n-Thyme\n\nReminder: don't let fridge get to 'wine and mustard only' level." },
 
-    { id:1, title:"Meeting - Q4 sync", locked:false, password:"", read:false, tag:"meeting",
-      body:"Q4 sync with Helena\n\n\nAgenda:\n\n- targets and stretch goals\n\n- budget fire drill\n\n- headcount rightsizing\n\nremember: update Q4 sheets before Helena gets on my ass" },
+    { id:1, title:"Meeting - Q4 sync", locked:false, password:"", read:true, tag:"meeting",
+      body:"Q4 sync with Helena\n\n\nAgenda:\n\n-Targets and stretch goals (have both ready)\n\n-Budget fire drill (what can be cut)\n\n-Headcount 'rightsizing'\n\n*Remember: Update Q4 sheets before Helena gets on my ass" },
 
-    { id:2, title:"Phrases to sound important", locked:false, password:"", read:false, tag:"jargon",
-      body:"corporate phrases to overuse:\n\n- circle back on that\n\n- low-hanging fruit\n\n- action items\n\n- driving alignment across stakeholders\n\n- parking lot this for later" },
+    { id:2, title:"Cancel subscriptions", locked:false, password:"", read:true, tag:"budget",
+      body:"-Yoga app\n\n-Productivity app" },
 	  
-    // Locked notes: not meant to open yet - the one underneath im taking off bc no reason to have it anymore. 
-    //{ id:3, title:"1 out of 5", locked:true, password:"", read:false, tag:"locked",
-     // body:"[locked]\nthis one isnt ready yet." },
+	 { id:3, title:"Weekend errands", locked:false, password:"", read:true, tag:"chores",
+      body:"Saturday:\n\n -Pharmacy: migraine meds \n\n -Wine for Helena's 'casual catch-up' (not casual) \n\n -Return blazer that fits weird \n\n\n\n Sunday: \n\n -Clear old paperwork from dining table \n\n -Water plants before they die... again\n\n-Pick up dry-cleaning" },
 
-    { id:4, title:"doves case.", locked:true, password:"", read:false, tag:"locked",
-      body: "\n\nThere's an issue with Richard and HR. Or maybe more than just him.\n\n\n\nI tried to reach out to HR multiple times, including the head of it, when we met at  \n\na corporate dinner. But she seemed to avoid my view.  \n\n \n\nIt feels more than just negligence.\n\nIt feels. . . like he has some sort of guardian angel.\n\n\nBut nobody is willing to talk about him. Or they hate him too much to know, or \n\nthey are terrified of the consequences...\n\n \n\nI think he has an intern under his wing.\n\n \n\nMaybe that guy knows Richard's weakness; maybe I can take care of Richard \n\nthrough him.\n\n\n\nI should befriend Leonn." },
+    { id:4, title:"Dove's Case", locked:false, password:"", read:false, tag:"documentation",
+      body: "\n\nWork log/thoughts\n\n\n\n Reached out to HR:\n\n - 2/03 - No reply \n\n - 2/11 - Auto-response only\n\n - 2/27 - 'Still under review'\n\n -Dinner w/ HR head > Avoided me? Why? \n\n\n\n Check:\n\n - Others also ignored? (Ask Elizabeth quietly?)\n\n - Why is everyone scared of Fowler? \n\n - Or... pretending not to know? \n\n\n\nPatterns? \n\n - More than negligence?\n\n - Someone shielding him?? \n\n - 'Guardian angel' ??  \n\n\n\nInsider?\n\n - Blonde one always w/ Richard\n\n - Follows him everywhere\n\n - Maybe sees more than he says \n\n - Find out his name and befriend for info" },
+	  
+	  { id:3, title:"Therapy?", locked:false, password:"", read:true, tag:"needed",
+      body:"-Therapists w/ evening sessions \n\n-Check insurance coverage \n\n\n\nQuestions: \n\n -'High-functioning burnout'? \n\n -Imposter syndrome\n\n -Bring up Dove's case??" },
 
     // Special wifi puzzle note
-    { id:5, title:"dont open me >-<", locked:false, password:"", read:false, tag:"wifi",
-      body:"wifi? hehe, i choose one about you! so check ur reflection hehe.try one of this >u<\n\n\n- greedy77\n\n- mean28\n\n- controlling45\n\n- liar93\n\n- collateral85\n\n- sadistic82\n\n- fake62\n\n- bossy" }
+    { id:5, title:"don't open meee >-<", locked:false, password:"", read:false, tag:"wifi",
+      body:"password01 and password02? ur so predictable, myers...\n\nwifi...? this one's simple. most of these describe u already so just try the one that \n\ndoesn't >u<\n\n\n\n- greedy77\n\n- mean28\n\n- controlling45\n\n- liar93\n\n- collateral85\n\n- sadistic82\n\n- fake62\n\n- bossy91" },
+	  
+	{ id:6, title:"Phrases to sound important", locked:false, password:"", read:true, tag:"jargon",
+      body:"Corporate phrases to overuse:\n\n-Circle back on that\n\n-Low-hanging fruit\n\n-Action items\n\n-Driving alignment across stakeholders\n\n-Sanity check" },
 ];
 
 selected_index = -1; // -1 = list view

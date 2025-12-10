@@ -142,7 +142,7 @@ if (!minimized && choice_active && mouse_check_button_pressed(mb_left))
                         { sender: "UrHacker", text: "b4 u think you can just go and erase it..", is_hacker: true },
                         { sender: "UrHacker", text: "u downloaded a virus that has changed all ur passwords… to things in your computer.", is_hacker: true },
                         { sender: "UrHacker", text: "so if you want ur file…" , is_hacker: true },
-						{ sender: "UrHacker", text: "try to decipher them before I get to it and share ur secret with the world x_x =)", is_hacker: true }
+						{ sender: "UrHacker", text: "try to decipher them before i get to it and share ur secret with the world x_x =)", is_hacker: true }
                     ];
 
                     intro_index    = 0;
@@ -162,15 +162,15 @@ if (!minimized && choice_active && mouse_check_button_pressed(mb_left))
                         // "I’m calling the police."
                         intro_messages = [
                             { sender: "UrHacker", text: "try that and i won’t even give you a chance to find the file lol (>-<)", is_hacker: true },
-                            { sender: "UrHacker", text: "whatever u do, don’t look for external help. i’ll know and u won’t be able to fix this.", is_hacker: true }
+                            { sender: "UrHacker", text: "whatever u do, don’t look for external help. i'll know and u won’t be able to fix this.", is_hacker: true }
                         ];
                     }
                     else
                     {
                         // "What secret?"
                         intro_messages = [
-                            { sender: "UrHacker", text: "u don’t know ur own secret? don’t play dumb.", is_hacker: true },
-                            { sender: "UrHacker", text: "whatever u do, don’t look for external help. i’ll know and u won’t be able to fix this.", is_hacker: true }
+                            { sender: "UrHacker", text: "u don't know ur own secret? don’t play dumb.", is_hacker: true },
+                            { sender: "UrHacker", text: "whatever u do, don’t look for external help. i'll know and u won’t be able to fix this.", is_hacker: true }
                         ];
                     }
 

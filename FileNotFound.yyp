@@ -124,6 +124,7 @@
     {"id":{"name":"room_Desktop","path":"rooms/room_Desktop/room_Desktop.yy",},},
     {"id":{"name":"room_Menu","path":"rooms/room_Menu/room_Menu.yy",},},
     {"id":{"name":"room_Settings","path":"rooms/room_Settings/room_Settings.yy",},},
+    {"id":{"name":"bg_mus_intro","path":"sounds/bg_mus_intro/bg_mus_intro.yy",},},
     {"id":{"name":"sfx_keywow","path":"sounds/sfx_keywow/sfx_keywow.yy",},},
     {"id":{"name":"sfx_meow1","path":"sounds/sfx_meow1/sfx_meow1.yy",},},
     {"id":{"name":"sfx_meow2","path":"sounds/sfx_meow2/sfx_meow2.yy",},},
@@ -183,8 +184,8 @@
   "RoomOrderNodes":[
     {"roomId":{"name":"room_Menu","path":"rooms/room_Menu/room_Menu.yy",},},
     {"roomId":{"name":"room_Desktop","path":"rooms/room_Desktop/room_Desktop.yy",},},
-    {"roomId":{"name":"Login","path":"rooms/Login/Login.yy",},},
     {"roomId":{"name":"room_Desk_View","path":"rooms/room_Desk_View/room_Desk_View.yy",},},
+    {"roomId":{"name":"Login","path":"rooms/Login/Login.yy",},},
     {"roomId":{"name":"room_Settings","path":"rooms/room_Settings/room_Settings.yy",},},
     {"roomId":{"name":"room_ClickFiles","path":"rooms/room_ClickFiles/room_ClickFiles.yy",},},
     {"roomId":{"name":"room_Credits","path":"rooms/room_Credits/room_Credits.yy",},},

@@ -1,5 +1,5 @@
 /// Global app unlocks and shared globals ONLY.
-/// No auto-opening of any apps.
+audio_play_sound(bg_mus_intro, 1, true);
 
 global.apps_unlocked = {
     Email      : true,
