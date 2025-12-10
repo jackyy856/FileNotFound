@@ -8,7 +8,7 @@ var footer_top_full = win_y + win_h_full - footer_h;
 
 // gui colors
 var col_border  = make_color_rgb(25, 28, 33);
-var col_body    = make_color_rgb(131, 10, 72); 
+var col_body    = make_color_rgb(255, 183, 237); 
 var col_header  = make_color_rgb(106, 98, 229);
 var col_footer  = make_color_rgb(255, 49, 255);
 var col_sep     = make_color_rgb(74, 5, 28);

@@ -8,6 +8,6 @@ mode   = 0;
 result = "";
 target_inst = noone;
 
-// Countdown for initial Delete/Share choice (5 seconds)
-timer_frames = room_speed * 5;
+// Countdown for initial Delete/Share choice (10 seconds)
+timer_frames = room_speed * 10;
 lose_triggered = false;
