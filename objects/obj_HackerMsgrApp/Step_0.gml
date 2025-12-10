@@ -669,7 +669,7 @@ if (global.hacker_dove_calendar_pending
 
     intro_messages = [
         { sender: "UrHacker", text: "what? i thought she was sooooooooo special and all of a sudden you forgot her birthday?", is_hacker: true },
-        { sender: "UrHacker", text: "the answer is a month and day. quit acting stupid.", is_hacker: true}
+        { sender: "UrHacker", text: "the answer is a month and day. quit acting stupid.", is_hacker: true }
     ];
 
     intro_index    = 0;
@@ -778,7 +778,6 @@ if (global.hacker_dove_unlock_pending
     intro_messages = [
         { sender: "UrHacker", text: "doves don’t fly very high", is_hacker: true },
         { sender: "UrHacker", text: "HR ignored her.. and u.. what could you have done..", is_hacker: true },
-        { sender: "UrHacker", text: "u didn’t know back then.", is_hacker: true },
         { sender: "UrHacker", text: "but u tried everything to make it right, didn't u?", is_hacker: true },
         { sender: "UrHacker", text: "even acting like a good person :)", is_hacker: true },
         { sender: "UrHacker", text: "even disposing of anyone who got in ur way", is_hacker: true },
