@@ -1,4 +1,4 @@
-/// obj_EmailIntro - Draw GUI
+ /// obj_EmailIntro - Draw GUI
 
 // Hidden until opened
 if (!app_visible) exit;
