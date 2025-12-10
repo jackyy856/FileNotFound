@@ -9,7 +9,7 @@ var _default_apps = {
     Gallery    : false,
     RecycleBin : false,
     Notes      : true,
-    Slack      : true
+    Slack      : false
 };
 
 // Preserve unlocks from loaded saves; only seed missing keys

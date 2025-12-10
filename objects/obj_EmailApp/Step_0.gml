@@ -518,9 +518,12 @@ if (selected_index == corrupted_index && puzzle_solved && !email_key1_collected)
             if (!variable_global_exists("hacker_key1_hint_fired")) {
                 global.hacker_key1_hint_fired = false;
             }
+            if (!variable_global_exists("hacker_key1_delay")) {
+                global.hacker_key1_delay = -1;
+            }
             if (!global.hacker_key1_hint_fired) {
-                // delay 2s after SFX before sending notification
-                key1_hacker_delay = room_speed * 2;
+                // persistable delay (saved with globals) so it survives reloads
+                global.hacker_key1_delay = room_speed * 2;
             }
 
         }
@@ -528,15 +531,18 @@ if (selected_index == corrupted_index && puzzle_solved && !email_key1_collected)
 }
 
 // ------------------ DELAYED HACKER NOTIF AFTER KEY #1 ------------------
-if (key1_hacker_delay > 0) {
-    key1_hacker_delay -= 1;
-    if (key1_hacker_delay <= 0) {
-        if (!global.hacker_key1_hint_fired) {
-            global.hacker_key1_hint_pending = true;
-            global.hacker_key1_hint_fired   = true;
-            if (variable_global_exists("hacker_unread")) global.hacker_unread = true;
-        }
-        key1_hacker_delay = 0;
+// If a save was loaded after collecting the key but before the hint fired,
+// re-arm the global timer so the notification still arrives.
+if (variable_global_exists("key_collected")
+    && is_array(global.key_collected)
+    && array_length(global.key_collected) > 0
+    && global.key_collected[0]
+    && !global.hacker_key1_hint_fired
+    && !global.hacker_key1_hint_pending)
+{
+    if (!variable_global_exists("hacker_key1_delay")) global.hacker_key1_delay = -1;
+    if (global.hacker_key1_delay < 0) {
+        global.hacker_key1_delay = room_speed * 2;
     }
 }
 
