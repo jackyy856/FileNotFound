@@ -1,16 +1,29 @@
 /// Global app unlocks and shared globals ONLY.
 audio_play_sound(bg_mus_intro, 1, true);
 
-global.apps_unlocked = {
+var _default_apps = {
     Email      : true,
     HackerMsgr : true,
-	Calendar   : false,
+    Calendar   : false,
     Files      : false,
     Gallery    : false,
     RecycleBin : false,
     Notes      : true,
-    Slack      : false   
+    Slack      : true
 };
+
+// Preserve unlocks from loaded saves; only seed missing keys
+if (!variable_global_exists("apps_unlocked") || !is_struct(global.apps_unlocked)) {
+    global.apps_unlocked = _default_apps;
+} else {
+    var _keys = variable_struct_get_names(_default_apps);
+    for (var _i = 0; _i < array_length(_keys); _i++) {
+        var _k = _keys[_i];
+        if (!variable_struct_exists(global.apps_unlocked, _k)) {
+            variable_struct_set(global.apps_unlocked, _k, variable_struct_get(_default_apps, _k));
+        }
+    }
+}
 
 // Story progression keys for the desktop key slots
 // [ key1_from_email, key2_future, key3_future ]
