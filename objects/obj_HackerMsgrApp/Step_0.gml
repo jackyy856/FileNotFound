@@ -6,12 +6,22 @@ var y1 = win_y;
 var x2 = win_x + win_w;
 var y2 = win_y + win_h;
 
+// Ensure Dove globals exist to avoid undefined reads
+if (!variable_global_exists("hacker_dove_hint_pending"))   global.hacker_dove_hint_pending   = false;
+if (!variable_global_exists("hacker_dove_hint_fired"))     global.hacker_dove_hint_fired     = false;
+if (!variable_global_exists("hacker_dove_unlock_pending")) global.hacker_dove_unlock_pending = false;
+if (!variable_global_exists("hacker_dove_follow_pending")) global.hacker_dove_follow_pending = false;
+if (!variable_global_exists("hacker_dove_unlock_timer"))   global.hacker_dove_unlock_timer   = -1;
+if (!variable_global_exists("hacker_dove_follow_timer"))   global.hacker_dove_follow_timer   = -1;
+if (!variable_global_exists("hacker_dove_calendar_pending")) global.hacker_dove_calendar_pending = false;
+if (!variable_global_exists("hacker_dove_calendar_fired"))   global.hacker_dove_calendar_fired   = false;
+
 var header_bottom   = y1 + header_h - 20;
 var header_vis_h    = header_bottom - y1;         
 var footer_top_full = win_y + win_h_full - footer_h; 
 
 // NEW: as long as the window is open (not minimized), consider messages "read"
-if (!minimized && !intro_active && !choice_active && !typing)
+if (!minimized && visible && !intro_active && !choice_active && !typing)
 {
     global.hacker_unread = false;
 }
@@ -510,7 +520,9 @@ if (intro_active)
 if (global.hacker_key1_hint_pending
     && !intro_active
     && !choice_active
-    && !typing)
+    && !typing
+    && visible
+    && !minimized)
 {
     global.hacker_key1_hint_pending = false;
 
@@ -520,11 +532,9 @@ if (global.hacker_key1_hint_pending
     conversation_phase = 20;
 
     intro_messages = [
-        { sender: "UrHacker", text: "found it yet?", is_hacker: true },
-        { sender: "UrHacker", text: "nice going, myers.", is_hacker: true },
-        { sender: "UrHacker", text: "u'll need to find all three keys to access \"the file\"", is_hacker: true },
-        { sender: "UrHacker", text: "you'll find the calendar has some useful info next", is_hacker: true },
-        { sender: "UrHacker", text: "chop chop", is_hacker: true }
+        { sender: "UrHacker", text: "i unlocked the calendar for you. go look.", is_hacker: true },
+        { sender: "UrHacker", text: "the next code u enter will mean something important to you.", is_hacker: true },
+        { sender: "UrHacker", text: "format: ####", is_hacker: true }
     ];
 
     intro_index    = 0;
@@ -533,13 +543,45 @@ if (global.hacker_key1_hint_pending
     intro_timer_ms = 3000; // 3s "is typing..." 
 
     global.hacker_unread = true;
+    // stay offline until opened
+    hacker_offline = true;
+}
+
+// --- CALENDAR OPENED: DOVE PASSWORD HINT ---
+if (global.hacker_dove_calendar_pending
+    && !intro_active
+    && !choice_active
+    && !typing
+    && visible
+    && !minimized)
+{
+    global.hacker_dove_calendar_pending = false;
+    global.hacker_dove_calendar_fired   = true;
+
+    hacker_offline = false;
+    conversation_phase = 25; // calendar hint phase
+
+    intro_messages = [
+        { sender: "UrHacker", text: "what? i thought she was sooooooooo special and all of a sudden you forgot her birthday?", is_hacker: true },
+        { sender: "UrHacker", text: "it's just a month and day. quit acting stupid.", is_hacker: true }
+    ];
+
+    intro_index    = 0;
+    intro_active   = true;
+    typing         = true;
+    intro_timer_ms = 3000; // 3s "is typing..."
+
+    global.hacker_unread = true;
+    hacker_offline = true;
 }
 
 // --- KEY #2 HINT: after red key is collected in Gallery ---
 if (global.hacker_key2_hint_pending
     && !intro_active
     && !choice_active
-    && !typing)
+    && !typing
+    && visible
+    && !minimized)
 {
     global.hacker_key2_hint_pending = false;
 
@@ -572,7 +614,9 @@ if (global.hacker_key2_hint_pending
 if (global.hacker_wifi_hint_pending
     && !intro_active
     && !choice_active
-    && !typing)
+    && !typing
+    && visible
+    && !minimized)
 {
     global.hacker_wifi_hint_pending = false;
 
@@ -595,3 +639,98 @@ if (global.hacker_wifi_hint_pending
     hacker_offline = true;
 }
 
+// --- DOVE PASSWORD HINT (wrong password) ---
+if (global.hacker_dove_hint_pending
+    && !intro_active
+    && !choice_active
+    && !typing)
+{
+    global.hacker_dove_hint_pending = false;
+
+    hacker_offline = false;
+    conversation_phase = 40;
+    intro_messages = [
+        { sender: "UrHacker", text: "what? i thought she was sooooooooo special and all of a sudden you forgot her birthday?", is_hacker: true },
+        { sender: "UrHacker", text: "it's just a month and day. quit acting stupid.", is_hacker: true }
+    ];
+    intro_index    = 0;
+    intro_active   = true;
+    typing         = true;
+    intro_timer_ms = 3000;
+    global.hacker_unread = true;
+    hacker_offline = true;
+}
+
+// --- DOVE UNLOCK FOLLOW-UP AFTER 15s READ ---
+if (global.hacker_dove_unlock_pending
+    && !intro_active
+    && !choice_active
+    && !typing
+    && visible
+    && !minimized)
+{
+    global.hacker_dove_unlock_pending = false;
+
+    hacker_offline = false;
+    conversation_phase = 41;
+    intro_messages = [
+        { sender: "UrHacker", text: "doves don’t fly very high", is_hacker: true },
+        { sender: "UrHacker", text: "HR ignored her.. and u.. what could you have done..", is_hacker: true },
+        { sender: "UrHacker", text: "u didn’t know back then.", is_hacker: true },
+        { sender: "UrHacker", text: "but u did everything to figure it out, right?", is_hacker: true },
+        { sender: "UrHacker", text: "even acting like a good person :)", is_hacker: true },
+        { sender: "UrHacker", text: "even disposing of anyone who got in ur way", is_hacker: true },
+        { sender: "UrHacker", text: "let's review those records again. don't worry, it's just ur dayjob (ꈍᴗꈍ)", is_hacker: true }
+    ];
+
+    if (variable_global_exists("apps_unlocked") && is_struct(global.apps_unlocked)) {
+        global.apps_unlocked.Slack = true;
+    }
+
+    // start 30s follow timer
+    if (variable_global_exists("hacker_dove_follow_timer")) {
+        global.hacker_dove_follow_timer = room_speed * 30;
+    }
+
+    intro_index    = 0;
+    intro_active   = true;
+    typing         = true;
+    intro_timer_ms = 3000;
+    global.hacker_unread = true;
+    hacker_offline = true;
+}
+
+// --- DOVE FOLLOW-UP AFTER 30s ---
+if (global.hacker_dove_follow_pending
+    && !intro_active
+    && !choice_active
+    && !typing
+    && visible
+    && !minimized)
+{
+    global.hacker_dove_follow_pending = false;
+
+    hacker_offline = false;
+    conversation_phase = 42;
+    intro_messages = [
+        { sender: "UrHacker", text: "u really were SO nice to her", is_hacker: true },
+        { sender: "UrHacker", text: "checking in on her", is_hacker: true },
+        { sender: "UrHacker", text: "comforting her", is_hacker: true },
+        { sender: "UrHacker", text: "doing anything to keep her safe", is_hacker: true },
+        { sender: "UrHacker", text: "must be NICE", is_hacker: true },
+        { sender: "UrHacker", text: "must feel good to be someone’s hero", is_hacker: true },
+        { sender: "UrHacker", text: "so why wasn’t I worth that?", is_hacker: true },
+        { sender: "UrHacker", text: "Go to your pictures and take one last look at what you took from me.", is_hacker: true }
+    ];
+
+    if (variable_global_exists("apps_unlocked") && is_struct(global.apps_unlocked)) {
+        global.apps_unlocked.Gallery = true;
+    }
+
+    intro_index    = 0;
+    intro_active   = true;
+    typing         = true;
+    intro_timer_ms = 3000;
+    global.hacker_unread = true;
+    hacker_offline = true;
+}

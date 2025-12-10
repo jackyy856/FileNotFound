@@ -6,7 +6,7 @@ global.apps_unlocked = {
     HackerMsgr : true,
 	Calendar   : false,
     Files      : false,
-    Gallery    : true,
+    Gallery    : false,
     RecycleBin : false,
     Notes      : true,
     Slack      : false   
@@ -34,11 +34,26 @@ if (!variable_global_exists("hacker_key1_delay")) {
 if (!variable_global_exists("hacker_key1_hint_pending")) {
     global.hacker_key1_hint_pending = false;
 }
+if (!variable_global_exists("hacker_key1_hint_fired")) {
+    global.hacker_key1_hint_fired = false;
+}
 
 // hacker hint state for key2 (after red key from Gallery)
 if (!variable_global_exists("hacker_key2_hint_pending")) {
     global.hacker_key2_hint_pending = false;
 }
+
+// Dove flow guards
+if (!variable_global_exists("hacker_dove_hint_pending"))    global.hacker_dove_hint_pending    = false;
+if (!variable_global_exists("hacker_dove_hint_fired"))      global.hacker_dove_hint_fired      = false;
+if (!variable_global_exists("hacker_dove_unlock_pending"))  global.hacker_dove_unlock_pending  = false;
+if (!variable_global_exists("hacker_dove_follow_pending"))  global.hacker_dove_follow_pending  = false;
+if (!variable_global_exists("hacker_dove_unlock_timer"))    global.hacker_dove_unlock_timer    = -1;
+if (!variable_global_exists("hacker_dove_follow_timer"))    global.hacker_dove_follow_timer    = -1;
+if (!variable_global_exists("calendar_opened_once"))        global.calendar_opened_once        = false;
+if (!variable_global_exists("hacker_dove_calendar_pending")) global.hacker_dove_calendar_pending = false;
+if (!variable_global_exists("hacker_dove_calendar_fired"))   global.hacker_dove_calendar_fired   = false;
+if (!variable_global_exists("dove_unlocked"))               global.dove_unlocked               = false;
 
 // one-time desktop notification meow ---
 if (!variable_global_exists("desktop_meow_played")) {
