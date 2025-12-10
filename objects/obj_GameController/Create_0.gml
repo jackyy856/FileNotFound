@@ -6,7 +6,7 @@ global.apps_unlocked = {
     HackerMsgr : true,
 	Calendar   : false,
     Files      : false,
-    Gallery    : true,
+    Gallery    : false,
     RecycleBin : false,
     Notes      : true,
     Slack      : false   
@@ -53,6 +53,7 @@ if (!variable_global_exists("hacker_dove_follow_timer"))    global.hacker_dove_f
 if (!variable_global_exists("calendar_opened_once"))        global.calendar_opened_once        = false;
 if (!variable_global_exists("hacker_dove_calendar_pending")) global.hacker_dove_calendar_pending = false;
 if (!variable_global_exists("hacker_dove_calendar_fired"))   global.hacker_dove_calendar_fired   = false;
+if (!variable_global_exists("dove_unlocked"))               global.dove_unlocked               = false;
 
 // one-time desktop notification meow ---
 if (!variable_global_exists("desktop_meow_played")) {

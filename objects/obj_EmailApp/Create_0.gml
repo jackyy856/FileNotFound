@@ -28,9 +28,12 @@ email_key1_rect      = [0,0,0,0];
 // delay before hacker reacts to key #1 
 key1_hacker_delay = -1;
 
-// Dove lock
+// Dove lock (persist unlocked)
 dove_email_id   = 150;
-dove_locked     = true;
+if (!variable_global_exists("dove_unlocked")) {
+    global.dove_unlocked = false;
+}
+dove_locked     = !global.dove_unlocked;
 dove_password   = "0515";
 
 

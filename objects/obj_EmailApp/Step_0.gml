@@ -151,6 +151,8 @@ if (selected_index == -1) {
                 var pw = get_string("Enter password", "");
                 if (is_string(pw) && string_lower(string_trim(pw)) == dove_password) {
                     dove_locked = false;
+                    if (!variable_global_exists("dove_unlocked")) global.dove_unlocked = false;
+                    global.dove_unlocked = true;
                     selected_index = actual_idx;
                     inbox[actual_idx].read = true;
                     thread_scroll = 0;
