@@ -85,6 +85,7 @@ if (!minimized)
 
 
     // GUI -> display scaling for scissor
+    // Use display size for scissor; fallback avoids crashes if app surface is off
     var disp_w = display_get_width();
     var disp_h = display_get_height();
     var gui_w  = display_get_gui_width();
@@ -93,13 +94,16 @@ if (!minimized)
     var gui_scale_x = disp_w / gui_w;
     var gui_scale_y = disp_h / gui_h;
 
+    // Robust scissor so messages never crop on different aspect scales
+    var sc_left = floor((content_x1 - 32) * gui_scale_x);
+    var sc_top  = floor((content_y1 - 16) * gui_scale_y);
+    var sc_w    = ceil((content_x2 - content_x1 + 64) * gui_scale_x);
+    var sc_h    = ceil((content_y2 - content_y1 + 48) * gui_scale_y);
+    sc_w = max(1, sc_w);
+    sc_h = max(1, sc_h);
+
     var old_scissor = gpu_get_scissor();
-    gpu_set_scissor(
-        content_x1 * gui_scale_x - 25,
-        content_y1 * gui_scale_y - 7,
-        (content_x2 - content_x1) * gui_scale_x,
-        (content_y2 - content_y1) * gui_scale_y - 16
-    );
+    gpu_set_scissor(sc_left, sc_top, sc_w, sc_h);
 
     var pfp_radius   = 28;
     var line_sep     = 4;

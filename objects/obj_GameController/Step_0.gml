@@ -9,6 +9,9 @@ if (global.hacker_key1_delay > 0) {
         // only fire if not already pending
         if (!global.hacker_key1_hint_pending) {
             global.hacker_key1_hint_pending = true;
+            if (variable_global_exists("hacker_unread")) {
+                global.hacker_unread = true;
+            }
         }
     }
 }

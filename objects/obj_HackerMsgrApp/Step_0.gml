@@ -420,7 +420,7 @@ if (intro_active)
                     // After "stuck?" + "dont tell me..."
                     case 10:
                         choice_menu_id = 4;
-                        choice_options = [ "It's not the same as before" ];
+                        choice_options = [ "It's not the same as before." ];
                         choice_active  = true;
                         recalc_scroll_bounds();
                         global.hacker_unread = true;
@@ -618,14 +618,18 @@ if (intro_active)
 }
 
 // --- KEY #1 HINT: after first key is collected in Email ---
+// Deliver even if the app window is closed/minimized; unread flag handles UX.
 if (global.hacker_key1_hint_pending
+    && !global.hacker_key1_hint_fired
     && !intro_active
     && !choice_active
-    && !typing
-    && visible
-    && !minimized)
+    && !typing)
 {
     global.hacker_key1_hint_pending = false;
+    global.hacker_key1_hint_fired   = true;
+    if (variable_global_exists("hacker_key1_delay")) {
+        global.hacker_key1_delay = -1;
+    }
 
     hacker_offline = false;
 
@@ -633,9 +637,9 @@ if (global.hacker_key1_hint_pending
     conversation_phase = 20;
 
     intro_messages = [
-        { sender: "UrHacker", text: "You won't be able to open Sofia's email, I locked it with password", is_hacker: true },
+        { sender: "UrHacker", text: "u won't be able to open *that* email quite just yet, i've locked it for now", is_hacker: true },
         { sender: "UrHacker", text: "i unlocked the calendar for you. go look.", is_hacker: true },
-        { sender: "UrHacker", text: "the next code u enter will mean something important to you.", is_hacker: true },
+        { sender: "UrHacker", text: "the next password u enter will mean something important to you.", is_hacker: true },
         { sender: "UrHacker", text: "format: ####", is_hacker: true }
     ];
 
@@ -665,7 +669,7 @@ if (global.hacker_dove_calendar_pending
 
     intro_messages = [
         { sender: "UrHacker", text: "what? i thought she was sooooooooo special and all of a sudden you forgot her birthday?", is_hacker: true },
-        { sender: "UrHacker", text: "it's just a month and day. quit acting stupid.", is_hacker: true }
+        { sender: "UrHacker", text: "the answer is a month and day. quit acting stupid.", is_hacker: true}
     ];
 
     intro_index    = 0;
@@ -775,10 +779,10 @@ if (global.hacker_dove_unlock_pending
         { sender: "UrHacker", text: "doves don’t fly very high", is_hacker: true },
         { sender: "UrHacker", text: "HR ignored her.. and u.. what could you have done..", is_hacker: true },
         { sender: "UrHacker", text: "u didn’t know back then.", is_hacker: true },
-        { sender: "UrHacker", text: "but u did everything to figure it out, right?", is_hacker: true },
+        { sender: "UrHacker", text: "but u tried everything to make it right, didn't u?", is_hacker: true },
         { sender: "UrHacker", text: "even acting like a good person :)", is_hacker: true },
         { sender: "UrHacker", text: "even disposing of anyone who got in ur way", is_hacker: true },
-        { sender: "UrHacker", text: "let's review those records again. don't worry, it's just ur dayjob (ꈍᴗꈍ)", is_hacker: true },
+        { sender: "UrHacker", text: "let's review those records again. don't worry, it's just ur dayjob (o-<)", is_hacker: true },
         { sender: "UrHacker", text: "i opened the iWork app for you.", is_hacker: true }
     ];
 
