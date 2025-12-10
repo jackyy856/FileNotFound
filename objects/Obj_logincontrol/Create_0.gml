@@ -11,7 +11,7 @@ password_box.height = 40;
 
 
 //Hints
-hint_text = "Hint";
+hint_text = "hint";
 hint_clicked = false;
 hint_x = 920;
 hint_y = 650;

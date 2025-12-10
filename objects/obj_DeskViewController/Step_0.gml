@@ -16,6 +16,19 @@ if (!variable_instance_exists(id, "panel_main")) {
 var p = [ device_mouse_x_to_gui(0), device_mouse_y_to_gui(0) ];
 if (dialog_timer > 0) dialog_timer--;
 
+// If the intro email app is visible, let it own prompts + clicks.
+// Stop this controller from showing or updating its own dialog.
+if (instance_exists(obj_EmailIntro)) {
+    var e = instance_find(obj_EmailIntro, 0);
+    if (e.app_visible) {
+        dialog_text  = "";
+        dialog_timer = 0;
+        exit;
+    }
+}
+
+
+
 /// --- Gameplay clicks (blocked while capturing/guided)
 if (!capture_mode && !guided_mode && mouse_check_button_pressed(mb_left)) {
     switch (state) {

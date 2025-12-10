@@ -9,15 +9,15 @@ draw_text(780, 520, "Vanessa Myers");
 draw_set_font(Login_hint)
 if (hint_clicked) {
     draw_set_color(c_black);
-    draw_text(900, 650, "Hint: City");
+    draw_text(780, 650, "hint: you've been to this city");
 } else {
     draw_set_color(c_white);
-    draw_text(920, 650, "Hint:");
+    draw_text(920, 650, "hint");
 }
 
 //incorrect message 
 draw_set_font(Login_hint)
 if (login_message != "") {
 	draw_set_color(c_red)
-    draw_text(1115, 580, login_message);
+    draw_text(1115, 600, login_message);
 }
