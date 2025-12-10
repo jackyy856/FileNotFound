@@ -62,7 +62,6 @@ credits[credits_len++] = { text : "Jacky Leon Sanchez", style : "name" };
 credits[credits_len++] = { text : "Shivraj Pradumansinh Jadeja", style : "name" };
 credits[credits_len++] = { text : "Aryan Raval", style : "name" };
 credits[credits_len++] = { text : "Kallen Vo", style : "name" };
-credits[credits_len++] = { text : "Gabriella Hernandez", style : "name" };
 
 // Precompute total height of credits (for when to stop scrolling)
 for (var i = 0; i < credits_len; i++) {
