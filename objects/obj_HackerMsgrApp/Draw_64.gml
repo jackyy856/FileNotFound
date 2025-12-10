@@ -60,16 +60,19 @@ if (!minimized)
     var opt_margin_bottom = 10;
     var opt_height        = 40;
     var opt_gap           = 4;
+    var opt_total_h       = 0;
+    var opt_first_y1      = footer_top_full;
 
     if (choice_active)
     {
         var opt_count = array_length(choice_options);
         if (opt_count > 0)
         {
-            var opt_total_h = opt_margin_bottom
-                            + opt_height * opt_count
-                            + opt_gap * max(0, opt_count - 1);
+            opt_total_h = opt_margin_bottom
+                        + opt_height * opt_count
+                        + opt_gap * max(0, opt_count - 1);
             content_y2 -= opt_total_h;
+            opt_first_y1 = footer_top_full - opt_total_h;
         }
     }
 
@@ -169,6 +172,15 @@ if (!minimized)
     var line1_y = footer_top_full - 40;
     var line2_y = footer_top_full - 22; 
 
+    // Push indicators above choice boxes to avoid overlap
+    if (choice_active && opt_total_h > 0) {
+        line1_y = opt_first_y1 - 36;
+        line2_y = opt_first_y1 - 18;
+        var min_y = header_bottom + 8;
+        line1_y = max(min_y, line1_y);
+        line2_y = max(min_y + 16, line2_y);
+    }
+
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);
 
@@ -189,7 +201,7 @@ if (!minimized)
     }
 
     // offline indicator once conversation is over
-    if (!typing && hacker_offline)
+    if (!typing && hacker_offline && !choice_active)
     {
         draw_set_color(c_white);
         draw_text(label_x, line2_y, "UrHacker is offline.");
