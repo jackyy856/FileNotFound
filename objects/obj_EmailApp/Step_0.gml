@@ -502,30 +502,24 @@ if (selected_index == corrupted_index && puzzle_solved && !email_key1_collected)
             }
             global.apps_unlocked.Calendar = true;
 
-            // start 2.5s delay before hacker reacts
-			key1_hacker_delay = room_speed * 2.5;
+            // queue hacker hint immediately (only once)
+            if (!variable_global_exists("hacker_key1_hint_pending")) {
+                global.hacker_key1_hint_pending = false;
+            }
+            if (!variable_global_exists("hacker_key1_hint_fired")) {
+                global.hacker_key1_hint_fired = false;
+            }
+            if (!global.hacker_key1_hint_fired) {
+                global.hacker_key1_hint_pending = true;
+                global.hacker_key1_hint_fired   = true;
+            }
+
+            // no further delay needed
+            key1_hacker_delay = 0;
 
         }
     }
 }
-
-// ------------------ DELAYED HACKER NOTIF AFTER KEY #1 ------------------
-if (key1_hacker_delay > 0) {
-    key1_hacker_delay -= 1;
-    if (key1_hacker_delay <= 0) {
-        // safety init
-        if (!variable_global_exists("hacker_key1_hint_pending")) {
-            global.hacker_key1_hint_pending = false;
-        }
-
-        // trigger hacker sequence once
-        if (!global.hacker_key1_hint_pending) {
-            global.hacker_key1_hint_pending = true;
-        }
-    }
-}
-
-
 
 // advance binary rain
 bin_scroll += bin_speed;

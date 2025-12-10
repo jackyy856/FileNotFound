@@ -1,5 +1,16 @@
 /// obj_CalendarIcon - Mouse Left Pressed
 
+// Ensure guard flag exists
+if (!variable_global_exists("calendar_opened_once")) {
+    global.calendar_opened_once = false;
+}
+if (!variable_global_exists("hacker_dove_calendar_pending")) {
+    global.hacker_dove_calendar_pending = false;
+}
+if (!variable_global_exists("hacker_dove_calendar_fired")) {
+    global.hacker_dove_calendar_fired = false;
+}
+
 // Block interaction when locked
 if (!global.apps_unlocked.Calendar) {
     audio_play_sound(sfx_meow2, 1, .25);
@@ -9,6 +20,10 @@ if (!global.apps_unlocked.Calendar) {
 // Mark calendar opened at least once (for hacker gating)
 if (!global.calendar_opened_once) {
     global.calendar_opened_once = true;
+}
+// Queue calendar hint if not already fired
+if (!global.hacker_dove_calendar_fired) {
+    global.hacker_dove_calendar_pending = true;
 }
 
 // Open or focus the Calendar app
