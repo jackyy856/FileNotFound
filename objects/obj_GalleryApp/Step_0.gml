@@ -78,6 +78,8 @@ if (inbox_mode && gallery_open && !inbox_key_collected) {
         if (mx >= rx && mx <= rx + rw && my >= ry && my <= ry + rh && rw > 0 && rh > 0) {
             // Mark collected locally (for immediate Draw feedback)
             inbox_key_collected = true;
+            // Swap sprite to glow variant immediately
+            inbox_key_sprite = spr_red_glow_key;
             // Play key SFX safely
             var _snd = asset_get_index("sfx_keywow");
             if (_snd != -1) {
@@ -93,14 +95,17 @@ if (inbox_mode && gallery_open && !inbox_key_collected) {
             global.key_collected[1] = true;  // RED key
             show_debug_message("Red key clicked in inbox! inbox_key_collected=" + string(inbox_key_collected) + ", global.key_collected[1]=" + string(global.key_collected[1]));
 
-            // Trigger hacker hint for key #2 (unlock Files / firewall nudge)
-            if (!variable_global_exists("hacker_key2_hint_pending")) {
-                global.hacker_key2_hint_pending = false;
-            }
-            global.hacker_key2_hint_pending = true;
-            // Mark hacker unread so icon pings
-            if (variable_global_exists("hacker_unread")) {
-                global.hacker_unread = true;
+            // Trigger delayed hacker hint for key #2 (unlock Files / firewall nudge)
+            if (!variable_global_exists("hacker_key2_hint_fired")) global.hacker_key2_hint_fired = false;
+            if (!variable_global_exists("hacker_key2_delay"))      global.hacker_key2_delay      = -1;
+
+            if (!global.hacker_key2_hint_fired) {
+                global.hacker_key2_hint_fired = true;
+                global.hacker_key2_delay      = room_speed * 2; // 2s delay before ping
+                // Mark hacker unread so icon pings after delay resolves
+                if (variable_global_exists("hacker_unread")) {
+                    global.hacker_unread = true;
+                }
             }
         } else {
             // Debug: show what was clicked

@@ -42,6 +42,22 @@ if (!variable_global_exists("hacker_key1_hint_fired")) {
 if (!variable_global_exists("hacker_key2_hint_pending")) {
     global.hacker_key2_hint_pending = false;
 }
+if (!variable_global_exists("hacker_key2_hint_fired")) {
+    global.hacker_key2_hint_fired = false;
+}
+if (!variable_global_exists("hacker_key2_delay")) {
+    global.hacker_key2_delay = -1;
+}
+
+// Transcript follow-up (Recycle Bin)
+if (!variable_global_exists("hacker_transcript_follow_timer"))   global.hacker_transcript_follow_timer   = -1;
+if (!variable_global_exists("hacker_transcript_follow_pending")) global.hacker_transcript_follow_pending = false;
+if (!variable_global_exists("hacker_transcript_follow_fired"))   global.hacker_transcript_follow_fired   = false;
+
+// Final key (key #3) follow-up
+if (!variable_global_exists("hacker_key3_delay"))        global.hacker_key3_delay        = -1;
+if (!variable_global_exists("hacker_key3_hint_pending")) global.hacker_key3_hint_pending = false;
+if (!variable_global_exists("hacker_key3_hint_fired"))   global.hacker_key3_hint_fired   = false;
 
 // Dove flow guards
 if (!variable_global_exists("hacker_dove_hint_pending"))    global.hacker_dove_hint_pending    = false;

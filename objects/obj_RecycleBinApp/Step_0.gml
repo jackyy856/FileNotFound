@@ -175,6 +175,20 @@ for (var i = 0; i < file_count; i++) {
                 f.scroll_max  = max(0, text_h - visible_h);
                 f.scroll      = 0;
                 f.scroll_drag = false;
+
+                // If transcript (yellow file) opened for the first time, start 20s follow-up
+                if (i == 3) {
+                    if (!variable_global_exists("hacker_transcript_follow_fired")) {
+                        global.hacker_transcript_follow_fired = false;
+                    }
+                    if (!variable_global_exists("hacker_transcript_follow_timer")) {
+                        global.hacker_transcript_follow_timer = -1;
+                    }
+                    if (!global.hacker_transcript_follow_fired) {
+                        global.hacker_transcript_follow_fired = true;
+                        global.hacker_transcript_follow_timer = room_speed * 20;
+                    }
+                }
             }
         }
     }

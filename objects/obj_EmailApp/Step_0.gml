@@ -149,7 +149,11 @@ if (selected_index == -1) {
             var is_dove = (inbox[actual_idx].id == dove_email_id);
             if (is_dove && dove_locked) {
                 var pw = get_string("Enter password", "");
-                if (is_string(pw) && string_lower(string_trim(pw)) == dove_password) {
+                var pw_is_string = is_string(pw);
+                var pw_trimmed   = pw_is_string ? string_trim(pw) : "";
+                var pw_lower     = pw_is_string ? string_lower(pw_trimmed) : "";
+
+                if (pw_is_string && pw_lower == dove_password) {
                     dove_locked = false;
                     if (!variable_global_exists("dove_unlocked")) global.dove_unlocked = false;
                     global.dove_unlocked = true;
@@ -160,7 +164,10 @@ if (selected_index == -1) {
                         global.hacker_dove_unlock_timer = room_speed * 15;
                     }
                 } else {
-                    if (variable_global_exists("calendar_opened_once") && global.calendar_opened_once) {
+                    // Only push hints when a real attempt was made (non-empty input)
+                    if (pw_is_string && string_length(pw_trimmed) > 0 &&
+                        variable_global_exists("calendar_opened_once") && global.calendar_opened_once)
+                    {
                         if (variable_global_exists("hacker_dove_hint_fired") && !global.hacker_dove_hint_fired) {
                             global.hacker_dove_hint_fired = true;
                             if (variable_global_exists("hacker_dove_hint_pending")) {
