@@ -643,7 +643,9 @@ if (global.hacker_wifi_hint_pending
 if (global.hacker_dove_hint_pending
     && !intro_active
     && !choice_active
-    && !typing)
+    && !typing
+    && visible
+    && !minimized)
 {
     global.hacker_dove_hint_pending = false;
 
@@ -680,7 +682,8 @@ if (global.hacker_dove_unlock_pending
         { sender: "UrHacker", text: "but u did everything to figure it out, right?", is_hacker: true },
         { sender: "UrHacker", text: "even acting like a good person :)", is_hacker: true },
         { sender: "UrHacker", text: "even disposing of anyone who got in ur way", is_hacker: true },
-        { sender: "UrHacker", text: "let's review those records again. don't worry, it's just ur dayjob (ꈍᴗꈍ)", is_hacker: true }
+        { sender: "UrHacker", text: "let's review those records again. don't worry, it's just ur dayjob (ꈍᴗꈍ)", is_hacker: true },
+        { sender: "UrHacker", text: "i opened the iWork app for you.", is_hacker: true }
     ];
 
     if (variable_global_exists("apps_unlocked") && is_struct(global.apps_unlocked)) {
@@ -712,6 +715,41 @@ if (global.hacker_dove_follow_pending
 
     hacker_offline = false;
     conversation_phase = 42;
+    intro_messages = [
+        { sender: "UrHacker", text: "u really were SO nice to her", is_hacker: true },
+        { sender: "UrHacker", text: "checking in on her", is_hacker: true },
+        { sender: "UrHacker", text: "comforting her", is_hacker: true },
+        { sender: "UrHacker", text: "doing anything to keep her safe", is_hacker: true },
+        { sender: "UrHacker", text: "must be NICE", is_hacker: true },
+        { sender: "UrHacker", text: "must feel good to be someone’s hero", is_hacker: true },
+        { sender: "UrHacker", text: "so why wasn’t I worth that?", is_hacker: true },
+        { sender: "UrHacker", text: "Go to your pictures and take one last look at what you took from me.", is_hacker: true }
+    ];
+
+    if (variable_global_exists("apps_unlocked") && is_struct(global.apps_unlocked)) {
+        global.apps_unlocked.Gallery = true;
+    }
+
+    intro_index    = 0;
+    intro_active   = true;
+    typing         = true;
+    intro_timer_ms = 3000;
+    global.hacker_unread = true;
+    hacker_offline = true;
+}
+
+// --- IWORK FOLLOW-UP (30s after first open) ---
+if (global.hacker_iwork_follow_pending
+    && !intro_active
+    && !choice_active
+    && !typing
+    && visible
+    && !minimized)
+{
+    global.hacker_iwork_follow_pending = false;
+
+    hacker_offline = false;
+    conversation_phase = 43;
     intro_messages = [
         { sender: "UrHacker", text: "u really were SO nice to her", is_hacker: true },
         { sender: "UrHacker", text: "checking in on her", is_hacker: true },

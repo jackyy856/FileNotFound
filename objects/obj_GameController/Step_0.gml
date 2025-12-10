@@ -31,3 +31,16 @@ if (global.hacker_dove_follow_timer > 0) {
         if (variable_global_exists("hacker_unread")) global.hacker_unread = true;
     }
 }
+
+// iWork open timer (after first open)
+if (global.iwork_opened_once && global.hacker_iwork_follow_timer > 0) {
+    global.hacker_iwork_follow_timer--;
+    if (global.hacker_iwork_follow_timer <= 0) {
+        global.hacker_iwork_follow_timer = -1;
+        global.hacker_iwork_follow_pending = true;
+        if (variable_global_exists("hacker_unread")) {
+            global.hacker_unread = true;
+        }
+        global.hacker_iwork_unread_queued = false;
+    }
+}
