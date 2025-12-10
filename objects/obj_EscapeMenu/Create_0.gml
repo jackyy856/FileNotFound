@@ -355,7 +355,34 @@ global._save_tracked_globals = [
     "pieces_area_height",
     "piece_positions",
     "piece_colors",
-    "piece_src"
+    "piece_src",
+    // wifi + hacker progression
+    "wifi_ever_connected",
+    "hacker_unread",
+    "hacker_key1_delay",
+    "hacker_key1_hint_pending",
+    "hacker_key1_hint_fired",
+    "hacker_key2_delay",
+    "hacker_key2_hint_pending",
+    "hacker_key2_hint_fired",
+    "hacker_key3_delay",
+    "hacker_key3_hint_pending",
+    "hacker_key3_hint_fired",
+    "hacker_dove_hint_pending",
+    "hacker_dove_hint_fired",
+    "hacker_dove_unlock_pending",
+    "hacker_dove_follow_pending",
+    "hacker_dove_unlock_timer",
+    "hacker_dove_follow_timer",
+    "hacker_dove_calendar_pending",
+    "hacker_dove_calendar_fired",
+    "hacker_transcript_follow_timer",
+    "hacker_transcript_follow_pending",
+    "hacker_transcript_follow_fired",
+    "hacker_iwork_follow_timer",
+    "hacker_iwork_follow_pending",
+    "hacker_iwork_unread_queued",
+    "hacker_wifi_hint_pending"
 ];
 
 global.save_extra_pack = function () {
@@ -370,6 +397,8 @@ global.save_extra_pack = function () {
     if (!is_undefined(desk_blob)) extra.desk_state = desk_blob;
     var wifi_blob = _capture_state_from(Obj_wifi);
     if (!is_undefined(wifi_blob)) extra.wifi_state = wifi_blob;
+    var hacker_blob = _capture_state_from(obj_HackerMsgrApp);
+    if (!is_undefined(hacker_blob)) extra.hacker_state = hacker_blob;
     return extra;
 };
 
@@ -394,6 +423,11 @@ global.save_extra_apply = function (pack) {
         var wifi_blob = variable_struct_get(pack, "wifi_state");
         global._pending_save_chunks.wifi_state = wifi_blob;
         _apply_state_to(Obj_wifi, wifi_blob);
+    }
+    if (variable_struct_exists(pack, "hacker_state")) {
+        var hacker_blob = variable_struct_get(pack, "hacker_state");
+        global._pending_save_chunks.hacker_state = hacker_blob;
+        _apply_state_to(obj_HackerMsgrApp, hacker_blob);
     }
 };
 

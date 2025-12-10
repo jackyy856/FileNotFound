@@ -618,14 +618,18 @@ if (intro_active)
 }
 
 // --- KEY #1 HINT: after first key is collected in Email ---
+// Deliver even if the app window is closed/minimized; unread flag handles UX.
 if (global.hacker_key1_hint_pending
+    && !global.hacker_key1_hint_fired
     && !intro_active
     && !choice_active
-    && !typing
-    && visible
-    && !minimized)
+    && !typing)
 {
     global.hacker_key1_hint_pending = false;
+    global.hacker_key1_hint_fired   = true;
+    if (variable_global_exists("hacker_key1_delay")) {
+        global.hacker_key1_delay = -1;
+    }
 
     hacker_offline = false;
 

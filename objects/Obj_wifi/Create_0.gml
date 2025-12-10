@@ -220,3 +220,59 @@ trigger_hacker_sequence = function() {
 
 // Update time immediately
 update_time_date();
+
+// ---- Save/load helpers for story progression ----
+function _save_state_blob() {
+    return {
+        wifi_flyout_visible    : wifi_flyout_visible,
+        selected_network       : selected_network,
+        connected_network      : connected_network,
+        connection_success     : connection_success,
+        connection_message_timer: connection_message_timer,
+        selected_passwords     : selected_passwords,
+        password_dropdown_visible: password_dropdown_visible,
+        input_field_visible    : input_field_visible,
+        input_text             : input_text,
+        input_field_has_focus  : input_field_has_focus,
+        incorrect_timer        : incorrect_timer,
+        hacker_sequence_triggered: hacker_sequence_triggered,
+        hacker_wifi_hint_fired : hacker_wifi_hint_fired,
+        tried_pw01             : tried_pw01,
+        tried_pw02             : tried_pw02,
+        display_time           : display_time,
+        display_date           : display_date,
+        wifi_ever_connected    : global.wifi_ever_connected
+    };
+}
+
+function _apply_state_blob(blob) {
+    if (!is_struct(blob)) return;
+
+    if (variable_struct_exists(blob, "wifi_flyout_visible")) wifi_flyout_visible = blob.wifi_flyout_visible;
+    if (variable_struct_exists(blob, "selected_network"))    selected_network    = blob.selected_network;
+    if (variable_struct_exists(blob, "connected_network"))   connected_network   = blob.connected_network;
+    if (variable_struct_exists(blob, "connection_success"))  connection_success  = blob.connection_success;
+    if (variable_struct_exists(blob, "connection_message_timer")) connection_message_timer = blob.connection_message_timer;
+    if (variable_struct_exists(blob, "selected_passwords"))  selected_passwords  = blob.selected_passwords;
+    if (variable_struct_exists(blob, "password_dropdown_visible")) password_dropdown_visible = blob.password_dropdown_visible;
+    if (variable_struct_exists(blob, "input_field_visible")) input_field_visible = blob.input_field_visible;
+    if (variable_struct_exists(blob, "input_text"))          input_text          = blob.input_text;
+    if (variable_struct_exists(blob, "input_field_has_focus")) input_field_has_focus = blob.input_field_has_focus;
+    if (variable_struct_exists(blob, "incorrect_timer"))     incorrect_timer     = blob.incorrect_timer;
+    if (variable_struct_exists(blob, "hacker_sequence_triggered")) hacker_sequence_triggered = blob.hacker_sequence_triggered;
+    if (variable_struct_exists(blob, "hacker_wifi_hint_fired"))    hacker_wifi_hint_fired    = blob.hacker_wifi_hint_fired;
+    if (variable_struct_exists(blob, "tried_pw01"))          tried_pw01          = blob.tried_pw01;
+    if (variable_struct_exists(blob, "tried_pw02"))          tried_pw02          = blob.tried_pw02;
+    if (variable_struct_exists(blob, "display_time"))        display_time        = blob.display_time;
+    if (variable_struct_exists(blob, "display_date"))        display_date        = blob.display_date;
+    if (variable_struct_exists(blob, "wifi_ever_connected")) global.wifi_ever_connected = blob.wifi_ever_connected;
+}
+
+// Apply any deferred state captured during load (instance not yet created)
+if (variable_global_exists("_pending_save_chunks") && is_struct(global._pending_save_chunks)) {
+    if (variable_struct_exists(global._pending_save_chunks, "wifi_state")
+    && !is_undefined(global._pending_save_chunks.wifi_state)) {
+        _apply_state_blob(global._pending_save_chunks.wifi_state);
+        global._pending_save_chunks.wifi_state = undefined;
+    }
+}

@@ -226,3 +226,69 @@ typing           = true;
 intro_timer_ms   = 3500;   // 3.5s per line
 has_any_message  = false;
 hacker_offline = false;
+
+// ---- Save/load helpers for messenger state ----
+function _save_state_blob() {
+    return {
+        win_x             : win_x,
+        win_y             : win_y,
+        win_w             : win_w,
+        win_h_full        : win_h_full,
+        win_h             : win_h,
+        minimized         : minimized,
+        visible           : visible,
+        messages          : messages,
+        conversation_phase: conversation_phase,
+        intro_messages    : intro_messages,
+        intro_index       : intro_index,
+        intro_active      : intro_active,
+        typing            : typing,
+        intro_timer_ms    : intro_timer_ms,
+        has_any_message   : has_any_message,
+        hacker_offline    : hacker_offline,
+        choice_active     : choice_active,
+        choice_menu_id    : choice_menu_id,
+        choice_options    : choice_options,
+        scroll            : scroll,
+        max_scroll        : max_scroll
+    };
+}
+
+function _apply_state_blob(blob) {
+    if (!is_struct(blob)) return;
+
+    // geometry first so scroll calcs use latest layout
+    if (variable_struct_exists(blob, "win_x")) win_x = blob.win_x;
+    if (variable_struct_exists(blob, "win_y")) win_y = blob.win_y;
+    if (variable_struct_exists(blob, "win_w")) win_w = blob.win_w;
+    if (variable_struct_exists(blob, "win_h_full")) win_h_full = blob.win_h_full;
+    if (variable_struct_exists(blob, "win_h")) win_h = blob.win_h;
+    if (variable_struct_exists(blob, "minimized")) minimized = blob.minimized;
+    if (variable_struct_exists(blob, "visible")) visible = blob.visible;
+
+    if (variable_struct_exists(blob, "messages")) messages = blob.messages;
+    if (variable_struct_exists(blob, "conversation_phase")) conversation_phase = blob.conversation_phase;
+    if (variable_struct_exists(blob, "intro_messages")) intro_messages = blob.intro_messages;
+    if (variable_struct_exists(blob, "intro_index")) intro_index = blob.intro_index;
+    if (variable_struct_exists(blob, "intro_active")) intro_active = blob.intro_active;
+    if (variable_struct_exists(blob, "typing")) typing = blob.typing;
+    if (variable_struct_exists(blob, "intro_timer_ms")) intro_timer_ms = blob.intro_timer_ms;
+    if (variable_struct_exists(blob, "has_any_message")) has_any_message = blob.has_any_message;
+    if (variable_struct_exists(blob, "hacker_offline")) hacker_offline = blob.hacker_offline;
+    if (variable_struct_exists(blob, "choice_active")) choice_active = blob.choice_active;
+    if (variable_struct_exists(blob, "choice_menu_id")) choice_menu_id = blob.choice_menu_id;
+    if (variable_struct_exists(blob, "choice_options")) choice_options = blob.choice_options;
+    if (variable_struct_exists(blob, "scroll")) scroll = blob.scroll;
+    if (variable_struct_exists(blob, "max_scroll")) max_scroll = blob.max_scroll;
+
+    recalc_scroll_bounds();
+}
+
+// Apply any state saved while this app instance was missing
+if (variable_global_exists("_pending_save_chunks") && is_struct(global._pending_save_chunks)) {
+    if (variable_struct_exists(global._pending_save_chunks, "hacker_state")
+    && !is_undefined(global._pending_save_chunks.hacker_state)) {
+        _apply_state_blob(global._pending_save_chunks.hacker_state);
+        global._pending_save_chunks.hacker_state = undefined;
+    }
+}
