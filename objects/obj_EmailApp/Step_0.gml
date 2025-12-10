@@ -512,6 +512,9 @@ if (selected_index == corrupted_index && puzzle_solved && !email_key1_collected)
             if (!global.hacker_key1_hint_fired) {
                 global.hacker_key1_hint_pending = true;
                 global.hacker_key1_hint_fired   = true;
+                if (variable_global_exists("hacker_unread")) {
+                    global.hacker_unread = true;
+                }
             }
 
             // no further delay needed

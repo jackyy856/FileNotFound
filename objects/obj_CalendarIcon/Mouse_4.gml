@@ -24,6 +24,9 @@ if (!global.calendar_opened_once) {
 // Queue calendar hint if not already fired
 if (!global.hacker_dove_calendar_fired) {
     global.hacker_dove_calendar_pending = true;
+    if (variable_global_exists("hacker_unread")) {
+        global.hacker_unread = true;
+    }
 }
 
 // Open or focus the Calendar app
