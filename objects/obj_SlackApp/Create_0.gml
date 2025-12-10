@@ -113,10 +113,31 @@ dm_names = [
 
 // ====== DM conversations (all with timestamps) ======
 
+// UPDATED: Sofia conversation with warm emojis, informal tone,
+// harassment scene, redaction indicator, and embezzlement line.
 var sofia_msgs = [
-    { text: "Hey, are you free to look at the quarterly report later?", who: "them", time: "9:41 AM" },
-    { text: "I’ll be in the office after 3.",                            who: "them", time: "9:43 AM" },
-    { text: "Sure, send it over.",                                      who: "me",   time: "9:45 AM" }
+    { text: "I just sent the balance to the XYZ client! :)",          who: "them", time: "10:02 AM" },
+    { text: "Great job.",                                            who: "me",   time: "10:04 AM" },
+
+    { text: ":) :)",                                                 who: "them", time: "10:05 AM" },
+    { text: "I’m taking a break, wanna have lunch with me? :)",      who: "them", time: "10:06 AM" },
+    { text: "Sure. Give me 5 min.",                                  who: "me",   time: "10:07 AM" },
+    { text: "Hurray!",                                               who: "them", time: "10:08 AM" },
+    { text: "What are you thinking? I got us covered :)",            who: "me",   time: "10:10 AM" },
+    { text: "Parfaits? :3",                                          who: "them", time: "10:11 AM" },
+
+    // later that day: IT meeting anxiety
+    { text: "Hey Van… do you think we can talk face to face before today’s meeting with the IT group?", who: "them", time: "12:41 PM" },
+    { text: "…Is something wrong?",                                  who: "me",   time: "12:42 PM" },
+    { text: "Yeah… There’s this guy who hasn’t stopped passing by my cubicle since our last meeting with them. He’s pushy.", who: "them", time: "12:44 PM" },
+    { text: "Come to my office, we can talk right now.",             who: "me",   time: "12:45 PM" },
+    { text: "Thank you! going now :)",                               who: "them", time: "12:46 PM" },
+
+    // visible indicator of deleted / redacted content
+    { text: "[Some messages in this conversation were deleted by the workspace admin]", who: "them", time: "1:30 PM" },
+
+    // post-Richard fallout
+    { text: "I didn’t expect Richard to go as drastic as embezzlement, but I’m happy he is finally out :)", who: "me", time: "3:12 PM" }
 ];
 
 var corey_msgs = [
@@ -131,7 +152,7 @@ var elizabeth_msgs = [
 
 var thomas_msgs = [
     { text: "Security wants a summary of the incident from last week.",  who: "them", time: "2:18 PM" },
-    { text: "I’ll draft something and send it to you for review.", who: "me", time: "2:22 PM" },
+    { text: "I’ll draft something and send it to you for review.",       who: "me",   time: "2:22 PM" },
 
     // ---- Your added escalation ----
     { text: "I know what you did.",                                     who: "them", time: "4:10 PM" },
