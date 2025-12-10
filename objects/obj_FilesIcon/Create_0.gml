@@ -16,6 +16,6 @@ if (!variable_global_exists("apps_unlocked")) {
 }
 
 spr_locked   = spr_Hacked_FilesIcon;
-spr_unlocked = spr_FilesIcon;
+spr_unlocked = spr_FilesTextIcon;
 
 sprite_index = global.apps_unlocked.Files ? spr_unlocked : spr_locked;
