@@ -278,6 +278,32 @@ if (!minimized && choice_active && mouse_check_button_pressed(mb_left))
                     typing         = true;
                     intro_timer_ms = 3000;
                     break;
+
+                // ----------------
+                // Menu 8 (post iWork follow-up):
+                // single option: "..."
+                // ----------------
+                case 8:
+                    conversation_phase = 50;
+
+                    // unlock Gallery when delivering the final message
+                    if (variable_global_exists("apps_unlocked") && is_struct(global.apps_unlocked)) {
+                        global.apps_unlocked.Gallery = true;
+                    }
+
+                    intro_messages = [
+                        { sender: "UrHacker", text: "Go to your pictures and take one last look at what you took from me.", is_hacker: true }
+                    ];
+
+                    intro_index    = 0;
+                    intro_active   = true;
+                    typing         = true;
+                    intro_timer_ms = 3000;
+
+                    if (variable_global_exists("hacker_unread")) {
+                        global.hacker_unread = true;
+                    }
+                    break;
             }
         }
     }
@@ -424,6 +450,23 @@ if (intro_active)
                         hacker_offline = true;
                         break;
 
+                    // After iWork follow-up lines (either path)
+                    case 42:
+                    case 43:
+                        choice_menu_id = 8;
+                        choice_options = [ "..." ];
+                        choice_active  = true;
+                        recalc_scroll_bounds();
+                        if (variable_global_exists("hacker_unread")) {
+                            global.hacker_unread = true;
+                        }
+                        break;
+
+                    // After the Gallery unlock line
+                    case 50:
+                        hacker_offline = true;
+                        break;
+
                 }
 
             }
@@ -532,6 +575,7 @@ if (global.hacker_key1_hint_pending
     conversation_phase = 20;
 
     intro_messages = [
+        { sender: "UrHacker", text: "You won't be able to open Sofia's email, I locked it with password", is_hacker: true },
         { sender: "UrHacker", text: "i unlocked the calendar for you. go look.", is_hacker: true },
         { sender: "UrHacker", text: "the next code u enter will mean something important to you.", is_hacker: true },
         { sender: "UrHacker", text: "format: ####", is_hacker: true }
@@ -690,11 +734,6 @@ if (global.hacker_dove_unlock_pending
         global.apps_unlocked.Slack = true;
     }
 
-    // start 30s follow timer
-    if (variable_global_exists("hacker_dove_follow_timer")) {
-        global.hacker_dove_follow_timer = room_speed * 30;
-    }
-
     intro_index    = 0;
     intro_active   = true;
     typing         = true;
@@ -722,13 +761,8 @@ if (global.hacker_dove_follow_pending
         { sender: "UrHacker", text: "doing anything to keep her safe", is_hacker: true },
         { sender: "UrHacker", text: "must be NICE", is_hacker: true },
         { sender: "UrHacker", text: "must feel good to be someone’s hero", is_hacker: true },
-        { sender: "UrHacker", text: "so why wasn’t I worth that?", is_hacker: true },
-        { sender: "UrHacker", text: "Go to your pictures and take one last look at what you took from me.", is_hacker: true }
+        { sender: "UrHacker", text: "so why wasn’t I worth that?", is_hacker: true }
     ];
-
-    if (variable_global_exists("apps_unlocked") && is_struct(global.apps_unlocked)) {
-        global.apps_unlocked.Gallery = true;
-    }
 
     intro_index    = 0;
     intro_active   = true;
@@ -757,13 +791,8 @@ if (global.hacker_iwork_follow_pending
         { sender: "UrHacker", text: "doing anything to keep her safe", is_hacker: true },
         { sender: "UrHacker", text: "must be NICE", is_hacker: true },
         { sender: "UrHacker", text: "must feel good to be someone’s hero", is_hacker: true },
-        { sender: "UrHacker", text: "so why wasn’t I worth that?", is_hacker: true },
-        { sender: "UrHacker", text: "Go to your pictures and take one last look at what you took from me.", is_hacker: true }
+        { sender: "UrHacker", text: "so why wasn’t I worth that?", is_hacker: true }
     ];
-
-    if (variable_global_exists("apps_unlocked") && is_struct(global.apps_unlocked)) {
-        global.apps_unlocked.Gallery = true;
-    }
 
     intro_index    = 0;
     intro_active   = true;
