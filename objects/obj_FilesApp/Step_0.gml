@@ -113,8 +113,9 @@ if (view_mode == 0) {
                     var keys_ok = (global.key_collected[0] && global.key_collected[1] && global.key_collected[2]);
                     if (!keys_ok) {
                         // Locked: play lock sound feedback
-                        if (asset_exists("sfx_meow2")) {
-                            audio_play_sound(sfx_meow2, 1, false);
+                        var _snd_lock = asset_get_index("sfx_meow2");
+                        if (_snd_lock != -1) {
+                            audio_play_sound(_snd_lock, 1, false);
                         }
                         if (variable_global_exists("_toast_files")) {
                             global._toast_files = "You need to collect 3 keys to unlock it.";
